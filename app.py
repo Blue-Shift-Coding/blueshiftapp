@@ -8,6 +8,7 @@ import logging
 from logging import Formatter, FileHandler
 from forms import *
 import os
+from api.blog import fetch_posts, get_post
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -51,8 +52,19 @@ def about():
     return render_template('pages/placeholder.about.html')
 
 @app.route('/news')
-def news():
-    return render_template('pages/news.html')
+@app.route('/news/<int:page_num>')
+def news(page_num=1):
+    if page_num < 1:
+        return abort(404)
+
+    posts, total_pages = fetch_posts(page_num)
+
+    if page_num > total_pages:
+        return abort(404)
+
+    return render_template(
+        'pages/news.html', data=posts, page_num=page_num,
+        total_pages=total_pages)
 
 
 @app.route('/login')
