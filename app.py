@@ -9,6 +9,8 @@ from logging import Formatter, FileHandler
 from forms import *
 import os
 from api.blog import fetch_posts, get_post
+from lib.format import post_format_date
+
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -64,7 +66,7 @@ def news(page_num=1):
 
     return render_template(
         'pages/news.html', data=posts, page_num=page_num,
-        total_pages=total_pages)
+        total_pages=total_pages, format_date=post_format_date)
 
 
 @app.route('/login')

@@ -13,7 +13,7 @@
         <div class="col-md-8 col-md-offset-2">
           <div class="entry-content">
             <a href=""><h2>{{ post.title.rendered | safe }}</h2></a>
-            <p>{{ post.date }}</p>
+            <p>{{ format_date(post.date) }}</p>
             {{ post.content.rendered | safe }}
           </div>
         </div>
