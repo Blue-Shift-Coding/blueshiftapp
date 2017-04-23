@@ -1,3 +1,7 @@
+## Boilerplate for app
+
+To speed up the config process for the flask app we started with this well documented boilerplate provided open-source by Real Python and documented below in this README. For now there is no active database but we'll prob go with PostgreSQL when needed to provide user functionality. 
+
 ## Welcome
 
 Hello. Want to get started with Flask quickly? Good. You came to the right place. This Flask application framework is pre-configured with **Flask-SQLAlchemy**, **Flask-WTF**, **Fabric**, **Coverage**, and the **Bootstrap** frontend (among others). This will get your Flask app up and running on Heroku or PythonAnywhere quickly. Use this starter, boilerplate for all you new Flask projects. Cheers!
@@ -278,4 +282,3 @@ PUSH and PULL away!
 1. [Flask Documentation](http://flask.pocoo.org/docs/)
 2. [Flask Extensions](http://flask.pocoo.org/extensions/)
 1. [Real Python](http://www.realpythonfortheweb.com) :)
-
