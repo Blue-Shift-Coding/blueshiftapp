@@ -56,10 +56,10 @@ def about():
 @app.route('/news')
 @app.route('/news/<int:page_num>')
 def news(page_num=1):
+    posts, total_pages = fetch_posts(page_num)
+
     if page_num < 1:
         return abort(404)
-
-    posts, total_pages = fetch_posts(page_num)
 
     if page_num > total_pages:
         return abort(404)
@@ -67,6 +67,13 @@ def news(page_num=1):
     return render_template(
         'pages/news.html', data=posts, page_num=page_num,
         total_pages=total_pages, format_date=post_format_date)
+
+@app.route('/post/<int:post_id>/<slug>')
+def post(post_id, slug):
+    post = get_post(post_id)
+
+    return render_template(
+        'pages/post.html', post=post, post_id=post_id, format_date=post_format_date)
 
 
 @app.route('/login')
