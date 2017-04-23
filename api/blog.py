@@ -10,7 +10,7 @@ MINS = 60
 
 @ttl_cache(ttl=15*MINS)
 def fetch_posts(page_num=1):
-    r = requests.get('{}/wp-json/wp/v2/posts'.format(WORDPRESS_URL, page_num))
+    r = requests.get('{}/wp-json/wp/v2/posts?page={}'.format(WORDPRESS_URL, page_num))
 
     # Raise HTTPError if not 2xx
     r.raise_for_status()

@@ -12,7 +12,7 @@
       <div class="row text-left smaller-copy">
         <div class="col-md-8 col-md-offset-2">
           <div class="entry-content">
-            <a href="{{ url_for('post', post_id = post.id, slug = post.slug )}}"><h2>{{ post.title.rendered | safe }}</h2></a>
+            <a href=""><h2>{{ post.title.rendered | safe }}</h2></a>
             <p>{{ post.date }}</p>
             {{ post.content.rendered | safe }}
           </div>
@@ -21,5 +21,6 @@
       {% endfor %}
   </div>
 </div>
+
 
 {% endblock %}
