@@ -2,7 +2,7 @@
 
 To speed up the config process for the flask app we started with this well documented boilerplate provided open-source by Real Python and documented below in this README. For now there is no active database but we'll prob go with PostgreSQL when needed to provide user functionality.
 
-Flask is very simple and mostly self explanatory for those familiar with Python (which is why it was chosen), however it is always good to reference the [official docs]http://flask.pocoo.org/docs/0.12/. It's also worth taking a particular look into [Jinja]http://jinja.pocoo.org/docs/2.9/, the Python templating language used by Flask, also nice and straight forward to work with :-)
+Flask is very simple and mostly self explanatory for those familiar with Python (which is why it was chosen), however it is always good to reference the [official docs](http://flask.pocoo.org/docs/0.12/). It's also worth taking a particular look into [Jinja](http://jinja.pocoo.org/docs/2.9/), the Python templating language used by Flask, also nice and straight forward to work with :-)
 
 The sections below this one were included in the README of the boilerplate used to get the app going, there is some useful info on getting started and we'll update this to be project specific as the app develops.
 
