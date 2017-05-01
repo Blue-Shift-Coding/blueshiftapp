@@ -198,33 +198,14 @@
             </li>
           </ul>
         </li>
-        <li class="dropdown singleDrop color-4">
+        <li {% if request.endpoint == 'news' %} class="active dropdown singleDrop color-4" {% else %} class="dropdown singleDrop color-4"{% endif %}>
           <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-pencil-square-o bg-color-4" aria-hidden="true"></i>
             <span>News</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
-            <li class="dropdown dropdown-submenu">
-              <a href="javascript:void(0)" class="dropdown-toggle " data-toggle="dropdown">Products<i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="product.html">Products Fullwidth</a></li>
-                <li><a href="product-left-sidebar.html">Products Left Sidebar</a></li>
-                <li><a href="product-right-sidebar.html">Products Right Sidebar</a></li>
-              </ul>
-            </li>
-            <li><a href="single-product.html">Single Product</a></li>
-            <li><a href="category.html">Product Categories</a></li>
-            <li><a href="cart-page.html">Cart</a></li>
-            <li class="dropdown dropdown-submenu">
-              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Checkout<i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="checkout-step-1.html">Personal Info</a></li>
-                <li><a href="checkout-step-2.html">Payment Info</a></li>
-                <li><a href="checkout-step-3.html">Confirmation</a></li>
-              </ul>
-            </li>
+            <li><a href="{{ url_for('news') }}">Blog</a></li>
+            <li><a href="{{ url_for('news') }}">Opinion Pieces</a></li>
           </ul>
         </li>
         <li class="dropdown singleDrop color-5">
