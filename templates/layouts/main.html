@@ -9,17 +9,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- /meta -->
 
-<!-- styles -->
-<link type="text/css" rel="stylesheet" href="/static/css/font-awesome-4.1.0.min.css" />
-<link type="text/css" rel="stylesheet" href="/static/css/bootstrap-3.1.1.min.css">
-<link type="text/css" rel="stylesheet" href="/static/css/bootstrap-theme-3.1.1.min.css" />
-<link type="text/css" rel="stylesheet" href="/static/css/layout.main.css" />
-<link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+<!-- Bootstrap CSS-->
+<link type="text/css" rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+
+<!-- styles  -->
+<link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/main.responsive.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/main.quickfix.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/blog.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/style.css" />
 
 <!-- /styles -->
+
+<!-- PLUGINS CSS -->
+  <link rel="stylesheet" type="text/css" href="/static/plugins/rs-plugin/css/settings.css" media="screen">
+  <link rel="stylesheet" type="text/css" href="/static/plugins/selectbox/select_option1.css">
+  <link rel="stylesheet" type="text/css" href="/static/plugins/owl-carousel/owl.carousel.css" media="screen">
+  <link rel="stylesheet" type="text/css" href="/static/plugins/isotope/jquery.fancybox.css">
+  <link rel="stylesheet" type="text/css" href="/static/plugins/isotope/isotope.css">
 
 <!-- favicons -->
 <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/apple-touch-icon.png">
@@ -29,54 +36,259 @@
 <meta name="theme-color" content="#ffffff">
 <!-- /favicons -->
 
+<!-- GOOGLE FONT -->
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Dosis:400,300,600,700' rel='stylesheet' type='text/css'>
+
+
 <!-- scripts -->
 <script src="/static/js/libs/modernizr-2.8.2.min.js"></script>
 <!--[if lt IE 9]><script src="/static/js/libs/respond-1.4.2.min.js"></script><![endif]-->
 <!-- /scripts -->
 
 </head>
-<body>
+<body class="body-wrapper">
 
   <!-- Wrap all page content here -->
-  <div id="wrap">
+  <div class="main-wrapper">
 
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">blue{shift}</a>
+    <header id="pageTop" class="header-wrapper">
+
+      <div class="container-fluid color-bar top-fixed clearfix">
+          <div class="row">
+            <div class="col-sm-1 col-xs-2 bg-color-1">fix bar</div>
+            <div class="col-sm-1 col-xs-2 bg-color-2">fix bar</div>
+            <div class="col-sm-1 col-xs-2 bg-color-3">fix bar</div>
+            <div class="col-sm-1 col-xs-2 bg-color-4">fix bar</div>
+            <div class="col-sm-1 col-xs-2 bg-color-5">fix bar</div>
+            <div class="col-sm-1 col-xs-2 bg-color-6">fix bar</div>
+            <div class="col-sm-1 bg-color-1 hidden-xs">fix bar</div>
+            <div class="col-sm-1 bg-color-2 hidden-xs">fix bar</div>
+            <div class="col-sm-1 bg-color-3 hidden-xs">fix bar</div>
+            <div class="col-sm-1 bg-color-4 hidden-xs">fix bar</div>
+            <div class="col-sm-1 bg-color-5 hidden-xs">fix bar</div>
+            <div class="col-sm-1 bg-color-6 hidden-xs">fix bar</div>
+          </div>
         </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
-            <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a href="{{ url_for('about') }}">About</a></li>
-            <li {% if request.endpoint == 'news' %} class="active" {% endif %}><a href="{{ url_for('news') }}">News</a></li>
 
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <div class="top-info-bar bg-color-7 hidden-xs">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-8">
+                <ul class="list-inline topList">
+                  <li><i class="fa fa-envelope bg-color-1" aria-hidden="true"></i> <a href="mailto:hello@blueshiftcoding.com">hello@blueshiftcoding.com</a></li>
+                  <li><i class="fa fa-phone bg-color-2" aria-hidden="true"></i> 0203 176 4660</li>
+                  <li><i class="fa fa-clock-o bg-color-6" aria-hidden="true"></i> Open: 9am - 6pm</li>
+                </ul>
+              </div>
+              <div class="col-sm-4">
+                <ul class="list-inline functionList">
+                  <li><i class="fa fa-unlock-alt bg-color-5" aria-hidden="true"></i> <a href='#loginModal' data-toggle="modal" >Login</a><span>or</span><a href='#createAccount' data-toggle="modal">Create an account</a></li>
+
+                  <li class="cart-dropdown">
+                    <a href="#" class="bg-color-6 shop-cart" >
+                      <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NAVBAR  -->
+
+<nav id="menuBar" class="navbar navbar-default lightHeader" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/"><img src="http://blueshiftcoding.com/wp-content/themes/blueshift/images/logo-animation175p.gif" alt="logo"></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown singleDrop color-1">
+          <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-home bg-color-1" aria-hidden="true"></i> <span>Our Classes</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-left">
+            <li><a href="index-v1.html">Kidz School</a></li>
+            <li><a href="index-v2.html">Kidz Store</a></li>
+            <li><a href="index-v3.html">Kidz Daycare</a></li>
+          </ul>
+        </li>
+        <li class="dropdown singleDrop color-3">
+          <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list-ul bg-color-3" aria-hidden="true"></i> <span>Education</span></a>
+          <ul class="dropdown-menu dropdown-menu-left">
+            <li class="active"><a href="about_us.html">About</a></li>
+            <li class="dropdown dropdown-submenu">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Team<i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </a>
               <ul class="dropdown-menu">
-                <li><a>Action</a></li>
-                <li><a>Another action</a></li>
-                <li><a>Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a>Separated link</a></li>
-                <li><a>One more separated link</a></li>
+                <li><a href="teachers.html">Teachers</a></li>
+                <li><a href="teachers-details.html">Teacher Details</a></li>
+              </ul>
+            </li>
+            <li><a href="testimonial.html">Testimonial</a></li>
+            <li class="dropdown dropdown-submenu">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Events <i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="all-events.html">All Events</a></li>
+                <li><a href="single-event-left-sidebar.html">Single Event Left Sidebar</a></li>
+                <li><a href="single-event-right-sidebar.html">Single Event Right Sidebar</a></li>
+              </ul>
+            </li>
+            <li><a href="photo-gallery.html">Photo Gallery</a></li>
+            <li><a href="pricing-table.html">Pricing Table</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="service-details.html">Services Details</a></li>
+            <li><a href="search-result.html">Search Results</a></li>
+            <li><a href="contact-us.html">Contact Us</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="sign-up-or-login.html">Sign Up / Login</a></li>
+            <li><a href="404.html">Error 404</a></li>
+            <li><a href="coming-soon.html">Coming Soon</a></li>
+          </ul>
+        </li>
+        <li class=" dropdown megaDropMenu color-2">
+          <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="300" data-close-others="true" aria-expanded="false">
+            <i class="fa fa-file-text-o bg-color-2" aria-hidden="true"></i>
+            <span>About</span>
+          </a>
+          <ul class="row dropdown-menu">
+            <li class="col-sm-3 col-xs-12">
+              <ul class="list-unstyled">
+                <li>Courses Grid</li>
+                <li><a href="course-grid-full.html">Courses Grid Fullwidth</a></li>
+                <li><a href="course-grid-left-sidebar.html">Courses Grid Left Sidebar</a></li>
+                <li><a href="course-grid-right-sidebar.html">Courses Grid Right Sidebar</a></li>
+              </ul>
+            </li>
+            <li class="col-sm-3 col-xs-12">
+              <ul class="list-unstyled">
+                <li>Courses List</li>
+                <li><a href="course-list-fullwidth.html">Courses List Fullwidth</a></li>
+                <li><a href="course-list-left-sidebar.html">Courses List left Sidebar</a></li>
+                <li><a href="course-list-right-sidebar.html">Courses List Right Sidebar</a></li>
+              </ul>
+            </li>
+            <li class="col-sm-3 col-xs-12">
+              <ul class="list-unstyled">
+                <li>Single Course</li>
+                <li><a href="course-single.html">Single Course Fullwidth</a></li>
+                <li><a href="course-single-left-sidebar.html">Single Course left Sidebar</a></li>
+                <li><a href="course-single-right-sidebar.html">Single Course Right Sidebar</a></li>
+              </ul>
+            </li>
+            <li class="col-sm-3 col-xs-12">
+              <ul class="list-unstyled">
+                <li>Checkout</li>
+                <li><a href="checkout-step-1.html">Personal Info</a></li>
+                <li><a href="checkout-step-2.html">Payment Info</a></li>
+                <li><a href="checkout-step-3.html">Confirmation</a></li>
               </ul>
             </li>
           </ul>
-          <ul class="nav navbar-nav pull-right">
-            <li><a href="{{ url_for('register') }}">Signup</a></li>
-            <li><a href="{{ url_for('login') }}">Login</a></li>
+        </li>
+        <li {% if request.endpoint == 'news' %} class="active dropdown singleDrop color-4" {% else %} class="dropdown singleDrop color-4"{% endif %}>
+          <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-pencil-square-o bg-color-4" aria-hidden="true"></i>
+            <span>News</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><a href="{{ url_for('news') }}">Blog</a></li>
+            <li><a href="{{ url_for('news') }}">Opinion Pieces</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
-      </div>
+        </li>
+        <li class="dropdown singleDrop color-5">
+          <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-gg bg-color-6" aria-hidden="true"></i>
+            <span>Students</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li class="dropdown dropdown-submenu">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Blog Grid<i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="blog-grid.html">Blog Grid Fullwidth</a></li>
+                <li><a href="blog-grid-left-sidebar.html">Blog Grid Left Sidebar</a></li>
+                <li><a href="blog-grid-right-sidebar.html">Blog Grid Right Sidebar</a></li>
+              </ul>
+            </li>
+            <li class="dropdown dropdown-submenu">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Blog List<i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="blog-list.html">Blog List Fullwidth</a></li>
+                <li><a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a></li>
+                <li><a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a></li>
+              </ul>
+            </li>
+            <li class="dropdown dropdown-submenu">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Single Blog<i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="single-blog.html">Single Blog Fullwidth</a></li>
+                <li><a href="single-blog-left-sidebar.html">Single Blog Left Sidebar</a></li>
+                <li><a href="single-blog-right-sidebar.html">Single Blog Right Sidebar</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
+
+  </div>
+</nav>
+
+
+      <!-- Fixed navbar -->
+      <!-- <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">blue{shift}</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li {% if request.endpoint == 'home' %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
+              <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a href="{{ url_for('about') }}">About</a></li>
+              <li {% if request.endpoint == 'news' %} class="active" {% endif %}><a href="{{ url_for('news') }}">News</a></li>
+
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a>Action</a></li>
+                  <li><a>Another action</a></li>
+                  <li><a>Something else here</a></li>
+                  <li class="divider"></li>
+                  <li class="dropdown-header">Nav header</li>
+                  <li><a>Separated link</a></li>
+                  <li><a>One more separated link</a></li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+              <li><a href="{{ url_for('register') }}">Signup</a></li>
+              <li><a href="{{ url_for('login') }}">Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </div> -->
+
+    </header>
 
     <!-- Begin page content -->
     <main id="content" role="main" class="container">
@@ -98,6 +310,10 @@
 
   </div>
 
+  <div class="scrolling">
+    <a href="#pageTop" class="backToTop hidden-xs" id="backToTop" style="opacity: 1;"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
+  </div>
+
   <div id="footer">
     <div class="container">
       <p>Your Company &copy; All Rights Reserved.</p>
@@ -107,9 +323,24 @@
 
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script type="text/javascript" src="/static/js/libs/jquery-1.11.1.min.js"><\/script>')</script>
-  <script type="text/javascript" src="/static/js/libs/bootstrap-3.1.1.min.js" defer></script>
+  <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js" defer></script>
   <script type="text/javascript" src="/static/js/plugins.js" defer></script>
   <script type="text/javascript" src="/static/js/script.js" defer></script>
+  <script type="text/javascript" src="/static/js/custom.js"></script>
+  <!-- THEME PLUGINS -->
+  <script src="/static/plugins/jquery-ui/jquery-ui.js"></script>
+  <script src="/static/plugins/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
+  <script src="/static/plugins/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+  <script src="/static/plugins/selectbox/jquery.selectbox-0.1.3.min.js"></script>
+  <script src="/static/plugins/owl-carousel/owl.carousel.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+  <script src="/static/plugins/counter-up/jquery.counterup.min.js"></script>
+  <script src="/static/plugins/isotope/isotope.min.js"></script>
+  <script src="/static/plugins/isotope/jquery.fancybox.pack.js"></script>
+  <script src="/static/plugins/isotope/isotope-triger.js"></script>
+  <script src="/static/plugins/countdown/jquery.syotimer.js"></script>
+  <script src="/static/plugins/velocity/velocity.min.js"></script>
+  <script src="/static/plugins/smoothscroll/SmoothScroll.js"></script>
   <!-- Google Analytics - Change UA-XXXXX-X to be your site's ID -->
   <script>
   window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
