@@ -45,7 +45,7 @@
 .navbar-header .navbar-brand {
   float: left;
   > img{
-  	width: 100%;
+  	width: 47%;
   }
   @include mobile-all{
   	height: auto;
@@ -386,7 +386,7 @@
 }
 .navbar-default .navbar-nav{
     height: 340px;
-    overflow-x:hidden; 
+    overflow-x:hidden;
     @include transition(height 0.3s ease);
     @include tablet{
     	height: auto;
@@ -460,7 +460,7 @@
 	@include box-shadow(0, 4px, 0, rgba($black-color, .1) );
 	background-color: $white-color;
 	//position: relative;
-	
+
 	@include mobile-all{
 		height: 70px;
 		top: 3px;
@@ -490,7 +490,7 @@
 		>li.active.color-6 > a{
 			color: $color6;
 		}
-	} 
+	}
 }
 //menu item color
 

@@ -63,7 +63,7 @@
 	13.2 CHECKOUT INFO
 14. SINGLE PRODUCT
     14.1 PRODUCT GALLERY
-    14.2 PRODUCT 
+    14.2 PRODUCT
 15. CATEGORY
 ===================== */
 /*=== MIXINS ===*/
@@ -1732,7 +1732,7 @@ aside {
   float: left;
 }
 .navbar-header .navbar-brand > img {
-  width: 100%;
+  width: 47%;
 }
 @media (min-width: 320px) {
   .navbar-header .navbar-brand {
