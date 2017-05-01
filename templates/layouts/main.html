@@ -13,12 +13,11 @@
 <link type="text/css" rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
 
 <!-- styles  -->
-<link type="text/css" rel="stylesheet" href="/static/css/font-awesome-4.1.0.min.css" />
+<link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/main.responsive.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/main.quickfix.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/blog.css" />
 <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
-
 
 <!-- /styles -->
 
@@ -30,6 +29,11 @@
 <meta name="theme-color" content="#ffffff">
 <!-- /favicons -->
 
+<!-- GOOGLE FONT -->
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Dosis:400,300,600,700' rel='stylesheet' type='text/css'>
+
+
 <!-- scripts -->
 <script src="/static/js/libs/modernizr-2.8.2.min.js"></script>
 <!--[if lt IE 9]><script src="/static/js/libs/respond-1.4.2.min.js"></script><![endif]-->
@@ -40,6 +44,8 @@
 
   <!-- Wrap all page content here -->
   <div class="main-wrapper">
+
+      <header id="pageTop" class="header-wrapper">
 
     <div class="container-fluid color-bar top-fixed clearfix">
         <div class="row">
@@ -55,6 +61,31 @@
           <div class="col-sm-1 bg-color-4 hidden-xs">fix bar</div>
           <div class="col-sm-1 bg-color-5 hidden-xs">fix bar</div>
           <div class="col-sm-1 bg-color-6 hidden-xs">fix bar</div>
+        </div>
+      </div>
+
+      <div class="top-info-bar bg-color-7 hidden-xs">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8">
+              <ul class="list-inline topList">
+                <li><i class="fa fa-envelope bg-color-1" aria-hidden="true"></i> <a href="mailto:info@yourdomain.com">info@yourdomain.com</a></li>
+                <li><i class="fa fa-phone bg-color-2" aria-hidden="true"></i> +1 234 567 8900</li>
+                <li><i class="fa fa-clock-o bg-color-6" aria-hidden="true"></i> Open: 9am - 6pm</li>
+              </ul>
+            </div>
+            <div class="col-sm-4">
+              <ul class="list-inline functionList">
+                <li><i class="fa fa-unlock-alt bg-color-5" aria-hidden="true"></i> <a href='#loginModal' data-toggle="modal" >Login</a><span>or</span><a href='#createAccount' data-toggle="modal">Create an account</a></li>
+
+                <li class="cart-dropdown">
+                  <a href="#" class="bg-color-6 shop-cart" >
+                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -95,6 +126,8 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
+
+  </header>
 
     <!-- Begin page content -->
     <main id="content" role="main" class="container">
