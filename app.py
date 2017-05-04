@@ -10,7 +10,7 @@ from forms import *
 import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import requests, urllib
+import requests, urllib, json, time
 
 
 #----------------------------------------------------------------------------#
@@ -133,16 +133,20 @@ def api_authenticate():
     }
     r = requests.post("https://api.infusionsoft.com/token", data=payload)
 
-    # Save access token and associated data to database
+    # Save access token and associated data for later use
     response_data = r.json()
+
     if ("error" in response_data):
         return "Could not authenticate (error from server)"
 
-    # TODO:WV:20170504:Save to database:
-    # response_data.access_token
-    # current_unix_timestamp
-    # response_data.access_token_expires_in
-    # response_data.refesh_token
+    f = open("cron/access_token_data", "w")
+    f.write(json.dumps({
+        "access_token": response_data["access_token"],
+        "current_unix_timestamp": time.time(),
+        "access_token_lifespan_in_seconds": response_data["expires_in"],
+        "refresh_token": response_data["refresh_token"],
+    }))
+    f.close()
 
     return "Done"
 
