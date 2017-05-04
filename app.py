@@ -10,6 +10,7 @@ from forms import *
 import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
+import requests
 
 
 #----------------------------------------------------------------------------#
@@ -46,6 +47,10 @@ def login_required(test):
 
 @app.route('/')
 def home():
+
+    # TODO:WV:20170503:Send categories from Infusionsoft when they change?  Fetch from Infusionsoft every X minutes?
+    categories = []
+
     return render_template('pages/placeholder.home.html')
 
 
@@ -92,6 +97,55 @@ def register():
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
+
+
+@app.route('/api-authenticate')
+def api_authenticate():
+
+    credentials = {
+        "client_id": "",
+        "client_secret": "",
+    }
+
+    # If at stage 2, there should be a 'code' in the URL.  Extract it here; if absent, assume at stage 1.
+    code = request.args.get("code")
+
+    # Stage 1 - get a link for authorizing the app
+    if not code:
+
+        params = {
+            "response_type": "code",
+            "scope": "full",
+            "client_id": credentials.client_id,
+            "redirect_uri": "http://127.0.0.1:5000/api-authenticate"
+        }
+
+        url = "https://signin.infusionsoft.com/app/oauth/authorize?"+urllib.urlencode(params);
+
+        return "<a href='"+url+"'>Get access token</a>";
+
+    # Stage 2 - get an access token
+    payload = {
+        "client_id": credentials.client_id,
+        "client_secret": credentials.client_secret,
+        "code": code,
+        "grant_type": "authorization_code",
+        "redirect_uri": "http://127.0.0.1:5000/api-authenticate"
+    }
+    r = requests.post("https://api.infusionsoft.com/token", data=payload)
+
+    response_data = r.json()
+    if ("error" in response_data):
+        return "Could not authenticate (error from server)"
+
+    # TODO:WV:20170504:Save to database:
+    # response_data.access_token
+    # current_unix_timestamp
+    # response_data.access_token_expires_in
+    # response_data.refesh_token
+
+    return "Done"
+
 
 # Error handlers.
 
