@@ -111,6 +111,7 @@ def api_authenticate():
     code = request.args.get("code")
 
     # Stage 1 - get permission to get an access token
+    # TODO:WV:20170504:Password- or IP- restrict this (may be able to set up IP restriction in the Infusionsoft developer console)
     if not code:
 
         params = {
@@ -141,6 +142,8 @@ def api_authenticate():
 
     if (not ("access_token" in response_data and "expires_in" in response_data and "refresh_token" in response_data)):
         return "Some expected data was missing from API response"
+
+    # TODO:WV:20170504:Dont repeat this file-name in the cron job
 
     f = open(os.path.dirname(__file__)+"/cron/access_token_data.json", "w")
     f.write(json.dumps({
