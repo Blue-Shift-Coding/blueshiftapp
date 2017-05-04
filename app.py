@@ -10,7 +10,7 @@ from forms import *
 import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import requests
+import requests, urllib
 
 
 #----------------------------------------------------------------------------#
