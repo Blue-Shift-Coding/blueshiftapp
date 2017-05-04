@@ -2,3 +2,4 @@
 .DS_Store
 env
 venv
+cron/access_token_data.json
