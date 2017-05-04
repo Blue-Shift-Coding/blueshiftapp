@@ -116,7 +116,7 @@ def api_authenticate():
         params = {
             "response_type": "code",
             "scope": "full",
-            "client_id": credentials.client_id,
+            "client_id": credentials["client_id"],
             "redirect_uri": "http://127.0.0.1:5000/api-authenticate"
         }
 
@@ -125,8 +125,8 @@ def api_authenticate():
 
     # Stage 2 - get an access token
     payload = {
-        "client_id": credentials.client_id,
-        "client_secret": credentials.client_secret,
+        "client_id": credentials["client_id"],
+        "client_secret": credentials["client_secret"],
         "code": code,
         "grant_type": "authorization_code",
         "redirect_uri": "http://127.0.0.1:5000/api-authenticate"
