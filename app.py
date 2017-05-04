@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -110,7 +110,7 @@ def api_authenticate():
     # If at stage 2, there should be a 'code' in the URL.  Extract it here; if absent, assume at stage 1.
     code = request.args.get("code")
 
-    # Stage 1 - get a link for authorizing the app
+    # Stage 1 - get permission to get an access token
     if not code:
 
         params = {
@@ -121,8 +121,7 @@ def api_authenticate():
         }
 
         url = "https://signin.infusionsoft.com/app/oauth/authorize?"+urllib.urlencode(params);
-
-        return "<a href='"+url+"'>Get access token</a>";
+        return redirect(url, code=302)
 
     # Stage 2 - get an access token
     payload = {
@@ -134,6 +133,7 @@ def api_authenticate():
     }
     r = requests.post("https://api.infusionsoft.com/token", data=payload)
 
+    # Save access token and associated data to database
     response_data = r.json()
     if ("error" in response_data):
         return "Could not authenticate (error from server)"
