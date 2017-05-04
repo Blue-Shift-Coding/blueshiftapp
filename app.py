@@ -139,6 +139,9 @@ def api_authenticate():
     if ("error" in response_data):
         return "Could not authenticate (error from server)"
 
+    if (not ("access_token" in response_data and "expires_in" in response_data and "refresh_token" in response_data)):
+        return "Some expected data was missing from API response"
+
     f = open(os.path.dirname(__file__)+"/cron/access_token_data.json", "w")
     f.write(json.dumps({
         "access_token": response_data["access_token"],
