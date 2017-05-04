@@ -10,7 +10,7 @@ from forms import *
 import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import requests, urllib, json, time
+import requests, urllib, json, time, os.path
 
 
 #----------------------------------------------------------------------------#
@@ -139,7 +139,7 @@ def api_authenticate():
     if ("error" in response_data):
         return "Could not authenticate (error from server)"
 
-    f = open("cron/access_token_data", "w")
+    f = open(os.path.dirname(__file__)+"/cron/access_token_data.json", "w")
     f.write(json.dumps({
         "access_token": response_data["access_token"],
         "current_unix_timestamp": time.time(),
