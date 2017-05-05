@@ -1,4 +1,4 @@
-import requests, os.path, json, time, base64, sys, urllib
+import requests, os.path, json, time, base64, urllib
 
 credentials = {
 	"client_id": "",
