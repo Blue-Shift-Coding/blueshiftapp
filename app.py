@@ -145,7 +145,7 @@ def api_authenticate():
 
     # TODO:WV:20170504:Dont repeat this file-name in the cron job
 
-    f = open(os.path.dirname(__file__)+"/cron/access_token_data.json", "w")
+    f = open(os.path.dirname(os.path.abspath(__file__))+"/cron/access_token_data.json", "w")
     f.write(json.dumps({
         "access_token": response_data["access_token"],
         "current_unix_timestamp": time.time(),
