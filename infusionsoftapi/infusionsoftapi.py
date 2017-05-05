@@ -98,6 +98,9 @@ def update_access_token_data(payload, headers={}):
 def get_all_products():
 	return get("/products/search")
 
+def get_product(id):
+	return get("/products/"+str(id))
+
 def get(url, params = {}):
 	access_token_data = get_access_token_data()
 	params["access_token"] = access_token_data["access_token"]
