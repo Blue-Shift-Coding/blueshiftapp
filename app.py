@@ -140,6 +140,7 @@ def api_authenticate():
     if ("error" in response_data):
         return "Could not authenticate (error from server)"
 
+    # TODO:WV:20170505:De-deup between here and the cron job
     if (not ("access_token" in response_data and "expires_in" in response_data and "refresh_token" in response_data)):
         return "Some expected data was missing from API response"
 
@@ -148,7 +149,7 @@ def api_authenticate():
     f = open(os.path.dirname(os.path.abspath(__file__))+"/cron/access_token_data.json", "w")
     f.write(json.dumps({
         "access_token": response_data["access_token"],
-        "current_unix_timestamp": time.time(),
+        "time_saved_unix": int(time.time()),
         "access_token_lifespan_in_seconds": response_data["expires_in"],
         "refresh_token": response_data["refresh_token"],
     }))
