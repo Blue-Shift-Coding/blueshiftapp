@@ -1,9 +1,11 @@
+# See https://developer.infusionsoft.com/docs/rest
 import requests, os.path, json, time, base64, urllib
 
 credentials_file = os.path.dirname(os.path.abspath(__file__))+"/credentials.json"
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
 authorization_url = "https://signin.infusionsoft.com/app/oauth/authorize"
 token_url = "https://api.infusionsoft.com/token"
+api_url = "https://api.infusionsoft.com/crm/rest/v1"
 
 if not os.path.isfile(credentials_file):
 	raise Exception("Credentials file not found.  Please place a file called 'credentials.json' in this module's directory containing your client_id and client_secret.")
@@ -92,3 +94,13 @@ def update_access_token_data(payload, headers={}):
 		"refresh_token": response_data["refresh_token"],
 	}))
 	f.close()
+
+def get_all_products():
+	return get("/products/search")
+
+def get(url, params = {}):
+	access_token_data = get_access_token_data()
+	params["access_token"] = access_token_data["access_token"]
+	url = api_url + url + "?" + urllib.urlencode(params)
+	r = requests.get(url)
+	return r.json()
