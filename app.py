@@ -118,7 +118,7 @@ def api_authenticate():
             "response_type": "code",
             "scope": "full",
             "client_id": credentials["client_id"],
-            "redirect_uri": "http://127.0.0.1:5000/api-authenticate"
+            "redirect_uri": request.base_url
         }
 
         url = "https://signin.infusionsoft.com/app/oauth/authorize?"+urllib.urlencode(params);
@@ -130,7 +130,7 @@ def api_authenticate():
         "client_secret": credentials["client_secret"],
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": "http://127.0.0.1:5000/api-authenticate"
+        "redirect_uri": request.base_url
     }
     r = requests.post("https://api.infusionsoft.com/token", data=payload)
 
