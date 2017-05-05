@@ -47,7 +47,7 @@ if (access_token_expiry_time < int(current_time)):
 
 	# TODO:WV:20170504:Dont repeat this file-name in the cron job
 
-	f = open(os.path.dirname(os.path.abspath(__file__))+"/cron/access_token_data.json", "w")
+	f = open(os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json", "w")
 	f.write(json.dumps({
 		"access_token": response_data["access_token"],
 		"time_saved_unix": int(time.time()),
