@@ -2,4 +2,5 @@
 .DS_Store
 env
 venv
-infusionsoft-api/access_token_data.json
+infusionsoftapi/access_token_data.json
+infusionsoftapi/credentials.json

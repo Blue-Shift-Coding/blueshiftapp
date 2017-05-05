@@ -1,18 +1,21 @@
 import requests, os.path, json, time, base64, urllib
 
-credentials = {
-	"client_id": "",
-	"client_secret": "",
-}
-
+credentials_file = os.path.dirname(os.path.abspath(__file__))+"/credentials.json"
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
 authorization_url = "https://signin.infusionsoft.com/app/oauth/authorize"
 token_url = "https://api.infusionsoft.com/token"
 
+if not os.path.isfile(credentials_file):
+	raise Exception("Credentials file not found.  Please place a file called 'credentials.json' in this module's directory containing your client_id and client_secret.")
+file_contents = open(credentials_file).read(1000)
+credentials = json.loads(file_contents)
+if (not ("client_id" in credentials and "client_secret" in credentials)):
+	raise ValueError("Not all necessary credentials pdata found")
+
 
 def get_access_token_data():
 	if not os.path.isfile(access_token_file):
-		raise FileNotFoundError("Access token not found.  Please visit /api-authenticate to regenerate it.")
+		raise Exception("Access token not found.  Please visit /api-authenticate to regenerate it.")
 	file_contents = open(access_token_file).read(1000)
 	access_token_data = json.loads(file_contents)
 
