@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------#
+1#----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
 
@@ -10,7 +10,7 @@ from forms import *
 import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import requests, urllib, json, time, os.path
+import infusionsoftapi
 
 
 #----------------------------------------------------------------------------#
@@ -102,58 +102,16 @@ def forgot():
 @app.route('/api-authenticate')
 def api_authenticate():
 
-    credentials = {
-        "client_id": "",
-        "client_secret": "",
-    }
-
     # If at stage 2, there should be a 'code' in the URL.  Extract it here; if absent, assume at stage 1.
     code = request.args.get("code")
 
     # Stage 1 - get permission to get an access token
     # TODO:WV:20170504:Password- or IP- restrict this (may be able to set up IP restriction in the Infusionsoft developer console)
     if not code:
-
-        params = {
-            "response_type": "code",
-            "scope": "full",
-            "client_id": credentials["client_id"],
-            "redirect_uri": request.base_url
-        }
-
-        url = "https://signin.infusionsoft.com/app/oauth/authorize?"+urllib.urlencode(params);
+        url = infusionsoftapi.get_authorization_url(request.base_url)
         return redirect(url, code=302)
 
-    # Stage 2 - get an access token
-    payload = {
-        "client_id": credentials["client_id"],
-        "client_secret": credentials["client_secret"],
-        "code": code,
-        "grant_type": "authorization_code",
-        "redirect_uri": request.base_url
-    }
-    r = requests.post("https://api.infusionsoft.com/token", data=payload)
-
-    # Save access token and associated data for later use
-    response_data = r.json()
-
-    if ("error" in response_data):
-        return "Could not authenticate (error from server)"
-
-    # TODO:WV:20170505:De-deup between here and the cron job
-    if (not ("access_token" in response_data and "expires_in" in response_data and "refresh_token" in response_data)):
-        return "Some expected data was missing from API response"
-
-    # TODO:WV:20170504:Dont repeat this file-name in the cron job
-
-    f = open(os.path.dirname(os.path.abspath(__file__))+"/cron/access_token_data.json", "w")
-    f.write(json.dumps({
-        "access_token": response_data["access_token"],
-        "time_saved_unix": int(time.time()),
-        "access_token_lifespan_in_seconds": response_data["expires_in"],
-        "refresh_token": response_data["refresh_token"],
-    }))
-    f.close()
+    infusionsoftapi.download_initial_access_token_data(code=code, redirect_uri=request.base_url)
 
     return "Done"
 
