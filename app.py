@@ -115,6 +115,9 @@ def api_authenticate():
 
     return "Done"
 
+@app.route('/classes')
+def classes():
+    return render_template('pages/placeholder.classes.html')
 
 # Error handlers.
 

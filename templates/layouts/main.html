@@ -137,11 +137,17 @@
           <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-home bg-color-1" aria-hidden="true"></i> <span>Our Classes</span>
           </a>
+
           <ul class="dropdown-menu dropdown-menu-left">
-            <li><a href="index-v1.html">Kidz School</a></li>
-            <li><a href="index-v2.html">Kidz Store</a></li>
-            <li><a href="index-v3.html">Kidz Daycare</a></li>
+            {% if class_categories is defined %}
+              {% for class_category in class_categories %}
+              <li><a href="class_category.url">class_category.name</a></li>
+              {% endfor %}
+            {% else %}
+              <li><a href="/classes">Browse Classes</a></li>
+            {% endif %}
           </ul>
+
         </li>
         <li class="dropdown singleDrop color-3">
           <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list-ul bg-color-3" aria-hidden="true"></i> <span>Education</span></a>
