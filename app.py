@@ -112,7 +112,10 @@ def api_authenticate():
         return redirect(url, code=302)
 
     infusionsoftapi.download_initial_access_token_data(code=code, redirect_uri=request.base_url)
+    return redirect("/api-authenticate-done", code=302)
 
+@app.route('/api-authenticate-done')
+def api_authenticate_done():
     return "Done"
 
 @app.route('/classes')
