@@ -101,9 +101,29 @@ def get_all_products():
 def get_product(id):
 	return get("/products/"+str(id))
 
+def get_event_keys():
+	return get("/hooks/event_keys")
+
+def update_hook(event_key, hook_url):
+	return put("/hooks/"+event_key, {"eventKey":event_key, "hookUrl": hook_url})
+
+def get_available_hooks():
+	return get("/hooks")
+
 def get(url, params = {}):
+	r = requests.get(completeUrl(url, params))
+	return r.json()
+
+def put(url, params = {}):
+	r = requests.put(completeUrl(url), json=params)
+	return r.json()
+
+def post(url, params = {}):
+	r = requests.put(completeUrl(url), json=params)
+	return r.json()
+
+def completeUrl(url, params={}):
 	access_token_data = get_access_token_data()
 	params["access_token"] = access_token_data["access_token"]
 	url = api_url + url + "?" + urllib.urlencode(params)
-	r = requests.get(url)
-	return r.json()
+	return url
