@@ -1,0 +1,1 @@
+from shop_data import cache

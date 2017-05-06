@@ -10,7 +10,7 @@ from forms import *
 import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import infusionsoftapi
+import infusionsoftapi, shop_data
 
 
 #----------------------------------------------------------------------------#
@@ -120,7 +120,8 @@ def api_authenticate_done():
 
 @app.route('/classes')
 def classes():
-    return render_template('pages/placeholder.classes.html')
+    products = shop_data.cache.get_all()
+    return render_template('pages/placeholder.classes.html', products=products)
 
 # Error handlers.
 

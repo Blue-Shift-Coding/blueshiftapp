@@ -5,10 +5,34 @@
 <div class="page-header">
   <h1>Classes Page</h1>
 </div>
-<p class="lead">This is just a placeholder page which should be replaced with real content.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tellus ligula, imperdiet id lobortis sit amet, scelerisque non sapien. Duis quis dui quis mauris dapibus fringilla. Pellentesque nec tellus ac diam volutpat malesuada.</p>
-<p>In quam arcu, interdum vel arcu viverra, vulputate convallis massa. Sed hendrerit velit a arcu euismod, sit amet consequat lacus imperdiet. Nullam quis dui sapien. Vestibulum placerat, justo non fringilla laoreet, dui ipsum posuere nisi, nec vestibulum eros leo ut sapien.</p>
-<p>Vivamus eu felis sed magna scelerisque semper in et libero. Curabitur sed convallis odio, quis venenatis sapien. In convallis a velit ac commodo. Donec sapien ligula, vestibulum ut nisi accumsan, facilisis pretium est. Fusce varius semper orci, et egestas nulla cursus a. Phasellus aliquam, mi ac adipiscing lobortis, ipsum augue aliquam ligula, quis fermentum mi augue vel ligula.</p>
-<p>Integer elementum malesuada dolor in aliquet.</p>
+
+<style>
+	.products-list > li {
+		border-bottom:1px solid black;
+		margin-bottom:20px;
+		padding-bottom:20px;
+	}
+</style>
+
+<ul class="products-list">
+{% for product in products %}
+	<li>
+		<dl>
+			<dt>Name</dt>
+			<dd>{{product.product_name}}</dd>
+			<dt>Description</dt>
+			<dd>{{product.product_desc|safe}}</dd>
+			<dt>Price</dt>
+
+			{# TODO:WV:20170506:Format currency properly #}
+			<dd>&pound;{{product.product_price}}</dd>
+		</dl>
+
+		{# TODO:WV:20170506:This link format reliable? #}
+		<a target="_blank" href="https://km362.infusionsoft.com/app/storeFront/showProductDetail?productId={{product.id}}">Book now</a>
+	</li>
+{% endfor %}
+</ul>
+
 
 {% endblock %}
