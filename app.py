@@ -51,12 +51,12 @@ def home():
     # TODO:WV:20170503:Send categories from Infusionsoft when they change?  Fetch from Infusionsoft every X minutes?
     categories = []
 
-    return render_template('pages/placeholder.home.html')
+    return render_template('pages/home.html')
 
 
 @app.route('/about')
 def about():
-    return render_template('pages/placeholder.about.html')
+    return render_template('pages/about.html')
 
 @app.route('/news')
 @app.route('/news/<int:page_num>')
@@ -121,7 +121,7 @@ def api_authenticate_done():
 @app.route('/classes')
 def classes():
     products = shop_data.cache.get_all()
-    return render_template('pages/placeholder.classes.html', products=products)
+    return render_template('pages/classes.html', products=products)
 
 # Error handlers.
 
