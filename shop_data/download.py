@@ -1,4 +1,4 @@
-# To run this on the command line, use: 'python -m shop-data.download'
+# To run this on the command line, use: 'python -m shop_data.download'
 import infusionsoftapi, pprint, json, os.path
 
 products_file = os.path.dirname(os.path.abspath(__file__))+"/products.json"
