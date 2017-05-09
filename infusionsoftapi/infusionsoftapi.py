@@ -1,18 +1,16 @@
 # See https://developer.infusionsoft.com/docs/rest
-import requests, os.path, json, time, base64, urllib
+import requests, os.environ, os.path, json, time, base64, urllib
 
-credentials_file = os.path.dirname(os.path.abspath(__file__))+"/credentials.json"
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
 authorization_url = "https://signin.infusionsoft.com/app/oauth/authorize"
 token_url = "https://api.infusionsoft.com/token"
 api_url = "https://api.infusionsoft.com/crm/rest/v1"
 
-if not os.path.isfile(credentials_file):
-	raise Exception("Credentials file not found.  Please place a file called 'credentials.json' in this module's directory containing your client_id and client_secret.")
-file_contents = open(credentials_file).read(1000)
-credentials = json.loads(file_contents)
-if (not ("client_id" in credentials and "client_secret" in credentials)):
-	raise ValueError("Not all necessary credentials pdata found")
+credentials = {}
+for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client_id"}, {"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_SECRET", "name":"client_secret"}]:
+	if not os.environ[credential["var"]]:
+		raise Exception("Missing credential "+credential["name"])
+	credentials[credential["name"]] = os.environ[credential["var"]]
 
 
 def get_access_token_data():
@@ -61,7 +59,7 @@ def refresh_access_token_data_if_necessary():
 		refresh_access_token_data()
 
 
-def refresh_access_token_data(refresh_token = None):
+def refresh_access_token_data():
 	access_token_data = get_access_token_data
 	if (not "refresh_token" in access_token_data):
 		raise ValueError("No refresh token found in existing access token data")
