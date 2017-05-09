@@ -5,7 +5,7 @@ def get_all():
 	products = storage.get("products")
 	if not products:
 		raise Exception("No products found.  Please run the download.py script to generate it from the API.")
-	return products
+	return products["products"]
 
 
 
