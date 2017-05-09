@@ -1,10 +1,11 @@
 # See https://developer.infusionsoft.com/docs/rest
-import requests, os, json, time, base64, urllib
+import requests, time, base64, urllib, os, json, storage
 
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
 authorization_url = "https://signin.infusionsoft.com/app/oauth/authorize"
 token_url = "https://api.infusionsoft.com/token"
 api_url = "https://api.infusionsoft.com/crm/rest/v1"
+
 
 credentials = {}
 for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client_id"}, {"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_SECRET", "name":"client_secret"}]:
@@ -14,12 +15,12 @@ for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client
 
 
 def get_access_token_data():
-	if not os.path.isfile(access_token_file):
-		raise Exception("Access token not found.  Please visit /api-authenticate to regenerate it.")
-	file_contents = open(access_token_file).read(1000)
-	access_token_data = json.loads(file_contents)
+	access_token_data = storage.get("access_token_data")
 
-	if (not ("access_token" in access_token_data and "time_saved_unix" in access_token_data and "access_token_lifespan_in_seconds" in access_token_data and "refresh_token" in access_token_data)):
+	if not access_token_data:
+		return None
+
+	if (not access_token_data or not ("access_token" in access_token_data and "time_saved_unix" in access_token_data and "access_token_lifespan_in_seconds" in access_token_data and "refresh_token" in access_token_data)):
 		raise ValueError("Not all necessary access token data found")
 
 	return access_token_data
@@ -50,8 +51,12 @@ def download_initial_access_token_data(code, redirect_uri):
 
 def refresh_access_token_data_if_necessary():
 	buffertime = 300
-
 	access_token_data = get_access_token_data()
+
+	if not access_token_data:
+		refresh_access_token_data()
+		return
+
 	access_token_expiry_time = ((int(access_token_data["time_saved_unix"]) + int(access_token_data["access_token_lifespan_in_seconds"])) - buffertime)
 	current_time = int(time.time())
 
@@ -61,6 +66,10 @@ def refresh_access_token_data_if_necessary():
 
 def refresh_access_token_data():
 	access_token_data = get_access_token_data()
+
+	if not access_token_data:
+		raise ValueError("No access token to refresh - please authorize the app by starting the app and visiting /api-authenticate")
+
 	if (not "refresh_token" in access_token_data):
 		raise ValueError("No refresh token found in existing access token data")
 
@@ -84,14 +93,12 @@ def update_access_token_data(payload, headers={}):
 	if (not ("access_token" in response_data and "expires_in" in response_data and "refresh_token" in response_data)):
 		raise ValueError("Some expected data was missing from API response")
 
-	f = open(access_token_file, "w")
-	f.write(json.dumps({
+	access_token_data = storage.set("access_token_data", {
 		"access_token": response_data["access_token"],
 		"time_saved_unix": int(time.time()),
 		"access_token_lifespan_in_seconds": response_data["expires_in"],
 		"refresh_token": response_data["refresh_token"],
-	}))
-	f.close()
+	})
 
 def get_all_products():
 	return get("/products/search")

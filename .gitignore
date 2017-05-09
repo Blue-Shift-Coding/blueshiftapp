@@ -2,5 +2,4 @@
 .DS_Store
 env
 venv
-infusionsoftapi/access_token_data.json
-shop_data/products.json
+storage/data-*.json
