@@ -8,7 +8,4 @@ products = infusionsoftapi.get_all_products()
 # TODO:WV:20170505:No categories in this data at the moment (although, there are subcategories, by ID only).  See if this can be fixed as the categories will be important for the website.
 storage.set("products", products)
 
-pprint.pprint(products)
-
-
 
