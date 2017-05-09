@@ -3,4 +3,4 @@
 env
 venv
 infusionsoftapi/access_token_data.json
-shop-data/products.json
+shop_data/products.json
