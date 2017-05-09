@@ -1,5 +1,5 @@
 # See https://developer.infusionsoft.com/docs/rest
-import requests, os.environ, os.path, json, time, base64, urllib
+import requests, os, json, time, base64, urllib
 
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
 authorization_url = "https://signin.infusionsoft.com/app/oauth/authorize"
@@ -60,7 +60,7 @@ def refresh_access_token_data_if_necessary():
 
 
 def refresh_access_token_data():
-	access_token_data = get_access_token_data
+	access_token_data = get_access_token_data()
 	if (not "refresh_token" in access_token_data):
 		raise ValueError("No refresh token found in existing access token data")
 
