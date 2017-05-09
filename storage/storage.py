@@ -12,7 +12,7 @@ def get(key):
 		filename = get_filename(key)
 		if not os.path.isfile(filename):
 			return None
-		file_contents = open(filename).read(1000)
+		file_contents = open(filename).read()
 		return json.loads(file_contents)
 
 def get_filename(key):
