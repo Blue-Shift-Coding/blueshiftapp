@@ -14,48 +14,47 @@
   </div>
 </section>
 
+<section class="mainContent full-width clearfix">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
 
+				{% for product in products %}
+					{% set colorNumber = loop.index % 5 %}
+					<div class="media courseList couresListPage">
+						<a class="media-left border-color-{{ colorNumber }}" href="course-single-left-sidebar.html">
+							<img class="media-object" src="https://d1yoaun8syyxxt.cloudfront.net/km362-ea98cb14-9c02-4f21-94cf-578034616504-v2" alt="Image">
 
-<section class="mainContent full-width clearfix coursesSection">
-  <div class="container">
-    <div class="row"></div>
-  </div>
+							{# TODO:WV:20170506:Format currency properly #}
+							<span class="sticker bg-color-{{ colorNumber }}">&pound;{{product.product_price|round|int}}</span>
+						</a>
+						<div class="media-body">
+							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ colorNumber }}">{{product.product_name}} {{loop.index}}</a></h3>
+
+							<!--
+							WV:20170511:Commented out because we can't easily extract the age and time from Infusionsoft at the moment
+							<ul class="list-inline">
+								<li><i class="fa fa-calendar-o" aria-hidden="true"></i>Age 2 to 4 Years</li>
+								<li><i class="fa fa-clock-o" aria-hidden="true"></i>9.00AM-11.00AM</li>
+							</ul>
+							-->
+
+							{{product.product_desc|safe}}
+							<ul class="list-inline btn-yellow btnPart">
+								<li><a href="cart-page.html" class="btn btn-primary "><i class="fa fa-shopping-basket " aria-hidden="true"></i>Add to Cart</a></li>
+
+								<!--
+								WV:20170511:Commented out because we don't actually have any more information for this to link to at the moment
+								<li><a href="course-single-left-sidebar.html" class="btn btn-link"><i class="fa fa-angle-double-right" aria-hidden="true"></i> More</a></li>
+								-->
+							</ul>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 </section>
-
-
-
-{# TODO:WV:20170506:Move styles to a stylesheet #}
-<style>
-	.products-list > li {
-		border-bottom:1px solid black;
-		margin-bottom:20px;
-		padding-bottom:20px;
-	}
-
-	.products-list > li:last-child {
-		border-bottom:none;
-	}
-</style>
-
-<ul class="products-list">
-{% for product in products %}
-	<li>
-		<dl>
-			<dt>Name</dt>
-			<dd>{{product.product_name}}</dd>
-			<dt>Description</dt>
-			<dd>{{product.product_desc|safe}}</dd>
-			<dt>Price</dt>
-
-			{# TODO:WV:20170506:Format currency properly #}
-			<dd>&pound;{{product.product_price}}</dd>
-		</dl>
-
-		{# TODO:WV:20170506:This link format reliable? #}
-		<a target="_blank" href="https://km362.infusionsoft.com/app/storeFront/showProductDetail?productId={{product.id}}">Book now</a>
-	</li>
-{% endfor %}
-</ul>
 
 
 {% endblock %}
