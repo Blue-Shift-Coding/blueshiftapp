@@ -23,7 +23,7 @@
 					{% set colorNumber = loop.index % 5 %}
 					<div class="media courseList couresListPage">
 						<a class="media-left border-color-{{ colorNumber }}" href="course-single-left-sidebar.html">
-							<img class="media-object" src="https://d1yoaun8syyxxt.cloudfront.net/km362-ea98cb14-9c02-4f21-94cf-578034616504-v2" alt="Image">
+							<img class="media-object" src="https://km362.infusionsoft.com/cart/pimg.jsp?i={{ product.id }}" alt="Image">
 
 							{# TODO:WV:20170506:Format currency properly #}
 							<span class="sticker bg-color-{{ colorNumber }}">&pound;{{product.product_price|round|int}}</span>
