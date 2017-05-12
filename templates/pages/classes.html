@@ -2,6 +2,27 @@
 {% block title %}Classes{% endblock %}
 {% block content %}
 
+<style>
+	.filters {
+		text-align:center;
+
+		/* Compensate for the top-padding on the maincontent */
+		/* TODO:WV:20170512:Improve this; */
+		margin-top:-75px;
+		margin-bottom:25px;
+	}
+	.dropdown, .filters-label {
+		display:inline;
+		margin:0 1em;
+	}
+	.filters-label {
+		font-weight:bold;
+	}
+	.dropdown .btn {
+		padding:6px 12px;
+	}
+</style>
+
 <section class="pageTitleSection">
   <div class="container">
     <div class="pageTitleInfo">
@@ -16,6 +37,41 @@
 
 <section class="mainContent full-width clearfix">
 	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 filters">
+
+				<span class="filters-label">Filter</span>
+
+				<div class="dropdown">
+				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    All dates
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				    <li><a href="#">July</a></li>
+				    <li><a href="#">August</a></li>
+				    <li><a href="#">September</a></li>
+				    <li role="separator" class="divider"></li>
+				    <li><a href="#">Ongoing weekly classes</a></li>
+				  </ul>
+				</div>
+
+
+				<div class="dropdown">
+				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    All ages
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				    <li><a href="#">Age 5 - 6</a></li>
+				    <li><a href="#">Age 6 - 8</a></li>
+				    <li><a href="#">Age 8 - 10</a></li>
+				    <li><a href="#">Age 10 - 12</a></li>
+				    <li><a href="#">Age 12 - 14</a></li>
+				  </ul>
+				</div>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-xs-12">
 
