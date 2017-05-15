@@ -54,12 +54,12 @@ def home():
     return render_template('pages/home.html')
 
 
-@app.route('/about')
+@app.route('/about/')
 def about():
     return render_template('pages/about.html')
 
-@app.route('/news')
-@app.route('/news/<int:page_num>')
+@app.route('/news/')
+@app.route('/news/<int:page_num>/')
 def news(page_num=1):
     posts, total_pages = fetch_posts(page_num)
 
@@ -73,7 +73,7 @@ def news(page_num=1):
         'pages/news.html', data=posts, page_num=page_num,
         total_pages=total_pages, format_date=post_format_date)
 
-@app.route('/post/<int:post_id>/<slug>')
+@app.route('/post/<int:post_id>/<slug>/')
 def post(post_id, slug):
     post = get_post(post_id)
 
@@ -81,25 +81,25 @@ def post(post_id, slug):
         'pages/post.html', post=post, post_id=post_id, format_date=post_format_date)
 
 
-@app.route('/login')
+@app.route('/login/')
 def login():
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 
 
-@app.route('/register')
+@app.route('/register/')
 def register():
     form = RegisterForm(request.form)
     return render_template('forms/register.html', form=form)
 
 
-@app.route('/forgot')
+@app.route('/forgot/')
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
 
-@app.route('/api-authenticate')
+@app.route('/api-authenticate/')
 def api_authenticate():
 
     # If at stage 2, there should be a 'code' in the URL.  Extract it here; if absent, assume at stage 1.
@@ -114,7 +114,7 @@ def api_authenticate():
     infusionsoftapi.download_initial_access_token_data(code=code, redirect_uri=request.base_url)
     return redirect("/api-authenticate-done", code=302)
 
-@app.route('/api-authenticate-done')
+@app.route('/api-authenticate-done/')
 def api_authenticate_done():
     return "Done"
 
