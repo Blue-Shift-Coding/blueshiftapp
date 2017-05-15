@@ -139,15 +139,15 @@ def classes(dates, ages):
             products = [product for product in products if not product["is_ongoing_weekly"]]
         else:
             date_parts = dates.split("-")
-            start_date = int(time.mktime((date_parts[1],date_parts[0],1,0,0,0,-1,-1,-1)))
-            end_date = int(time.mktime((date_parts[1],date_parts[0] + 1,-1,0,0,0,-1,-1,-1)))
-            products = filter(get_filter_function("start_date", start_date, "end_date", end_date), product)
+            start_date = int(time.mktime((int(date_parts[1]),int(date_parts[0]),1,0,0,0,-1,-1,-1)))
+            end_date = int(time.mktime((int(date_parts[1]),int(date_parts[0]) + 1,-1,0,0,0,-1,-1,-1)))
+            products = filter(get_filter_function("start_date", start_date, "end_date", end_date), products)
 
     if ages is not None:
         age_range_parts = ages.split("-")
         min_age = age_range_parts[0]
         max_age = age_range_parts[1]
-        products = filter(get_filter_function("min_age", min_age, "max_age", max_age), product)
+        products = filter(get_filter_function("min_age", min_age, "max_age", max_age), products)
 
     return render_template('pages/classes.html', products=products, dates=dates, ages=ages)
 
