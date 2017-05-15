@@ -118,9 +118,10 @@ def api_authenticate():
 def api_authenticate_done():
     return "Done"
 
-@app.route('/classes', defaults={"dates": None, "ages": None})
-@app.route('/classes/<dates>', defaults={"ages": None})
-@app.route('/classes/<dates>/<ages>')
+@app.route('/classes/', defaults={"dates": None, "ages": None})
+@app.route('/classes/<dates>/', defaults={"ages": None})
+@app.route('/classes//<ages>/', defaults={"dates": None})
+@app.route('/classes/<dates>/<ages>/')
 def classes(dates, ages):
     products = shop_data.cache.get_all()
     return render_template('pages/classes.html', products=products, dates=dates, ages=ages)
