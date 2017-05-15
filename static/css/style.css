@@ -2433,7 +2433,11 @@ aside {
   .navbar-nav > li.color-6.singleDrop > .dropdown-menu {
     border-top: 4px solid #ea77ad;
   }
+  .navbar-nav > li.color-6 > a > span {
+    border-right: 2px solid #ea77ad;
+  }
 }
+
 .navbar-nav > li.color-6.singleDrop > .dropdown-menu li a:hover {
   background-color: #ea77ad;
   color: #ffffff;

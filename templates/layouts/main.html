@@ -150,18 +150,21 @@
 
               </li>
               <li class="dropdown singleDrop color-3">
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list-ul bg-color-3" aria-hidden="true"></i> <span>Education</span></a>
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list-ul bg-color-3" aria-hidden="true"></i> <span>Schools</span></a>
                 <ul class="dropdown-menu dropdown-menu-left">
-                  <li class="active"><a href="about_us.html">About</a></li>
+                  <li class="active"><a href="about_us.html">Schools we work with</a></li>
                   <li class="dropdown dropdown-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Team<i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
+                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Services for schools<i class="fa fa-chevron-right" aria-hidden="true"></i>
+                    </a>
                     <ul class="dropdown-menu">
-                      <li><a href="teachers.html">Teachers</a></li>
-                      <li><a href="teachers-details.html">Teacher Details</a></li>
+                      <li><a href="teachers.html">Clubs</a></li>
+                      <li><a href="teachers-details.html">Workshops</a></li>
+                      <li><a href="teachers-details.html">Consulting</a></li>
+                      <li><a href="teachers-details.html">CDP</a></li>
+                      <li><a href="teachers-details.html">In school classes</a></li>
                     </ul>
                   </li>
-                  <li><a href="testimonial.html">Testimonial</a></li>
+                  <li><a href="testimonial.html">Online Resources</a></li>
                   <li class="dropdown dropdown-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Events <i class="fa fa-chevron-right" aria-hidden="true"></i>
               </a>
@@ -186,7 +189,7 @@
               <li class=" dropdown megaDropMenu color-2">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="300" data-close-others="true" aria-expanded="false">
                   <i class="fa fa-file-text-o bg-color-2" aria-hidden="true"></i>
-                  <span>About</span>
+                  <span>About Us</span>
                 </a>
                 <ul class="row dropdown-menu">
                   <li class="col-sm-3 col-xs-12">
@@ -223,6 +226,12 @@
                   </li>
                 </ul>
               </li>
+              <li {% if request.endpoint=='curriculum' %} class="active dropdown singleDrop color-6" {% else %} class="dropdown singleDrop color-6" {% endif %}>
+                <a href="{{ url_for('curriculum') }}">
+                  <i class="fa fa-pencil-square-o bg-color-6" aria-hidden="true"></i>
+                  <span>Curriculum</span>
+                </a>
+              </li>
               <li {% if request.endpoint=='news' %} class="active dropdown singleDrop color-4" {% else %} class="dropdown singleDrop color-4" {% endif %}>
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i class="fa fa-pencil-square-o bg-color-4" aria-hidden="true"></i>
@@ -235,8 +244,8 @@
               </li>
               <li class="dropdown singleDrop color-5">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-gg bg-color-6" aria-hidden="true"></i>
-                  <span>Students</span>
+                  <i class="fa fa-gg bg-color-5" aria-hidden="true"></i>
+                  <span>FAQs</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li class="dropdown dropdown-submenu">
