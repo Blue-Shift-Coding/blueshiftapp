@@ -1,6 +1,6 @@
 import os, json, bmemcached
 
-if 'MEMCACHEDCLOUD_SERVERS' in os.environ and os.environ['MEMCACHEDCLOUD_SERVERS'] and 'MEMCACHEDCLOUD_USERNAME' and os.environ['MEMCACHEDCLOUD_USERNAME'] in os.environ and 'MEMCACHEDCLOUD_PASSWORD' in os.environ  and os.environ['MEMCACHEDCLOUD_PASSWORD']:
+if 'MEMCACHEDCLOUD_SERVERS' in os.environ and os.environ['MEMCACHEDCLOUD_SERVERS'] and 'MEMCACHEDCLOUD_USERNAME' in os.environ and os.environ['MEMCACHEDCLOUD_USERNAME'] and 'MEMCACHEDCLOUD_PASSWORD' in os.environ and os.environ['MEMCACHEDCLOUD_PASSWORD']:
 	mc = bmemcached.Client(os.environ['MEMCACHEDCLOUD_SERVERS'].split(','), os.environ['MEMCACHEDCLOUD_USERNAME'], os.environ['MEMCACHEDCLOUD_PASSWORD'])
 else:
 	mc = None
