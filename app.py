@@ -11,6 +11,7 @@ import os
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import infusionsoftapi, shop_data
+import time
 
 
 #----------------------------------------------------------------------------#
@@ -118,13 +119,38 @@ def api_authenticate():
 def api_authenticate_done():
     return "Done"
 
+# TODO:WV:20170515:Pagination
 @app.route('/classes/', defaults={"dates": None, "ages": None})
 @app.route('/classes/<dates>/', defaults={"ages": None})
 @app.route('/classes//<ages>/', defaults={"dates": None})
 @app.route('/classes/<dates>/<ages>/')
 def classes(dates, ages):
     products = shop_data.cache.get_all()
+
+    def get_filter_function(lower_bound_key, lower_bound, upper_bound_key, upper_bound):
+        def filter_function(product):
+            lower_bound_ok = (product[lower_bound_key] is None or (product[lower_bound_key] >= lower_bound and product[lower_bound_key] <= upper_bound))
+            upper_bound_ok = (product[upper_bound_key] is None or (product[upper_bound_key] >= upper_bound and product[upper_bound_key] <= upper_bound))
+            return lower_bound_ok or upper_bound_ok
+        return filter_function
+
+    if dates is not None:
+        if dates == "weekly":
+            products = [product for product in products if not product["is_ongoing_weekly"]]
+        else:
+            date_parts = dates.split("-")
+            start_date = int(time.mktime((date_parts[1],date_parts[0],1,0,0,0,-1,-1,-1)))
+            end_date = int(time.mktime((date_parts[1],date_parts[0] + 1,-1,0,0,0,-1,-1,-1)))
+            products = filter(get_filter_function("start_date", start_date, "end_date", end_date), product)
+
+    if ages is not None:
+        age_range_parts = ages.split("-")
+        min_age = age_range_parts[0]
+        max_age = age_range_parts[1]
+        products = filter(get_filter_function("min_age", min_age, "max_age", max_age), product)
+
     return render_template('pages/classes.html', products=products, dates=dates, ages=ages)
+
 
 # Error handlers.
 
