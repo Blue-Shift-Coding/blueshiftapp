@@ -12,7 +12,7 @@ dummy_data = {
 	1:{"start_date": None, "end_date": None, "min_age": None, "max_age": None, "is_ongoing_weekly": False},
 	3:{"start_date": 1496098800, "end_date": 1501714800, "min_age": 5, "max_age": 6, "is_ongoing_weekly": False},
 	5:{"start_date": 1496098800, "end_date": 1501714800, "min_age": 6, "max_age": 8, "is_ongoing_weekly": False},
-	7:{"start_date": 1496703600, "end_date": 1499382000, "min_age": None, "max_age": None, "is_ongoing_weekly": False}
+	7:{"start_date": 1496703600, "end_date": 1499382000, "min_age": None, "max_age": None, "is_ongoing_weekly": True}
 }
 def add_missing_data(product):
 	if product["id"] in dummy_data:
