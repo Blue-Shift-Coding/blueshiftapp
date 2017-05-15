@@ -2,7 +2,7 @@
   text-align:center;
 
   /* Compensate for the top-padding on the maincontent */
-  /* TODO:WV:20170512:Improve this; */
+  /* TODO:WV:20170512:Improve this; Make it work on all browser sizes */
   margin-top:-75px;
   margin-bottom:25px;
 }
