@@ -118,20 +118,10 @@ def api_authenticate():
 def api_authenticate_done():
     return "Done"
 
-@app.route('/classes')
-def classes():
-    products = shop_data.cache.get_all()
-    return render_template('pages/classes.html', products=products)
-
-# TODO:WV:20180515:Optional URL params?
-@app.route('/classes/<dates>')
-def classes_with_dates(dates):
-    products = shop_data.cache.get_all()
-    return render_template('pages/classes.html', products=products, dates=dates)
-
-# TODO:WV:20180515:Optional URL params?
+@app.route('/classes', defaults={"dates": None, "ages": None})
+@app.route('/classes/<dates>', defaults={"ages": None})
 @app.route('/classes/<dates>/<ages>')
-def classes_with_dates_and_ages(dates, ages):
+def classes(dates, ages):
     products = shop_data.cache.get_all()
     return render_template('pages/classes.html', products=products, dates=dates, ages=ages)
 

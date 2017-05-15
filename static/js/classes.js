@@ -1,22 +1,36 @@
 (function($) {
 	$(function() {
 
+		// Set up default options in filters on page load
+		var filters = $(".classes-filter");
+		filters.each(function() {
+			var filter, defaultValue, defaultLabel;
+
+			filter = $(this);
+
+			defaultValue = filter.attr("data-defaultvalue");
+			defaultLabel = filter.attr("data-defaultlabel");
+
+			filter.find(".default-option").attr("data-filtervalue", defaultValue).text(defaultLabel);
+		});
+
 		// Set filters on page load
 		// TODO:WV:20170515:Could do this in page template
 		var urlParts = location.pathname.split("/");
-		var filters = ["dates", "ages"];
+		var filternames = ["dates", "ages"];
 		var urlPartOffset = 2;
-		for (var i in filters) {
+		for (var i in filternames) {
 			i = parseInt(i);
 			if (typeof urlParts[urlPartOffset + i] != "undefined") {
-				setFilter(filters[i], urlParts[urlPartOffset + i]);
+				setFilter(filternames[i], urlParts[urlPartOffset + i]);
+			} else {
+				setFilter(filternames[i])
 			}
 		}
 
 		// Set filters when changed
-		var filters = $(".classes-filter");
 		filters.on("click", "a", function(e) {
-			var clickedOption, filterName, newFilterValue;
+			var clickedOption, filterName, newFilterValue, newFilterValues, newFilterValuesForURL, newPathName;
 
 			clickedOption = $(e.target);
 
@@ -26,15 +40,25 @@
 			}
 
 			newFilterValue = clickedOption.attr("data-filtervalue");
-			if (newFilterValue == "") {
-				throw new Error("No filter value in selected option");
-			}
 
 			setFilter(filterName, newFilterValue);
 
+			console.log(filterName, newFilterValue);
+
+			newFilterValuesForURL = [
+				getFilterValue("dates"),
+				getFilterValue("ages")
+			];
+
+			newPathName = "/classes/"+(newFilterValuesForURL.join("/"));
+			newPathName = newPathName.replace(/\/+$/, "");
+
 			// Update list
 			// TODO:WV:20170515:Use AJAX + history API if possible
-			location.pathname = "/classes/"+getFilterValue("dates")+"/"+getFilterValue("ages");
+			location.pathname = "/classes/"+newFilterValuesForURL.join("/");
+
+			e.preventDefault();
+			return false;
 		});
 	});
 
@@ -52,13 +76,28 @@
 
 		filter = getFilter(filterName);
 
-		item = filter.find("a").filter(function() {
-			return ($(this).attr("data-filtervalue") == newValue);
-		});
-		if (item.length == 0) {
-			return;
+		if (typeof newValue == "undefined") {
+			newValue = filter.attr("data-defaultvalue");
+			newLabel = filter.attr("data-defaultlabel");
+		} else {
+			item = filter.find("a").filter(function() {
+				return ($(this).attr("data-filtervalue") == newValue);
+			});
+			if (item.length == 0) {
+
+				// Set default value
+				setFilter(filterName);
+
+				return;
+			}
+			newLabel = item.text();
 		}
-		newLabel = item.text();
+
+		if (newValue == filter.attr("data-defaultvalue")) {
+			filter.addClass("showing-default");
+		} else {
+			filter.removeClass("showing-default");
+		}
 
 		filter.find(".selected-item").attr("data-filtervalue", newValue).text(newLabel);
 	}
