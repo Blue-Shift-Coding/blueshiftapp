@@ -53,7 +53,7 @@
 
 			// Update list
 			// TODO:WV:20170515:Use AJAX + history API if possible
-			location.pathname = "/classes/"+newFilterValuesForURL.join("/");
+			location.pathname = newPathName;
 
 			e.preventDefault();
 			return false;
