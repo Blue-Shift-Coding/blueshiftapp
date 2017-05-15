@@ -43,8 +43,6 @@
 
 			setFilter(filterName, newFilterValue);
 
-			console.log(filterName, newFilterValue);
-
 			newFilterValuesForURL = [
 				getFilterValue("dates"),
 				getFilterValue("ages")
