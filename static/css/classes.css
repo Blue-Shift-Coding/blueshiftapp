@@ -2,7 +2,7 @@
   text-align:center;
   margin-bottom:50px;
 }
-.dropdown, .filters-label {
+.dropdown.classes-filter, .filters-label {
   display:inline;
   margin:0 1em;
 }
