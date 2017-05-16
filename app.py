@@ -59,6 +59,10 @@ def home():
 def about():
     return render_template('pages/about.html')
 
+@app.route('/team')
+def team():
+    return render_template('pages/team.html')
+
 @app.route('/teachers/')
 def teachers():
     return render_template('pages/teachers.html')
