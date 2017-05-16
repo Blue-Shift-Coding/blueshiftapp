@@ -63,6 +63,10 @@ def about():
 def curriculum():
     return render_template('pages/curriculum.html')
 
+@app.route('/faq')
+def faq():
+    return render_template('pages/faq.html')
+
 @app.route('/news/')
 @app.route('/news/<int:page_num>/')
 def news(page_num=1):

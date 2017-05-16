@@ -200,7 +200,7 @@
                   <li class=""><a href="about_us.html">Testimonials</a></li>
                 </ul>
               </li>
-            
+
               <li {% if request.endpoint=='curriculum' %} class="active dropdown singleDrop color-6" {% else %} class="dropdown singleDrop color-6" {% endif %}>
                 <a href="{{ url_for('curriculum') }}">
                   <i class="fa fa-pencil-square-o bg-color-6" aria-hidden="true"></i>
@@ -219,8 +219,8 @@
               </li>
 
               <li class="dropdown singleDrop color-2">
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-file-text-o bg-color-2" aria-hidden="true"></i>
+                <a href="{{ url_for('faq') }}" class="dropdown-toggle">
+                  <i class="fa fa-file-text-o bg-color-2"></i>
                   <span>FAQs</span>
                 </a>
 
