@@ -102,7 +102,7 @@
                 <li><i class="fa fa-clock-o bg-color-6" aria-hidden="true"></i> Open: 9am - 6pm</li>
               </ul>
             </div>
-            <div class="col-sm-4">
+            <!-- <div class="col-sm-4">
               <ul class="list-inline functionList">
                 <li><i class="fa fa-unlock-alt bg-color-5" aria-hidden="true"></i> <a href='#loginModal' data-toggle="modal">Login</a><span>or</span><a href='#createAccount' data-toggle="modal">Create an account</a></li>
 
@@ -112,7 +112,7 @@
                   </a>
                 </li>
               </ul>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -233,6 +233,11 @@
     </header>
 
     <!-- Begin page content -->
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="alert alert-block alert-error fade in">
+      <a class="close" data-dismiss="alert">&times;</a> {{ message }}
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
 
     {% block page_header %}
     <section class="pageTitleSection">
@@ -249,11 +254,8 @@
     {% endblock %}
 
 
-    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
-    <div class="alert alert-block alert-error fade in">
-      <a class="close" data-dismiss="alert">&times;</a> {{ message }}
-    </div>
-    {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+
+    {% block content %}{% endblock %}
 
 
 
@@ -318,12 +320,12 @@
                   </a>
                 </li>
                 <li>
-                  <a href="index-v3.html">
+                  <a href="{{ url_for('mission') }}">
                     <i class="fa fa-angle-double-right" aria-hidden="true"></i>Our mission
                   </a>
                 </li>
                 <li>
-                  <a href="photo-gallery.html">
+                  <a href="{{ url_for('team') }}">
                     <i class="fa fa-angle-double-right" aria-hidden="true"></i> Our team
                   </a>
                 </li>
