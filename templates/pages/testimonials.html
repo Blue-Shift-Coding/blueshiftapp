@@ -1,20 +1,9 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Testimonials{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
 {% block content %}
 
 
-<!-- PAGE TITLE SECTION-->
-    <section class="pageTitleSection">
-      <div class="container">
-       <div class="pageTitleInfo">
-          <h2>Testimonials</h2>
-          <ol class="breadcrumb">
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li class="active">Testimonials</li>
-          </ol>
-        </div>
-      </div>
-    </section>
 
     <!-- MAIN SECTION -->
     <section class="mainContent full-width clearfix testimonialArea">
