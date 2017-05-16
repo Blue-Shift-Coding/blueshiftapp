@@ -156,7 +156,7 @@
 
                 <ul class="dropdown-menu dropdown-menu-left">
                   <li class="active"><a href="about_us.html">Schools we work with</a></li>
-                  <li class="dropdown dropdown-submenu dropdown-menu-right">
+                  <li class="dropdown dropdown-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Services for schools<i class="fa fa-chevron-right" aria-hidden="true"></i>
                     </a>
                     <ul class="dropdown-menu">
@@ -177,58 +177,30 @@
                       <li><a href="single-event-right-sidebar.html">Single Event Right Sidebar</a></li>
                     </ul>
                   </li>
-                  <li><a href="photo-gallery.html">Photo Gallery</a></li>
-                  <li><a href="pricing-table.html">Pricing Table</a></li>
-                  <li><a href="services.html">Services</a></li>
-                  <li><a href="service-details.html">Services Details</a></li>
-                  <li><a href="search-result.html">Search Results</a></li>
-                  <li><a href="contact-us.html">Contact Us</a></li>
-                  <li><a href="faq.html">FAQ</a></li>
-                  <li><a href="sign-up-or-login.html">Sign Up / Login</a></li>
-                  <li><a href="404.html">Error 404</a></li>
-                  <li><a href="coming-soon.html">Coming Soon</a></li>
                 </ul>
               </li>
-              <li class=" dropdown megaDropMenu color-2">
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="300" data-close-others="true" aria-expanded="false">
-                  <i class="fa fa-file-text-o bg-color-2" aria-hidden="true"></i>
+
+
+              <li class="dropdown singleDrop color-5">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-gg bg-color-5" aria-hidden="true"></i>
                   <span>About Us</span>
                 </a>
-                <ul class="row dropdown-menu">
-                  <li class="col-sm-3 col-xs-12">
-                    <ul class="list-unstyled">
-                      <li>Courses Grid</li>
-                      <li><a href="course-grid-full.html">Courses Grid Fullwidth</a></li>
-                      <li><a href="course-grid-left-sidebar.html">Courses Grid Left Sidebar</a></li>
-                      <li><a href="course-grid-right-sidebar.html">Courses Grid Right Sidebar</a></li>
-                    </ul>
-                  </li>
-                  <li class="col-sm-3 col-xs-12">
-                    <ul class="list-unstyled">
-                      <li>Courses List</li>
-                      <li><a href="course-list-fullwidth.html">Courses List Fullwidth</a></li>
-                      <li><a href="course-list-left-sidebar.html">Courses List left Sidebar</a></li>
-                      <li><a href="course-list-right-sidebar.html">Courses List Right Sidebar</a></li>
-                    </ul>
-                  </li>
-                  <li class="col-sm-3 col-xs-12">
-                    <ul class="list-unstyled">
-                      <li>Single Course</li>
-                      <li><a href="course-single.html">Single Course Fullwidth</a></li>
-                      <li><a href="course-single-left-sidebar.html">Single Course left Sidebar</a></li>
-                      <li><a href="course-single-right-sidebar.html">Single Course Right Sidebar</a></li>
-                    </ul>
-                  </li>
-                  <li class="col-sm-3 col-xs-12">
-                    <ul class="list-unstyled">
-                      <li>Checkout</li>
-                      <li><a href="checkout-step-1.html">Personal Info</a></li>
-                      <li><a href="checkout-step-2.html">Payment Info</a></li>
-                      <li><a href="checkout-step-3.html">Confirmation</a></li>
-                    </ul>
-                  </li>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown dropdown-submenu">
+
+                      <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-chevron-right" aria-hidden="true"></i>Our Mission</a>
+                        <ul class="dropdown-menu">
+                          <li><a href="blog-grid.html">Why Coding?</a></li>
+                        </ul>
+                    </li>
+                  <li class=""><a href="about_us.html">Our Story</a></li>
+                  <li class=""><a href="about_us.html">Our Team</a></li>
+                  <li class=""><a href="about_us.html">Our Teachers</a></li>
+                  <li class=""><a href="about_us.html">Testimonials</a></li>
                 </ul>
               </li>
+            
               <li {% if request.endpoint=='curriculum' %} class="active dropdown singleDrop color-6" {% else %} class="dropdown singleDrop color-6" {% endif %}>
                 <a href="{{ url_for('curriculum') }}">
                   <i class="fa fa-pencil-square-o bg-color-6" aria-hidden="true"></i>
@@ -245,40 +217,13 @@
                   <li><a href="{{ url_for('news') }}">Opinion Pieces</a></li>
                 </ul>
               </li>
-              <li class="dropdown singleDrop color-5">
+
+              <li class="dropdown singleDrop color-2">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-gg bg-color-5" aria-hidden="true"></i>
+                  <i class="fa fa-file-text-o bg-color-2" aria-hidden="true"></i>
                   <span>FAQs</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  <li class="dropdown dropdown-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Blog Grid<i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
-                    <ul class="dropdown-menu">
-                      <li><a href="blog-grid.html">Blog Grid Fullwidth</a></li>
-                      <li><a href="blog-grid-left-sidebar.html">Blog Grid Left Sidebar</a></li>
-                      <li><a href="blog-grid-right-sidebar.html">Blog Grid Right Sidebar</a></li>
-                    </ul>
-                  </li>
-                  <li class="dropdown dropdown-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Blog List<i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
-                    <ul class="dropdown-menu">
-                      <li><a href="blog-list.html">Blog List Fullwidth</a></li>
-                      <li><a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a></li>
-                      <li><a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a></li>
-                    </ul>
-                  </li>
-                  <li class="dropdown dropdown-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Single Blog<i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
-                    <ul class="dropdown-menu">
-                      <li><a href="single-blog.html">Single Blog Fullwidth</a></li>
-                      <li><a href="single-blog-left-sidebar.html">Single Blog Left Sidebar</a></li>
-                      <li><a href="single-blog-right-sidebar.html">Single Blog Right Sidebar</a></li>
-                    </ul>
-                  </li>
-                </ul>
+
               </li>
             </ul>
           </div>
