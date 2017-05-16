@@ -59,6 +59,10 @@ def home():
 def about():
     return render_template('pages/about.html')
 
+@app.route('/testimonials')
+def testimonials():
+    return render_template('pages/testimonials.html')
+
 @app.route('/curriculum/')
 def curriculum():
     return render_template('pages/curriculum.html')
