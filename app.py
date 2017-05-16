@@ -59,6 +59,10 @@ def home():
 def about():
     return render_template('pages/about.html')
 
+@app.route('/teachers/')
+def teachers():
+    return render_template('pages/teachers.html')
+
 @app.route('/testimonials')
 def testimonials():
     return render_template('pages/testimonials.html')
@@ -67,7 +71,7 @@ def testimonials():
 def curriculum():
     return render_template('pages/curriculum.html')
 
-@app.route('/faq')
+@app.route('/faq/')
 def faq():
     return render_template('pages/faq.html')
 
