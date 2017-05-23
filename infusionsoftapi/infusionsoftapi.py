@@ -1,18 +1,18 @@
 # See https://developer.infusionsoft.com/docs/rest
-import requests, time, base64, urllib, os, json, storage
+import requests, time, base64, urllib, os, json, storage, pprint
+from infusionsoft.library import Infusionsoft
+from infusionsoft.library import InfusionsoftOAuth
 
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
 authorization_url = "https://signin.infusionsoft.com/app/oauth/authorize"
 token_url = "https://api.infusionsoft.com/token"
 api_url = "https://api.infusionsoft.com/crm/rest/v1"
 
-
 credentials = {}
 for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client_id"}, {"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_SECRET", "name":"client_secret"}]:
 	if not os.environ[credential["var"]]:
 		raise Exception("Missing credential "+credential["name"])
 	credentials[credential["name"]] = os.environ[credential["var"]]
-
 
 def get_access_token_data():
 	access_token_data = storage.get("access_token_data")
@@ -110,7 +110,10 @@ def get_event_keys():
 	return get("/hooks/event_keys")
 
 def update_hook(event_key, hook_url):
-	return put("/hooks/"+event_key, {"eventKey":event_key, "hookUrl": hook_url})
+	return post("/hooks", {"eventKey":event_key, "hookUrl": hook_url})
+
+def delete_hook(id):
+	return delete("/hooks/"+str(id))
 
 def get_available_hooks():
 	return get("/hooks")
@@ -124,8 +127,20 @@ def put(url, params = {}):
 	return r.json()
 
 def post(url, params = {}):
-	r = requests.put(completeUrl(url), json=params)
+	r = requests.post(completeUrl(url), json=params)
 	return r.json()
+
+def delete(url, params={}):
+	requests.delete(completeUrl(url), json=params)
+
+# Example XMLAPI request using their legacy API (neccessary using product images and categories)
+def query_product_table():
+	access_token_data = get_access_token_data()
+	Infusionsoft = InfusionsoftOAuth(access_token_data["access_token"])
+	return_fields = ["Id", "ProductName", "LargeImage"]
+	query_data = {"ProductName": "%"}
+	products = Infusionsoft.DataService('query', "Product", 10, 0, query_data, return_fields)
+	return products
 
 def completeUrl(url, params={}):
 	access_token_data = get_access_token_data()
