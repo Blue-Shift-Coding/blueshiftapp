@@ -12,6 +12,7 @@ Jinja2==2.7.2
 MarkupSafe==0.18
 packaging==16.8
 paramiko==1.12.2
+git+https://github.com/infusionsoft/Official-API-Python-Library.git
 pycrypto==2.6.1
 pyparsing==2.2.0
 python-binary-memcached==0.26.0
