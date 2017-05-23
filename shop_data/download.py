@@ -5,6 +5,19 @@ infusionsoftapi.refresh_access_token_data_if_necessary()
 
 products = infusionsoftapi.get_all_products()
 
+# Notes from Meeting with Andrei
+# Images,
+# - "query a data table", XMLRPC
+# - LargeImage contains base64
+# Categories,
+# - ProductCategoryName and Id
+# -- get products and categories first, and then match them up
+# XMLRPC API
+# 3.  When you create a hook, you get back the hook in "inactive"
+# REST hooks
+# 4.  Custom fields (not possible)
+
+
 # Add dummy age range data and date range data until we have a solution to where it is coming from
 # TODO:WV:20170515:Multiple date ranges per class
 # TODO:WV:20170515:Add actual data when  available
