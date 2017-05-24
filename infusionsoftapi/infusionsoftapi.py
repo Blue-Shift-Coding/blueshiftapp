@@ -134,15 +134,22 @@ def delete(url, params={}):
 
 # Example XMLAPI request using their legacy API (neccessary using product images and categories)
 def query_product_table():
-	access_token_data = get_access_token_data()
-	Infusionsoft = InfusionsoftOAuth(access_token_data["access_token"])
-	return_fields = ["Id", "ProductName", "LargeImage"]
-	query_data = {"ProductName": "%"}
-	products = Infusionsoft.DataService('query', "Product", 10, 0, query_data, return_fields)
-	return products
+	return xmlrpc_query_table("Product", ["Id", "ProductName", "LargeImage"], {"ProductName": "%"})
+
+def query_category_table():
+	return xmlrpc_query_table("ProductCategory", ["Id", "CategoryDisplayName", "ParentId"], {"Id": "%"})
+
+def query_product_category_assign_table():
+	return xmlrpc_query_table("ProductCategoryAssign", ["Id", "ProductCategoryId", "ProductId"], {"Id": "%"})
 
 def completeUrl(url, params={}):
 	access_token_data = get_access_token_data()
 	params["access_token"] = access_token_data["access_token"]
 	url = api_url + url + "?" + urllib.urlencode(params)
 	return url
+
+def xmlrpc_query_table(table, return_fields, query_data, page=0, limit=1000):
+	access_token_data = get_access_token_data()
+	Infusionsoft = InfusionsoftOAuth(access_token_data["access_token"])
+	data = Infusionsoft.DataService('query', table, limit, page, query_data, return_fields)
+	return data
