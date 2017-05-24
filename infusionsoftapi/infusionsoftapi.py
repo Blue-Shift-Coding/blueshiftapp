@@ -100,7 +100,31 @@ def update_access_token_data(payload, headers={}):
 	})
 
 def get_all_products():
-	return get("/products/search")
+	products = get("/products/search")
+
+	extra_product_data = query_product_table()
+	categories = query_category_table()
+	return
+
+def get_category_tree():
+	categoryTree = {}
+	categories = query_category_table()
+
+	def add_category(id, category=None):
+		if not id in categoryTree:
+			categoryTree[id] = {"category": None, "children": []}
+		if category is not None:
+			categoryTree[id]["category"] = category
+
+	for category in categories:
+		category_for_storage = {"id": category["Id"], "name": category["CategoryDisplayName"]}
+		if "ParentId" in category and category["ParentId"] is not None and category["ParentId"] != 0:
+			add_category(category["ParentId"])
+			categoryTree[category["ParentId"]]["children"].append(category_for_storage)
+		else:
+			add_category(category["Id"], category_for_storage)
+
+	return categoryTree
 
 def get_product(id):
 	return get("/products/"+str(id))
