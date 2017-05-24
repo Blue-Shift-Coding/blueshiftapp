@@ -102,9 +102,25 @@ def update_access_token_data(payload, headers={}):
 def get_all_products():
 	products = get("/products/search")
 
-	extra_product_data = query_product_table()
-	categories = query_category_table()
-	return
+	# Add categories to products
+	categories = get_category_tree()
+	product_categories = query_product_category_assign_table()
+	for product_category in product_categories:
+		for product in products["products"]:
+			if product["id"] == product_category["ProductId"]:
+				for category_id in categories:
+					category = categories[category_id]
+					if category["category"]["id"] == product_category["ProductCategoryId"]:
+						product.update({"category_path": [category["category"]]})
+					else:
+						for child_category in category["children"]:
+							if child_category["id"] == product_category["ProductCategoryId"]:
+								product.update({"category_path": [category, child_category]})
+
+	# Add images to products
+	#extra_product_data = query_product_table()
+
+	return products
 
 def get_category_tree():
 	categoryTree = {}
