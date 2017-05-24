@@ -1,6 +1,5 @@
 # See https://developer.infusionsoft.com/docs/rest
 import requests, time, base64, urllib, os, json, storage, pprint
-from infusionsoft.library import Infusionsoft
 from infusionsoft.library import InfusionsoftOAuth
 
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
