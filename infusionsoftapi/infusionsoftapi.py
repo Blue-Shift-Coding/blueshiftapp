@@ -172,6 +172,7 @@ def completeUrl(url, params={}):
 	url = api_url + url + "?" + urllib.urlencode(params)
 	return url
 
+# TODO:WV:20170524:Paginate rather than using a massive limit, or use a really massive limit.
 def xmlrpc_query_table(table, return_fields, query_data, page=0, limit=1000):
 	access_token_data = get_access_token_data()
 	Infusionsoft = InfusionsoftOAuth(access_token_data["access_token"])
