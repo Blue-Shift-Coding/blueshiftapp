@@ -1,5 +1,5 @@
 # See https://developer.infusionsoft.com/docs/rest
-import requests, time, base64, urllib, os, json, storage, pprint
+import requests, time, base64, urllib, os, json, storage, pprint, re
 from infusionsoft.library import InfusionsoftOAuth
 
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
@@ -103,11 +103,11 @@ def get_all_products():
 	products = get("/products/search")
 
 	# Add categories to products
+	# Also add maximum and minimum age, for colour coding on the website
 	categories = get_category_tree()
 	product_categories = query_product_category_assign_table()
-
 	for product in products["products"]:
-		product.update({"categories": []});
+		product.update({"categories": [], "min-age": None, "max-age": None});
 		for product_category in product_categories:
 			if product["id"] == product_category["ProductId"]:
 				for category_id in categories:
@@ -118,6 +118,14 @@ def get_all_products():
 						for child_category in category["children"]:
 							if child_category["id"] == product_category["ProductCategoryId"]:
 								product["categories"].append(child_category["id"])
+								if category["category"]["name"] == "Age range":
+									matches = re.search("^([0-9]+)\-([0-9]+)$", child_category["name"])
+									if matches is not None:
+										min_age = matches.group(1)
+										max_age = matches.group(2)
+										product["min-age"] = min_age if product["min-age"] is None else min(product["min-age"], min_age)
+										product["max-age"] = max_age if product["max-age"] is None else max(product["max-age"], max_age)
+
 
 	# Add images to products
 	# TODO;WV:20170524:extra_product_datum["LargeImage"].data (not base64-encoded) could be compared to the
