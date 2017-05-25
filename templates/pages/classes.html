@@ -45,7 +45,9 @@
 			<div class="col-xs-12">
 
 				{% for product in products %}
-					{% set colorNumber = loop.index % 5 %}
+
+					{# color number must be between 1 and 6 - map to maximum age #}
+					{% set colorNumber = product.max_age - 5 if product.max_age and product.max_age < 12 else 6  %}
 					<div class="media courseList couresListPage">
 						<a class="media-left border-color-{{ colorNumber }}" href="course-single-left-sidebar.html">
 							<img class="media-object" src="https://km362.infusionsoft.com/cart/pimg.jsp?i={{ product.id }}" alt="Image">

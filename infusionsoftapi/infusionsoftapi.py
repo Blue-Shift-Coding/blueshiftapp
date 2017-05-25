@@ -107,7 +107,7 @@ def get_all_products():
 	categories = get_category_tree()
 	product_categories = query_product_category_assign_table()
 	for product in products["products"]:
-		product.update({"categories": [], "min-age": None, "max-age": None});
+		product.update({"categories": [], "min_age": None, "max_age": None});
 		for product_category in product_categories:
 			if product["id"] == product_category["ProductId"]:
 				for category_id in categories:
@@ -121,10 +121,10 @@ def get_all_products():
 								if category["category"]["name"] == "Age range":
 									matches = re.search("^([0-9]+)\-([0-9]+)$", child_category["name"])
 									if matches is not None:
-										min_age = matches.group(1)
-										max_age = matches.group(2)
-										product["min-age"] = min_age if product["min-age"] is None else min(product["min-age"], min_age)
-										product["max-age"] = max_age if product["max-age"] is None else max(product["max-age"], max_age)
+										min_age = int(matches.group(1))
+										max_age = int(matches.group(2))
+										product["min_age"] = min_age if product["min_age"] is None else min(product["min_age"], min_age)
+										product["max_age"] = max_age if product["max_age"] is None else max(product["max_age"], max_age)
 
 
 	# Add images to products
