@@ -165,28 +165,37 @@ def classes(dates, ages):
                 for child_category in category["children"]:
                     filters[filter_category_name].append(child_category["name"])
 
-    # Filter products by any filters that are set in the URL
+    # Finds a category based on its name, and optionally its parent category
+    def get_category(category_parent, category_child=None):
+        for category_index in categories:
+            category = categories[category_index]
+            if category["category"]["name"] == category_parent:
+                if category_child is None:
+                    return category["category"]
+                else:
+                    for child_category in category["children"]:
+                        if child_category["name"] == category_child:
+                            return child_category
+        return None
+
+    # Returns a function to filter products by any category
     def get_filter_function(filter_category_parent, filter_category):
 
         # Find category id to filter by
         # NB not passed in URL for SEO reasons
-        category_id = None
-        for category_index in categories:
-            category = categories[category_index]
-            if category["category"]["name"] == filter_category_parent:
-                for child_category in category["children"]:
-                    if child_category["name"] == filter_category:
-                        category_id = child_category["id"]
-                        break
+        category = get_category(filter_category_parent, filter_category)
+        category_id = None if category is None else category["id"]
 
         def filter_function(product):
             return category_id is not None and category_id in product["categories"]
 
         return filter_function
 
+    # Filter products by date if a date was provided in the URL
     if dates is not None:
         products = filter(get_filter_function("Dates", dates), products)
 
+    # Filter products by age if an age range was provided in the URL
     if ages is not None:
         products = filter(get_filter_function("Age range", ages), products)
 
