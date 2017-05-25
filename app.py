@@ -155,32 +155,7 @@ def api_authenticate_done():
 def classes(dates, ages):
     products = shop_data.cache.get_products()
 
-    def get_filter_function(lower_bound_key, lower_bound, upper_bound_key, upper_bound):
-
-        def filter_function(product):
-            lower_bound_ok = (product[lower_bound_key] is None or (int(product[lower_bound_key]) >= int(lower_bound) and int(product[lower_bound_key]) <= int(upper_bound)))
-            upper_bound_ok = (product[upper_bound_key] is None or (int(product[upper_bound_key]) >= int(lower_bound) and int(product[upper_bound_key]) <= int(upper_bound)))
-            return lower_bound_ok or upper_bound_ok
-        return filter_function
-
-    if dates is not None:
-        if dates == "weekly":
-            products = [product for product in products if product["is_ongoing_weekly"]]
-        else:
-            date_parts = dates.split("-")
-            start_date = int(time.mktime((int(date_parts[1]),int(date_parts[0]),1,0,0,0,-1,-1,-1)))
-            end_date = int(time.mktime((int(date_parts[1]),int(date_parts[0]) + 1,-1,0,0,0,-1,-1,-1)))
-
-            products = filter(get_filter_function("start_date", start_date, "end_date", end_date), products)
-
-    if ages is not None:
-        age_range_parts = ages.split("-")
-        min_age = age_range_parts[0]
-        max_age = age_range_parts[1]
-
-        products = filter(get_filter_function("min_age", min_age, "max_age", max_age), products)
-
-    # Get filter options from the downloaded shop data
+    # Get options for the filter-drop-downs
     categories = shop_data.cache.get_categories()
     filters = {"Age range": [], "Dates": []}
     for filter_category_name in filters:
@@ -189,6 +164,31 @@ def classes(dates, ages):
             if category["category"]["name"] == filter_category_name and len(category["children"]) != 0:
                 for child_category in category["children"]:
                     filters[filter_category_name].append(child_category["name"])
+
+    # Filter products by any filters that are set in the URL
+    def get_filter_function(filter_category_parent, filter_category):
+
+        # Find category id to filter by
+        # NB not passed in URL for SEO reasons
+        category_id = None
+        for category_index in categories:
+            category = categories[category_index]
+            if category["category"]["name"] == filter_category_parent:
+                for child_category in category["children"]:
+                    if child_category["name"] == filter_category:
+                        category_id = child_category["id"]
+                        break
+
+        def filter_function(product):
+            return category_id is not None and category_id in product["categories"]
+
+        return filter_function
+
+    if dates is not None:
+        products = filter(get_filter_function("Dates", dates), products)
+
+    if ages is not None:
+        products = filter(get_filter_function("Age range", ages), products)
 
     return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"])
 
