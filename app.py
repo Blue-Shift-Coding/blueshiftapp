@@ -153,7 +153,7 @@ def api_authenticate_done():
 @app.route('/classes//<ages>/', defaults={"dates": None})
 @app.route('/classes/<dates>/<ages>/')
 def classes(dates, ages):
-    products = shop_data.cache.get_all()
+    products = shop_data.cache.get_products()
 
     def get_filter_function(lower_bound_key, lower_bound, upper_bound_key, upper_bound):
 
@@ -180,7 +180,17 @@ def classes(dates, ages):
 
         products = filter(get_filter_function("min_age", min_age, "max_age", max_age), products)
 
-    return render_template('pages/classes.html', products=products, dates=dates, ages=ages)
+    # Get filter options from the downloaded shop data
+    categories = shop_data.cache.get_categories()
+    filters = {"Age range": [], "Dates": []}
+    for filter_category_name in filters:
+        for category_index in categories:
+            category = categories[category_index]
+            if category["category"]["name"] == filter_category_name and len(category["children"]) != 0:
+                for child_category in category["children"]:
+                    filters[filter_category_name].append(child_category["name"])
+
+    return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"])
 
 
 # Error handlers.
