@@ -142,7 +142,7 @@
 
                 <ul class="dropdown-menu dropdown-menu-left">
                   {% if class_categories is defined %} {% for class_category in class_categories %}
-                  <li><a href="class_category.url">{{ class_category.name }}</a></li>
+                  <li><a href="{{ class_category.url }}">{{ class_category.name }}</a></li>
                   {% endfor %} {% else %}
                   <li><a href="{{ url_for('classes') }}">Browse Classes</a></li>
                   {% endif %}

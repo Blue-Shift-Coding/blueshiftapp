@@ -15,10 +15,9 @@
 		});
 
 		// Set filters on page load
-		// TODO:WV:20170515:Could do this in page template
 		var urlParts = location.pathname.split("/");
 		var filternames = ["dates", "ages"];
-		var urlPartOffset = 2;
+		var urlPartOffset = 3;
 		for (var i in filternames) {
 			i = parseInt(i);
 			if (typeof urlParts[urlPartOffset + i] != "undefined") {
@@ -26,6 +25,10 @@
 			} else {
 				setFilter(filternames[i])
 			}
+		}
+		var category;
+		if (typeof urlParts[2] != "undefined") {
+			category = urlParts[2];
 		}
 
 		// Set filters when changed
@@ -48,7 +51,7 @@
 				getFilterValue("ages")
 			];
 
-			newPathName = "/classes/"+(newFilterValuesForURL.join("/"));
+			newPathName = "/classes/"+category+"/"+(newFilterValuesForURL.join("/"));
 			newPathName = newPathName.replace(/\/+$/, "");
 
 			// Update list

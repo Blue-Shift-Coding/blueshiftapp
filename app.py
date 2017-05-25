@@ -148,14 +148,20 @@ def api_authenticate_done():
     return "Done"
 
 # TODO:WV:20170515:Pagination
-@app.route('/classes/', defaults={"dates": None, "ages": None})
-@app.route('/classes/<dates>/', defaults={"ages": None})
-@app.route('/classes//<ages>/', defaults={"dates": None})
-@app.route('/classes/<dates>/<ages>/')
-def classes(dates, ages):
+@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None})
+@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None})
+@app.route('/classes/<url_category>/<dates>/', defaults={"ages": None})
+@app.route('/classes/<url_category>//<ages>/', defaults={"dates": None})
+@app.route('/classes/<url_category>/<dates>/<ages>/')
+@app.route('/classes//<dates>/', defaults={"url_category": None, "ages": None})
+@app.route('/classes///<ages>/', defaults={"url_category": None, "dates": None})
+@app.route('/classes//<dates>/<ages>/', defaults={"url_category": None})
+
+def classes(url_category, dates, ages):
     products = shop_data.cache.get_products()
 
     # Get options for the filter-drop-downs
+    # NB 'filters' variable also used lower down, in various places
     categories = shop_data.cache.get_categories()
     filters = {"Age range": [], "Dates": []}
     for filter_category_name in filters:
@@ -164,6 +170,14 @@ def classes(dates, ages):
             if category["category"]["name"] == filter_category_name and len(category["children"]) != 0:
                 for child_category in category["children"]:
                     filters[filter_category_name].append(child_category["name"])
+
+    # Add categories to the page, for the main nav menu
+    class_categories = []
+    for category_index in categories:
+        category = categories[category_index]
+        if category["category"]["name"] not in filters:
+            class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
+    class_categories.append({"name": "Browse all", "url": "/classes"})
 
     # Finds a category based on its name, and optionally its parent category
     def get_category(category_parent, category_child=None):
@@ -179,7 +193,7 @@ def classes(dates, ages):
         return None
 
     # Returns a function to filter products by any category
-    def get_filter_function(filter_category_parent, filter_category):
+    def get_filter_function(filter_category_parent, filter_category=None):
 
         # Find category id to filter by
         # NB not passed in URL for SEO reasons
@@ -191,6 +205,10 @@ def classes(dates, ages):
 
         return filter_function
 
+    # Filter products by category if a category was provided in the URL
+    if url_category is not None and url_category not in filters:
+        products = filter(get_filter_function(url_category), products)
+
     # Filter products by date if a date was provided in the URL
     if dates is not None:
         products = filter(get_filter_function("Dates", dates), products)
@@ -199,7 +217,7 @@ def classes(dates, ages):
     if ages is not None:
         products = filter(get_filter_function("Age range", ages), products)
 
-    return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"])
+    return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"], class_categories=class_categories)
 
 
 # Error handlers.
