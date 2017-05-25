@@ -105,17 +105,19 @@ def get_all_products():
 	# Add categories to products
 	categories = get_category_tree()
 	product_categories = query_product_category_assign_table()
-	for product_category in product_categories:
-		for product in products["products"]:
+
+	for product in products["products"]:
+		product.update({"categories": []});
+		for product_category in product_categories:
 			if product["id"] == product_category["ProductId"]:
 				for category_id in categories:
 					category = categories[category_id]
 					if category["category"]["id"] == product_category["ProductCategoryId"]:
-						product.update({"category_path": [category["category"]]})
+						product["categories"].append(category["category"]["id"])
 					else:
 						for child_category in category["children"]:
 							if child_category["id"] == product_category["ProductCategoryId"]:
-								product.update({"category_path": [category, child_category]})
+								product["categories"].append(child_category["id"])
 
 	# Add images to products
 	# TODO;WV:20170524:extra_product_datum["LargeImage"].data (not base64-encoded) could be compared to the
