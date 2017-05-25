@@ -58,13 +58,11 @@
 						<div class="media-body">
 							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ colorNumber }}">{{product.product_name}}</a></h3>
 
-							<!--
-							WV:20170511:Commented out because we can't easily extract the age and time from Infusionsoft at the moment
 							<ul class="list-inline">
-								<li><i class="fa fa-calendar-o" aria-hidden="true"></i>Age 2 to 4 Years</li>
-								<li><i class="fa fa-clock-o" aria-hidden="true"></i>9.00AM-11.00AM</li>
+								<li><i class="fa fa-calendar-o" aria-hidden="true"></i>Age: {{ product.min_age|string+" to" if product.min_age else "" }} {{ product.max_age if product.max_age else "Adults" }}</li>
+								{# TODO:WV:20170525:Commented out because no time available from Infusionsoft yet - put it back when available #}
+								{# <li><i class="fa fa-clock-o" aria-hidden="true"></i>9.00AM-11.00AM</li> #}
 							</ul>
-							-->
 
 							{{product.product_desc|safe}}
 							<ul class="list-inline btn-yellow btnPart">
