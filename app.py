@@ -7,11 +7,10 @@ from flask import Flask, render_template, request, redirect, Response
 import logging
 from logging import Formatter, FileHandler
 from forms import *
-import os
+import os, time, copy
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import infusionsoftapi, shop_data
-import time
 from functools import wraps
 
 
@@ -47,9 +46,6 @@ def login_required(test):
 # Basic Auth decorator
 #----------------------------------------------------------------------------#
 
-
-
-
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
@@ -76,6 +72,30 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
+
+#----------------------------------------------------------------------------#
+# Categories that are used for filtering rather than categorising
+#----------------------------------------------------------------------------#
+
+categories_for_filtering = {"Age range": [], "Dates": []}
+
+#----------------------------------------------------------------------------#
+# Context Processors (for setting global template variables)
+#----------------------------------------------------------------------------#
+
+@app.context_processor
+def inject_class_categories():
+
+    # Add categories to the page, for the main nav menu
+    categories = shop_data.cache.get_categories()
+    class_categories = []
+    for category_index in categories:
+        category = categories[category_index]
+        if category["category"]["name"] not in categories_for_filtering:
+            class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
+    class_categories.append({"name": "Browse all", "url": "/classes"})
+
+    return dict(class_categories=class_categories)
 
 #----------------------------------------------------------------------------#
 # Controllers.
@@ -188,28 +208,23 @@ def api_authenticate_done():
 @app.route('/classes//<dates>/', defaults={"url_category": None, "ages": None})
 @app.route('/classes///<ages>/', defaults={"url_category": None, "dates": None})
 @app.route('/classes//<dates>/<ages>/', defaults={"url_category": None})
-
 def classes(url_category, dates, ages):
     products = shop_data.cache.get_products()
 
     # Get options for the filter-drop-downs
-    # NB 'filters' variable also used lower down, in various places
     categories = shop_data.cache.get_categories()
-    filters = {"Age range": [], "Dates": []}
+    filters = copy.deepcopy(categories_for_filtering)
+    print "Categories for filtering"
+    print categories_for_filtering
+    print "Filters"
+    print filters
+    filters["test"] = "foo"
     for filter_category_name in filters:
         for category_index in categories:
             category = categories[category_index]
             if category["category"]["name"] == filter_category_name and len(category["children"]) != 0:
                 for child_category in category["children"]:
                     filters[filter_category_name].append(child_category["name"])
-
-    # Add categories to the page, for the main nav menu
-    class_categories = []
-    for category_index in categories:
-        category = categories[category_index]
-        if category["category"]["name"] not in filters:
-            class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
-    class_categories.append({"name": "Browse all", "url": "/classes"})
 
     # Finds a category based on its name, and optionally its parent category
     def get_category(category_parent, category_child=None):
@@ -238,7 +253,7 @@ def classes(url_category, dates, ages):
         return filter_function
 
     # Filter products by category if a category was provided in the URL
-    if url_category is not None and url_category not in filters:
+    if url_category is not None and url_category not in categories_for_filtering:
         products = filter(get_filter_function(url_category), products)
 
     # Filter products by date if a date was provided in the URL
@@ -249,7 +264,7 @@ def classes(url_category, dates, ages):
     if ages is not None:
         products = filter(get_filter_function("Age range", ages), products)
 
-    return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"], class_categories=class_categories)
+    return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"])
 
 
 # Error handlers.
