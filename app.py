@@ -48,10 +48,6 @@ def login_required(test):
 
 @app.route('/')
 def home():
-
-    # TODO:WV:20170503:Send categories from Infusionsoft when they change?  Fetch from Infusionsoft every X minutes?
-    categories = []
-
     return render_template('pages/home.html')
 
 
