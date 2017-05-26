@@ -13,6 +13,10 @@ for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client
 		raise Exception("Missing credential "+credential["name"])
 	credentials[credential["name"]] = os.environ[credential["var"]]
 
+# These are also used outside the module
+categories_for_filtering = {"Age range": [], "Dates": []}
+categories_for_metadata = ["Times"]
+
 def get_access_token_data():
 	access_token_data = storage.get("access_token_data")
 

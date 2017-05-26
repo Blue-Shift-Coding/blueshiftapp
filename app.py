@@ -74,13 +74,6 @@ def requires_auth(f):
 
 
 #----------------------------------------------------------------------------#
-# Categories that are used for special purposes other than categorising
-#----------------------------------------------------------------------------#
-
-categories_for_filtering = {"Age range": [], "Dates": []}
-categories_for_metadata = {"Times"}
-
-#----------------------------------------------------------------------------#
 # Context Processors (for setting global template variables)
 #----------------------------------------------------------------------------#
 
@@ -92,7 +85,7 @@ def inject_class_categories():
     class_categories = []
     for category_index in categories:
         category = categories[category_index]
-        if category["category"]["name"] not in categories_for_filtering and category["category"]["name"] not in categories_for_metadata:
+        if category["category"]["name"] not in infusionsoftapi.categories_for_filtering and category["category"]["name"] not in infusionsoftapi.categories_for_metadata:
             class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
     class_categories.append({"name": "Browse all", "url": "/classes"})
 
@@ -214,7 +207,7 @@ def classes(url_category, dates, ages):
 
     # Get options for the filter-drop-downs
     categories = shop_data.cache.get_categories()
-    filters = copy.deepcopy(categories_for_filtering)
+    filters = copy.deepcopy(infusionsoftapi.categories_for_filtering)
     filters["test"] = "foo"
     for filter_category_name in filters:
         for category_index in categories:
@@ -250,7 +243,7 @@ def classes(url_category, dates, ages):
         return filter_function
 
     # Filter products by category if a category was provided in the URL
-    if url_category is not None and url_category not in categories_for_filtering:
+    if url_category is not None and url_category not in infusionsoftapi.categories_for_filtering:
         products = filter(get_filter_function(url_category), products)
 
     # Filter products by date if a date was provided in the URL
