@@ -173,6 +173,7 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
+# TODO:WV:20170526:How to prevent third parties maliciously requesting this.  Can we restrict to Infusionsoft IPs?
 @app.route('/re-sync')
 def re_sync():
     storage.set(shop_data.cache.queue_key, 1)
