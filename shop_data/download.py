@@ -5,7 +5,7 @@ checking_queue = len(sys.argv) > 1 and sys.argv[1] == "check_queue"
 
 if checking_queue:
 	is_queued = storage.get(cache.queue_key)
-	if !is_queued:
+	if not is_queued:
 		sys.exit()
 
 cache.download_data()
