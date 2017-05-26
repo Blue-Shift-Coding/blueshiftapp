@@ -55,7 +55,6 @@
 			newPathName = newPathName.replace(/\/+$/, "");
 
 			// Update list
-			// TODO:WV:20170515:Use AJAX + history API if possible
 			location.pathname = newPathName;
 
 			e.preventDefault();
