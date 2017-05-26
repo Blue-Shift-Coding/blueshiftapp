@@ -214,10 +214,6 @@ def classes(url_category, dates, ages):
     # Get options for the filter-drop-downs
     categories = shop_data.cache.get_categories()
     filters = copy.deepcopy(categories_for_filtering)
-    print "Categories for filtering"
-    print categories_for_filtering
-    print "Filters"
-    print filters
     filters["test"] = "foo"
     for filter_category_name in filters:
         for category_index in categories:
