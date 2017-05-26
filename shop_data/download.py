@@ -1,10 +1,14 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import infusionsoftapi, pprint, storage
+import cache, storage, sys, pprint
 
-infusionsoftapi.refresh_access_token_data_if_necessary()
+checking_queue = len(sys.argv) > 1 and sys.argv[1] == "check_queue"
 
-products = infusionsoftapi.get_all_products()
-storage.set("products", products)
+if checking_queue:
+	is_queued = storage.get(cache.queue_key)
+	if !is_queued:
+		sys.exit()
 
-categories = infusionsoftapi.get_category_tree()
-storage.set("categories", categories)
+cache.download_data()
+
+if checking_queue:
+	storage.set(cache.queue_key, 0)

@@ -10,7 +10,7 @@ from forms import *
 import os, time, copy
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import infusionsoftapi, shop_data
+import infusionsoftapi, shop_data, storage
 from functools import wraps
 
 
@@ -172,6 +172,11 @@ def register():
 def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
+
+@app.route('/re-sync')
+def re_sync():
+    storage.set(shop_data.cache.queue_key, 1)
+    return "Done"
 
 @app.route('/api-authenticate/')
 @requires_auth
