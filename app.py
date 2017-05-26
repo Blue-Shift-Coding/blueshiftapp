@@ -74,10 +74,11 @@ def requires_auth(f):
 
 
 #----------------------------------------------------------------------------#
-# Categories that are used for filtering rather than categorising
+# Categories that are used for special purposes other than categorising
 #----------------------------------------------------------------------------#
 
 categories_for_filtering = {"Age range": [], "Dates": []}
+categories_for_metadata = {"Times"}
 
 #----------------------------------------------------------------------------#
 # Context Processors (for setting global template variables)
@@ -91,7 +92,7 @@ def inject_class_categories():
     class_categories = []
     for category_index in categories:
         category = categories[category_index]
-        if category["category"]["name"] not in categories_for_filtering:
+        if category["category"]["name"] not in categories_for_filtering and category["category"]["name"] not in categories_for_metadata:
             class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
     class_categories.append({"name": "Browse all", "url": "/classes"})
 

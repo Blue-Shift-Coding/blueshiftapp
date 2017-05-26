@@ -125,7 +125,10 @@ def get_all_products():
 										max_age = int(matches.group(2))
 										product["min_age"] = min_age if product["min_age"] is None else min(product["min_age"], min_age)
 										product["max_age"] = max_age if product["max_age"] is None else max(product["max_age"], max_age)
-
+								if category["category"]["name"] == "Times":
+									if "times" not in product:
+										product["times"] = []
+									product["times"].append(child_category["name"])
 
 	# Add images to products
 	# TODO;WV:20170524:extra_product_datum["LargeImage"].data (not base64-encoded) could be compared to the
