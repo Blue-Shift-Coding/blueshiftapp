@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Response
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
@@ -12,6 +12,7 @@ from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import infusionsoftapi, shop_data
 import time
+from functools import wraps
 
 
 #----------------------------------------------------------------------------#
@@ -41,6 +42,41 @@ def login_required(test):
             return redirect(url_for('login'))
     return wrap
 '''
+
+#----------------------------------------------------------------------------#
+# Basic Auth decorator
+#----------------------------------------------------------------------------#
+
+
+
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+
+    if not ('BLUESHIFTAPP_ADMIN_USER' in os.environ and 'BLUESHIFTAPP_ADMIN_PASSWORD' in os.environ):
+        raise LookupError("Admin credentials not found in environment")
+
+    return username == os.environ['BLUESHIFTAPP_ADMIN_USER'] and password == os.environ['BLUESHIFTAPP_ADMIN_PASSWORD']
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
+
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
@@ -123,8 +159,8 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
-
 @app.route('/api-authenticate/')
+@requires_auth
 def api_authenticate():
 
     # If at stage 2, there should be a 'code' in the URL.  Extract it here; if absent, assume at stage 1.
