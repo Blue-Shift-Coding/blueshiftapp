@@ -1,5 +1,5 @@
 # See https://developer.infusionsoft.com/docs/rest
-import requests, time, base64, urllib, os, json, storage, pprint, re
+import requests, time, base64, urllib, os, json, storage, pprint, re, imghdr
 from infusionsoft.library import InfusionsoftOAuth
 
 access_token_file = os.path.dirname(os.path.abspath(__file__))+"/access_token_data.json"
@@ -136,7 +136,9 @@ def get_all_products():
 		for product in products["products"]:
 			if (extra_product_datum["Id"] == product["id"]):
 				if ("LargeImage" in extra_product_datum and extra_product_datum["LargeImage"] is not None):
-					product.update({"image": extra_product_datum["LargeImage"].data.encode("base64")})
+					image_type = imghdr.what('', extra_product_datum["LargeImage"].data)
+					if image_type:
+						product.update({"image": "data:image/"+image_type+";base64,"+extra_product_datum["LargeImage"].data.encode("base64")})
 				break
 
 	return products

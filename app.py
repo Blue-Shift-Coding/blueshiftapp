@@ -167,11 +167,11 @@ def api_authenticate():
     code = request.args.get("code")
 
     # Stage 1 - get permission to get an access token
-    # TODO:WV:20170504:Password- or IP- restrict this (may be able to set up IP restriction in the Infusionsoft developer console)
     if not code:
         url = infusionsoftapi.get_authorization_url(request.base_url)
         return redirect(url, code=302)
 
+    # Stage 2 - get and save the access token
     infusionsoftapi.download_initial_access_token_data(code=code, redirect_uri=request.base_url)
     return redirect("/api-authenticate-done", code=302)
 

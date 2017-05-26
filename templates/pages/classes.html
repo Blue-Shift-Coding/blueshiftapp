@@ -50,7 +50,7 @@
 					{% set colorNumber = product.max_age - 5 if product.max_age and product.max_age < 12 else 6  %}
 					<div class="media courseList couresListPage">
 						<a class="media-left border-color-{{ colorNumber }}" href="course-single-left-sidebar.html">
-							<img class="media-object" src="https://km362.infusionsoft.com/cart/pimg.jsp?i={{ product.id }}" alt="Image">
+							<img class="media-object" src="{{ product.image }}" alt="Image">
 
 							{# TODO:WV:20170506:Format currency properly #}
 							<span class="sticker bg-color-{{ colorNumber }}">&pound;{{product.product_price|round|int}}</span>
