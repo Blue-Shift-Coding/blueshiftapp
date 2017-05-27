@@ -75,23 +75,6 @@
 
     <header id="pageTop" class="header-wrapper">
 
-      <div class="container-fluid color-bar top-fixed clearfix">
-        <div class="row">
-          <div class="col-sm-1 col-xs-2 bg-color-1">fix bar</div>
-          <div class="col-sm-1 col-xs-2 bg-color-2">fix bar</div>
-          <div class="col-sm-1 col-xs-2 bg-color-3">fix bar</div>
-          <div class="col-sm-1 col-xs-2 bg-color-4">fix bar</div>
-          <div class="col-sm-1 col-xs-2 bg-color-5">fix bar</div>
-          <div class="col-sm-1 col-xs-2 bg-color-6">fix bar</div>
-          <div class="col-sm-1 bg-color-1 hidden-xs">fix bar</div>
-          <div class="col-sm-1 bg-color-2 hidden-xs">fix bar</div>
-          <div class="col-sm-1 bg-color-3 hidden-xs">fix bar</div>
-          <div class="col-sm-1 bg-color-4 hidden-xs">fix bar</div>
-          <div class="col-sm-1 bg-color-5 hidden-xs">fix bar</div>
-          <div class="col-sm-1 bg-color-6 hidden-xs">fix bar</div>
-        </div>
-      </div>
-
       <div class="top-info-bar bg-color-7 hidden-xs">
         <div class="container">
           <div class="row">
@@ -102,17 +85,6 @@
                 <li><i class="fa fa-clock-o bg-color-6" aria-hidden="true"></i> Open: 9am - 6pm</li>
               </ul>
             </div>
-            <!-- <div class="col-sm-4">
-              <ul class="list-inline functionList">
-                <li><i class="fa fa-unlock-alt bg-color-5" aria-hidden="true"></i> <a href='#loginModal' data-toggle="modal">Login</a><span>or</span><a href='#createAccount' data-toggle="modal">Create an account</a></li>
-
-                <li class="cart-dropdown">
-                  <a href="#" class="bg-color-6 shop-cart">
-                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-                  </a>
-                </li>
-              </ul>
-            </div> -->
           </div>
         </div>
       </div>
@@ -129,7 +101,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-            <a class="navbar-brand" href="/"><img src="https://blueshiftcoding.com/wp-content/themes/blueshift/images/logo-animation175p.gif" alt="logo"></a>
+            <a class="navbar-brand" href="/"><img src="http://blueshiftcoding.com/wp-content/uploads/2017/04/BLUESHIFT-LOGO_GRAD_TRANS.png" alt="logo"></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -137,7 +109,7 @@
             <ul class="nav navbar-nav navbar-right">
               <li {% if request.endpoint=='classes' %} class="active dropdown singleDrop color-1" {% else %} class="dropdown singleDrop color-1" {% endif %}>
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-home bg-color-1" aria-hidden="true"></i> <span>Our Classes</span>
+                  <i class="fa fa-home bg-color-1" aria-hidden="true"></i> <span>{Courses}</span>
                 </a>
 
                 <ul class="dropdown-menu dropdown-menu-left">

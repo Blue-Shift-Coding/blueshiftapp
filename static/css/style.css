@@ -1732,7 +1732,7 @@ aside {
   float: left;
 }
 .navbar-header .navbar-brand > img {
-  width: 43%;
+  width: 118%;
 }
 @media (min-width: 320px) {
   .navbar-header .navbar-brand {
