@@ -275,7 +275,7 @@ def classes(url_category, dates, ages, page_num):
         products = filter(get_filter_function("Age range", ages), products)
 
     # Get pagination data for template
-    per_page = 3
+    per_page = 10
     total_pages = int(math.ceil(float(len(products)) / float(per_page)))
 
     # Filter products to the current page
