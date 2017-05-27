@@ -238,7 +238,7 @@
 
         {% if prev_page > 0 %}
         <li>
-          <a href="{{ url_for(pagination_data.route_function_name, page_num = page_num - 1, **pagination_data.route_function_params) }}" aria-label="Previous">
+          <a href="{{ url_for(pagination_data.route_function_name, page_num = prev_page, **pagination_data.route_function_params) }}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -250,7 +250,7 @@
 
         {% if next_page <= pagination_data.total_pages %}
         <li>
-          <a href="{{ url_for(pagination_data.route_function_name, page_num = page_num + 1, **pagination_data.route_function_params) }}" aria-label="Next">
+          <a href="{{ url_for(pagination_data.route_function_name, page_num = next_page, **pagination_data.route_function_params) }}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
