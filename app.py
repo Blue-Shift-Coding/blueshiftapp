@@ -150,7 +150,9 @@ def news(page_num=1):
         pagination_data={
             "page_num":page_num,
             "total_pages":total_pages,
-            "route_function_name":'news',
+            "route_function":{
+                "name":"news"
+            }
         },
         format_date=post_format_date
     )
@@ -291,11 +293,13 @@ def classes(url_category, dates, ages, page_num):
         pagination_data={
             "page_num":page_num,
             "total_pages":total_pages,
-            "route_function_name":'classes',
-            "route_function_params": {
-                "url_category":url_category,
-                "dates":dates,
-                "ages":ages
+            "route_function": {
+                "name": "classes",
+                "arguments": {
+                    "url_category":url_category,
+                    "dates":dates,
+                    "ages":ages
+                }
             }
         },
     )
