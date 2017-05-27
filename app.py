@@ -289,7 +289,7 @@ def classes(url_category, dates, ages, page_num):
         dates=filters["Dates"],
         ages=filters["Age range"],
         pagination_data={
-            "page_num":1,
+            "page_num":page_num,
             "total_pages":total_pages,
             "route_function_name":'classes',
             "route_function_params": {
