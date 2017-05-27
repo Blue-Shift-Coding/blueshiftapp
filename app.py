@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, Response
 import logging
 from logging import Formatter, FileHandler
 from forms import *
-import os, time, copy
+import os, time, copy, math
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import infusionsoftapi, shop_data, storage
@@ -145,8 +145,15 @@ def news(page_num=1):
         return abort(404)
 
     return render_template(
-        'pages/news.html', data=posts, page_num=page_num,
-        total_pages=total_pages, format_date=post_format_date)
+        'pages/news.html',
+        data=posts,
+        pagination_data={
+            "page_num":page_num,
+            "total_pages":total_pages,
+            "route_function_name":'news',
+        },
+        format_date=post_format_date
+    )
 
 @app.route('/post/<int:post_id>/<slug>/')
 def post(post_id, slug):
@@ -200,21 +207,28 @@ def api_authenticate_done():
     return "Done"
 
 # TODO:WV:20170515:Pagination
-@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None})
-@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None})
-@app.route('/classes/<url_category>/<dates>/', defaults={"ages": None})
-@app.route('/classes/<url_category>//<ages>/', defaults={"dates": None})
-@app.route('/classes/<url_category>/<dates>/<ages>/')
-@app.route('/classes//<dates>/', defaults={"url_category": None, "ages": None})
-@app.route('/classes///<ages>/', defaults={"url_category": None, "dates": None})
-@app.route('/classes//<dates>/<ages>/', defaults={"url_category": None})
-def classes(url_category, dates, ages):
+@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None, "page_num": 1})
+@app.route('/classes/<int:page_num>', defaults={"url_category": None, "dates": None, "ages": None})
+@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None, "page_num": 1})
+@app.route('/classes/<url_category>/<page_num>', defaults={"dates": None, "ages": None})
+@app.route('/classes/<url_category>/<dates>', defaults={"ages": None, "page_num": 1})
+@app.route('/classes/<url_category>/<dates>/<page_num>', defaults={"ages": None})
+@app.route('/classes/<url_category>//<ages>', defaults={"dates": None, "page_num": 1})
+@app.route('/classes/<url_category>//<ages>/<page_num>', defaults={"dates": None})
+@app.route('/classes/<url_category>/<dates>/<ages>', defaults={"page_num": 1})
+@app.route('/classes/<url_category>/<dates>/<ages>/<page_num>', defaults={})
+@app.route('/classes//<dates>', defaults={"url_category": None, "ages": None, "page_num": 1})
+@app.route('/classes//<dates>/<page_num>', defaults={"url_category": None, "ages": None})
+@app.route('/classes///<ages>', defaults={"url_category": None, "dates": None, "page_num": 1})
+@app.route('/classes///<ages>/<page_num>', defaults={"url_category": None, "dates": None})
+@app.route('/classes//<dates>/<ages>', defaults={"url_category": None, "page_num": 1})
+@app.route('/classes//<dates>/<ages>/<page_num>', defaults={"url_category": None})
+def classes(url_category, dates, ages, page_num):
     products = shop_data.cache.get_products()
 
     # Get options for the filter-drop-downs
     categories = shop_data.cache.get_categories()
     filters = copy.deepcopy(infusionsoftapi.categories_for_filtering)
-    filters["test"] = "foo"
     for filter_category_name in filters:
         for category_index in categories:
             category = categories[category_index]
@@ -260,7 +274,31 @@ def classes(url_category, dates, ages):
     if ages is not None:
         products = filter(get_filter_function("Age range", ages), products)
 
-    return render_template('pages/classes.html', products=products, dates=filters["Dates"], ages=filters["Age range"])
+    # Get pagination data for template
+    per_page = 10
+    total_pages = int(math.ceil(float(len(products)) / float(per_page)))
+
+    # Filter products to the current page
+    # NB has to happen AFTER working out total_pages, because it changes 'products', which is also used to calculate total_pages
+    offset = per_page * (page_num - 1)
+    products = products[offset:offset + per_page]
+
+    return render_template(
+        'pages/classes.html',
+        products=products,
+        dates=filters["Dates"],
+        ages=filters["Age range"],
+        pagination_data={
+            "page_num":page_num,
+            "total_pages":total_pages,
+            "route_function_name":'classes',
+            "route_function_params": {
+                "url_category":url_category,
+                "dates":dates,
+                "ages":ages
+            }
+        },
+    )
 
 
 # Error handlers.

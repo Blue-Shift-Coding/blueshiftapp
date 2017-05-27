@@ -229,6 +229,27 @@
 
     {% block content %}{% endblock %}
 
+    {% block pagination %} {% if pagination_data %}
+    {% set page_num = pagination_data.page_num  %}
+    <nav aria-label="Page navigation" class="blog-pagination">
+      <ul class="pagination">
+        <li>
+          <a href="{{ url_for(pagination_data.route_function_name, page_num = page_num - 1, **pagination_data.route_function_params) }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% for page in range(pagination_data.total_pages) %}
+        <li><a href="{{ url_for(pagination_data.route_function_name, page_num = page + 1, **pagination_data.route_function_params) }}">{{ page + 1 }}</a></li>
+        {% endfor %}
+        <li>
+          <a href="{{ url_for(pagination_data.route_function_name, page_num = page_num + 1, **pagination_data.route_function_params) }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %} {% endblock %}
+
 
 
   </div>
