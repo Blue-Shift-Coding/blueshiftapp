@@ -207,7 +207,6 @@ def log_to_stdout(log_message):
 @app.route('/set-up-infusionsoft-callback-hooks')
 @requires_auth
 def set_up_infusionsoft_callback_hooks():
-    log_to_stdout("Test")
     infusionsoftapi.refresh_access_token_data_if_necessary()
     if not infusionsoftapi.have_access_token():
         return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
