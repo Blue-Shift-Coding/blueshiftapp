@@ -186,15 +186,16 @@ def forgot():
 @app.route('/re-sync', methods=['GET', 'POST'])
 def re_sync():
 
-    log_to_stdout("Headers")
-    log_to_stdout(request.headers)
-
     # If this request is Infusionsoft checking that the URL works, just ping back their hook-secret in a header
     header_name = "X-Hook-Secret"
     secret = request.headers.get(header_name)
     if secret:
         resp = app.Response("")
         resp.headers[header_name] = secret
+
+        log_to_stdout("Response headers")
+        log_to_stdout(resp.headers)
+
         return resp
 
     # Otherwise, queue a re-sync
