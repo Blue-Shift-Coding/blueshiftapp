@@ -186,8 +186,8 @@ def forgot():
 @app.route('/re-sync')
 def re_sync():
 
-    print "Headers"
-    print request.headers
+    log_to_stdout("Headers")
+    log_to_stdout(request.headers)
 
     # If this request is Infusionsoft checking that the URL works, just ping back their hook-secret in a header
     header_name = "X-Hook-Secret"
@@ -201,9 +201,16 @@ def re_sync():
     storage.set(shop_data.cache.queue_key, 1)
     return "Done"
 
+def log_to_stdout(log_message):
+    ch = logging.StreamHandler()
+    app.logger.addHandler(ch)
+    app.logger.info("Request Headers")
+    app.logger.info(request.headers)
+
 @app.route('/set-up-infusionsoft-callback-hooks')
 @requires_auth
 def set_up_infusionsoft_callback_hooks():
+    log_to_stdout("Test")
     infusionsoftapi.refresh_access_token_data_if_necessary()
     if not infusionsoftapi.have_access_token():
         return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
