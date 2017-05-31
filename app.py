@@ -196,11 +196,11 @@ def set_up_infusionsoft_callback_hooks():
         return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
 
     # TEST:WV:20170531:Pushing to Heroku to see what this generates
-    return url_for("re_sync", _external=True)
+    return url_for("re_sync", _external=True, _scheme='https')
 
     event_keys = ["product.add", "product.delete", "product.edit"]
     for event_key in event_keys:
-        return infusionsoftapi.update_hook(event_key, url_for("re_sync", _external=True))
+        return infusionsoftapi.update_hook(event_key, url_for("re_sync", _external=True, _scheme='https'))
 
     return "Done"
 
