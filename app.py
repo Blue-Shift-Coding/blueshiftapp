@@ -204,8 +204,7 @@ def re_sync():
 def log_to_stdout(log_message):
     ch = logging.StreamHandler()
     app.logger.addHandler(ch)
-    app.logger.info("Request Headers")
-    app.logger.info(request.headers)
+    app.logger.info(log_message)
 
 @app.route('/set-up-infusionsoft-callback-hooks')
 @requires_auth
