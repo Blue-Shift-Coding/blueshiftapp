@@ -124,6 +124,8 @@
  */
 (function($) {
 	$(function() {
+
+		// TODO:WV:20170531:Find a suitable way to behave if there are NO product options (e.g. perhaps dont show the modal at all?)  Or is this not necessary - will there always be options?
 		$(".classes-results").on("submit", "form.product-options", function(e) {
 			var form, productOptionIdsField, productOptionValuesField, ids = [], values = [];
 
