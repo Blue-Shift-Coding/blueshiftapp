@@ -185,6 +185,16 @@ def forgot():
 # TODO:WV:20170526:How to prevent third parties maliciously requesting this.  Can we restrict to Infusionsoft IPs?
 @app.route('/re-sync')
 def re_sync():
+
+    # If this request is Infusionsoft checking that the URL works, just ping back their hook-secret in a header
+    header_name = "X-Hook-Secret"
+    secret = request.headers.get(header_name)
+    if secret:
+        resp = flask.Response("")
+        resp.headers[header_name] = secret
+        return resp
+
+    # Otherwise, queue a re-sync
     storage.set(shop_data.cache.queue_key, 1)
     return "Done"
 
