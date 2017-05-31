@@ -2,12 +2,12 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect, Response
+from flask import Flask, render_template, request, redirect, Response, url_for
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
-import os, time, copy, math
+import os, time, copy, math, json
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import infusionsoftapi, shop_data, storage
@@ -186,6 +186,22 @@ def forgot():
 @app.route('/re-sync')
 def re_sync():
     storage.set(shop_data.cache.queue_key, 1)
+    return "Done"
+
+@app.route('/set-up-infusionsoft-callback-hooks')
+@requires_auth
+def set_up_infusionsoft_callback_hooks():
+    infusionsoftapi.refresh_access_token_data_if_necessary()
+    if not infusionsoftapi.have_access_token():
+        return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
+
+    # TEST:WV:20170531:Pushing to Heroku to see what this generates
+    return url_for("re_sync", _external=True)
+
+    event_keys = ["product.add", "product.delete", "product.edit"]
+    for event_key in event_keys:
+        return infusionsoftapi.update_hook(event_key, url_for("re_sync", _external=True))
+
     return "Done"
 
 @app.route('/api-authenticate/')

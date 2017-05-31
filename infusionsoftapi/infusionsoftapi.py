@@ -17,6 +17,10 @@ for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client
 categories_for_filtering = {"Age range": [], "Dates": []}
 categories_for_metadata = ["Times"]
 
+def have_access_token():
+	access_token_data = get_access_token_data()
+	return access_token_data is not None
+
 def get_access_token_data():
 	access_token_data = storage.get("access_token_data")
 
