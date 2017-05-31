@@ -2768,7 +2768,8 @@ footer .color-bar {
 }
 .footerInfo .input-group .input-group-addon {
   border-radius: 0 4px 4px 0;
-  background-color: #f5c644;
+  color: #ffffff;
+  background-color: #003366;
   border: 0;
   -webkit-transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;
@@ -2784,8 +2785,8 @@ footer .color-bar {
   color: #ffffff;
 }
 .footerInfo .input-group .input-group-addon:hover {
-  background-color: #f5c644;
-  border-color: #f5c644;
+  background-color: #003366;
+  border-color: #003366;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$value)";
   filter: alpha(opacity=1);
   -moz-opacity: 1;
