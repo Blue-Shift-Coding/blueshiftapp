@@ -190,7 +190,7 @@ def re_sync():
     header_name = "X-Hook-Secret"
     secret = request.headers.get(header_name)
     if secret:
-        resp = app.Response("")
+        resp = Response("")
         resp.headers[header_name] = secret
 
         log_to_stdout("Response headers")
@@ -202,6 +202,7 @@ def re_sync():
     storage.set(shop_data.cache.queue_key, 1)
     return "Done"
 
+# This can be used for logging debug to Heroku logs (or to console, in dev)
 def log_to_stdout(log_message):
     ch = logging.StreamHandler()
     app.logger.addHandler(ch)
