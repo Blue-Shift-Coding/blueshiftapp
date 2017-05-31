@@ -42,7 +42,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-12">
+			<div class="col-xs-12 classes-results">
 
 				{% for product in products %}
 
@@ -82,18 +82,20 @@
 											<h4 class="modal-title">{{ product.product_name }}</h4>
 										  </div>
 										  <div class="modal-body">
-											<form action="https://km362.infusionsoft.com/app/manageCart/addProduct" target="_blank">
+											<form action="https://km362.infusionsoft.com/app/manageCart/addProduct" target="_blank" class="product-options">
 												<input type="hidden" name="productId" value="{{ product.id }}" />
+												<input type="hidden" name="productOptionId" value="" />
+												<input type="hidden" name="productOption" value="" />
 
 
 												{% for option in product.product_options %}
 													{% set option_key = "option-" ~ option.id %}
 
-													<div class="form-group">
+													<div class="form-group product-option-field">
 														<label for="{{ option_key }}">{{ option.label }}</label>
 
 														{% if option.type == 'FixedList' %}
-															<select {% if option.required %}required{% endif %} class="form-control" id="{{ option_key }}">
+															<select {% if option.required %}required{% endif %} class="form-control" id="{{ option_key }}" data-option-id="{{option.id}}">
 																<option></option>
 																{% for option_value in option.get('values') %}
 																	<option value="{{option_value.id}}" {% if option_value.is_default %}selected{% endif %}>{{option_value.label}}</option>
@@ -101,7 +103,7 @@
 															</select>
 														{% endif %}
 														{% if option.type == 'Variable' %}
-															<input {% if option.required %}required{% endif %} type="text" class="form-control" id="{{ option_key }}" />
+															<input {% if option.required %}required{% endif %} type="text" class="form-control" id="{{ option_key }}" data-option-id="{{option.id}}" />
 														{% endif %}
 													</div>
 

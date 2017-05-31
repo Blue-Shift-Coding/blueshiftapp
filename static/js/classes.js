@@ -1,3 +1,7 @@
+
+/*
+ * Filters
+ */
 (function($) {
 	$(function() {
 
@@ -110,6 +114,59 @@
 		});
 
 		return filter;
+	}
+
+})(jQuery);
+
+
+/*
+ * Product options
+ */
+(function($) {
+	$(function() {
+		$(".classes-results").on("submit", "form.product-options", function(e) {
+			var form, productOptionIdsField, productOptionValuesField, ids = [], values = [];
+
+			$form = $(this);
+
+			// Compile data to submit
+			$form.find(".product-option-field").each(function() {
+				var field, id, value;
+
+				field = $(this).find("input, select");
+				id = field.attr("data-option-id");
+				if (id == "") {
+					throw new Error("No option ID");
+				}
+				ids.push(replaceCommas(id));
+				value = field.val();
+				if (typeof value == "undefined") {
+					value = "";
+				}
+				values.push(replaceCommas(value));
+			});
+
+			// Find fields to insert data into
+			productOptionIdsField = $form.find("[name=productOptionId]");
+			productOptionValuesField = $form.find("[name=productOption]");
+			if (productOptionIdsField.length == 0 || productOptionValuesField.length == 0) {
+				throw new Error("Missing form field: productOptionId or productOption");
+			}
+
+			// Concatenate data into fields, and then allow default submit action
+			productOptionIdsField.val(ids.join(","));
+			productOptionValuesField.val(values.join(","));
+		});
+	});
+
+
+	/*
+	 * This function is for replacing commas with a similar obscure unicode character known as a full-width comma
+	 * so that the string can safely be included in a comma-separated list.
+	 * Full-width comma: http://www.fileformat.info/info/unicode/char/ff0c/index.htm
+	 */
+	function replaceCommas(str) {
+		return str.replace(",", "，");
 	}
 
 })(jQuery);
