@@ -192,10 +192,6 @@ def re_sync():
     if secret:
         resp = Response("")
         resp.headers[header_name] = secret
-
-        log_to_stdout("Response headers")
-        log_to_stdout(resp.headers)
-
         return resp
 
     # Otherwise, queue a re-sync
