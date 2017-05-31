@@ -193,7 +193,7 @@ def re_sync():
     header_name = "X-Hook-Secret"
     secret = request.headers.get(header_name)
     if secret:
-        resp = flask.Response("")
+        resp = app.Response("")
         resp.headers[header_name] = secret
         return resp
 
