@@ -238,21 +238,31 @@
 
     {% block pagination %} {% if pagination_data %}
     {% set page_num = pagination_data.page_num  %}
+    {% set prev_page = page_num - 1  %}
+    {% set next_page = page_num + 1  %}
     <nav aria-label="Page navigation" class="blog-pagination">
       <ul class="pagination">
+
+        {% if prev_page > 0 %}
         <li>
-          <a href="{{ url_for(pagination_data.route_function_name, page_num = page_num - 1, **pagination_data.route_function_params) }}" aria-label="Previous">
+          <a href="{{ url_for(pagination_data.route_function.name, page_num = prev_page, **pagination_data.route_function.arguments) }}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
+        {% endif %}
+
         {% for page in range(pagination_data.total_pages) %}
-        <li><a href="{{ url_for(pagination_data.route_function_name, page_num = page + 1, **pagination_data.route_function_params) }}">{{ page + 1 }}</a></li>
+        <li><a href="{{ url_for(pagination_data.route_function.name, page_num = page + 1, **pagination_data.route_function.arguments) }}">{{ page + 1 }}</a></li>
         {% endfor %}
+
+        {% if next_page <= pagination_data.total_pages %}
         <li>
-          <a href="{{ url_for(pagination_data.route_function_name, page_num = page_num + 1, **pagination_data.route_function_params) }}" aria-label="Next">
+          <a href="{{ url_for(pagination_data.route_function.name, page_num = next_page, **pagination_data.route_function.arguments) }}" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
+        {% endif %}
+
       </ul>
     </nav>
     {% endif %} {% endblock %}
@@ -422,6 +432,7 @@
   </footer>
 
   <!-- TODO:WV:20170515:JS and CSS; either compile into one file, or only include relevant parts on relevant pages, or both. -->
+  <!-- TODO:WV:20170515:Also the site requires external resources to load - would be good to incoroprate fetching some or all of these into a build script, and host them locally -->
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script>
     window.jQuery || document.write('<script type="text/javascript" src="/static/js/libs/jquery-1.11.1.min.js"><\/script>')

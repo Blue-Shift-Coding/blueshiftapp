@@ -2,12 +2,12 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect, Response
+from flask import Flask, render_template, request, redirect, Response, url_for
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from forms import *
-import os, time, copy, math
+import os, time, copy, math, json
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import infusionsoftapi, shop_data, storage
@@ -150,7 +150,9 @@ def news(page_num=1):
         pagination_data={
             "page_num":page_num,
             "total_pages":total_pages,
-            "route_function_name":'news',
+            "route_function":{
+                "name":"news"
+            }
         },
         format_date=post_format_date
     )
@@ -186,6 +188,22 @@ def re_sync():
     storage.set(shop_data.cache.queue_key, 1)
     return "Done"
 
+@app.route('/set-up-infusionsoft-callback-hooks')
+@requires_auth
+def set_up_infusionsoft_callback_hooks():
+    infusionsoftapi.refresh_access_token_data_if_necessary()
+    if not infusionsoftapi.have_access_token():
+        return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
+
+    # TEST:WV:20170531:Pushing to Heroku to see what this generates
+    return url_for("re_sync", _external=True)
+
+    event_keys = ["product.add", "product.delete", "product.edit"]
+    for event_key in event_keys:
+        return infusionsoftapi.update_hook(event_key, url_for("re_sync", _external=True))
+
+    return "Done"
+
 @app.route('/api-authenticate/')
 @requires_auth
 def api_authenticate():
@@ -206,7 +224,8 @@ def api_authenticate():
 def api_authenticate_done():
     return "Done"
 
-# TODO:WV:20170515:Pagination
+# TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
+# TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
 @app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None, "page_num": 1})
 @app.route('/classes/<int:page_num>', defaults={"url_category": None, "dates": None, "ages": None})
 @app.route('/classes/<url_category>', defaults={"dates": None, "ages": None, "page_num": 1})
@@ -291,11 +310,13 @@ def classes(url_category, dates, ages, page_num):
         pagination_data={
             "page_num":page_num,
             "total_pages":total_pages,
-            "route_function_name":'classes',
-            "route_function_params": {
-                "url_category":url_category,
-                "dates":dates,
-                "ages":ages
+            "route_function": {
+                "name": "classes",
+                "arguments": {
+                    "url_category":url_category,
+                    "dates":dates,
+                    "ages":ages
+                }
             }
         },
     )
