@@ -198,7 +198,7 @@ def set_up_infusionsoft_callback_hooks():
     callback_url = url_for("re_sync", _external=True, _scheme='https')
     event_keys = ["product.add", "product.delete", "product.edit"]
     for event_key in event_keys:
-        return infusionsoftapi.update_hook(event_key, callback_url)
+        infusionsoftapi.update_hook(event_key, callback_url)
 
     return "Done"
 
