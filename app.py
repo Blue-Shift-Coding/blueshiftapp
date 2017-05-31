@@ -183,14 +183,35 @@ def forgot():
     return render_template('forms/forgot.html', form=form)
 
 # TODO:WV:20170526:How to prevent third parties maliciously requesting this.  Can we restrict to Infusionsoft IPs?
-@app.route('/re-sync')
+@app.route('/re-sync', methods=['GET', 'POST'])
 def re_sync():
+
+    # If this request is Infusionsoft checking that the URL works, just ping back their hook-secret in a header
+    header_name = "X-Hook-Secret"
+    secret = request.headers.get(header_name)
+    if secret:
+        resp = Response("")
+        resp.headers[header_name] = secret
+
+        log_to_stdout("Response headers")
+        log_to_stdout(resp.headers)
+
+        return resp
+
+    # Otherwise, queue a re-sync
     storage.set(shop_data.cache.queue_key, 1)
     return "Done"
+
+# This can be used for logging debug to Heroku logs (or to console, in dev)
+def log_to_stdout(log_message):
+    ch = logging.StreamHandler()
+    app.logger.addHandler(ch)
+    app.logger.info(log_message)
 
 @app.route('/set-up-infusionsoft-callback-hooks')
 @requires_auth
 def set_up_infusionsoft_callback_hooks():
+    log_to_stdout("Test")
     infusionsoftapi.refresh_access_token_data_if_necessary()
     if not infusionsoftapi.have_access_token():
         return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
