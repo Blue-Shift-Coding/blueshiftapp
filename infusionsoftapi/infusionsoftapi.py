@@ -135,9 +135,6 @@ def get_all_products():
 									product["times"].append(child_category["name"])
 
 	# Add images to products
-	# TODO;WV:20170524:extra_product_datum["LargeImage"].data (not base64-encoded) could be compared to the
-	# TODO;WV:20170524:list of magic numbers at http://www.garykessler.net/library/file_sigs.html to confirm file type
-	# TODO;WV:20170524:The photo I checked was a jpeg.  I don't know if this has to be the case, or if it was only because I uploaded a jpeg
 	extra_product_data = query_product_table()
 	for extra_product_datum in extra_product_data:
 		for product in products["products"]:
