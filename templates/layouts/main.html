@@ -102,7 +102,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-            <a class="navbar-brand" href="/"><img src="http://blueshiftcoding.com/wp-content/uploads/2017/04/BLUESHIFT-LOGO_GRAD_TRANS.png" alt="logo"></a>
+            <a class="navbar-brand" href="/"><img src="http://blueshiftcoding.com/wp-content/uploads/2017/05/BS-logo.png" alt="logo"></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -157,7 +157,7 @@
               <li class="dropdown singleDrop color-5">
                 <a href="javascript:void(0)" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i></i>
-                  <span>About Us</span>
+                  <span>About</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
                   <li class="dropdown dropdown-submenu">
@@ -174,12 +174,12 @@
                 </ul>
               </li>
 
-              <li {% if request.endpoint=='curriculum' %} class="active dropdown singleDrop color-6" {% else %} class="dropdown singleDrop color-6" {% endif %}>
+              <!-- <li {% if request.endpoint=='curriculum' %} class="active dropdown singleDrop color-6" {% else %} class="dropdown singleDrop color-6" {% endif %}>
                 <a href="{{ url_for('curriculum') }}">
                   <i></i>
                   <span>Curriculum</span>
                 </a>
-              </li>
+              </li> -->
               <li {% if request.endpoint=='news' %} class="active dropdown singleDrop color-4" {% else %} class="dropdown singleDrop color-4" {% endif %}>
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i></i>
@@ -196,7 +196,13 @@
                   <i></i>
                   <span>FAQs</span>
                 </a>
+              </li>
 
+              <li class="dropdown singleDrop">
+                <a href="{{ url_for('classes') }}" class="dropdown-toggle">
+                  <i></i>
+                  <span><i class="fa fa-shopping-cart"></i></span>
+              </a>
               </li>
             </ul>
           </div>
@@ -279,7 +285,7 @@
       </div>
     </div>
     <!-- FOOTER INFO AREA -->
-    <div class="footerInfoArea full-width clearfix" style="background-image: url(http://themes.iamabdus.com/kidz/1.1/img/footer/footer-bg-1.png);">
+    <div class="footerInfoArea full-width clearfix" style="background: url(http://blueshiftcoding.com/wp-content/uploads/2017/05/clouds-footer.jpg); background-size: cover;">
       <div class="container">
         <div class="row">
           <div class="col-sm-3 col-xs-12">

@@ -6,3 +6,20 @@
  * Contains immediate fixes that should be revised later and added in the
  * main.css.
  */
+
+
+ .pageTitleSection.titleBackground {
+   background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/05/homepage-header.jpg);
+   width: 100%;
+   -webkit-background-size: cover;
+   -moz-background-size: cover;
+   -o-background-size: cover;
+   background-size: cover;
+   background-position: center center;
+   color: #ffffff;
+   padding: 201px 0;
+ }
+
+ .titleText {
+ color: #66CCCC !important;
+ }
