@@ -2740,7 +2740,7 @@ footer .color-bar {
   width: 100%;
 }
 .footerTitle h4 {
-  color: #ffffff;
+  color: #66CCCC;
   font-size: 20px;
   margin: 0;
   font-family: 'Dosis', sans-serif;
@@ -2750,7 +2750,7 @@ footer .color-bar {
 
 .footerInfo p {
   margin-bottom: 30px;
-  color: #d8e3f0;
+  color: #003366;
 }
 .footerInfo .input-group {
   border-radius: 5px;
@@ -2794,7 +2794,11 @@ footer .color-bar {
 }
 
 .footerList > li > a {
-  color: #d8e3f0;
+  color: #003366;
+}
+.footerList > li > p > a, li > p > i {
+  color: #003366;
+  padding: 0.2em;
 }
 .footerList > li > a i {
   margin: 0 10px 25px 0;
