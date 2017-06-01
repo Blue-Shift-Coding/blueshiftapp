@@ -103,7 +103,7 @@
 															</select>
 														{% endif %}
 														{% if option.type == 'Variable' or option.type == 'Date' %}
-															<input {% if option.required %}required{% endif %} type="text" class="form-control {% if option.type == 'Date' %}date-picker{% endif %}" id="{{ option_key }}" data-option-id="{{option.id}}" />
+															<input {% if option.required %}required{% endif %} type="text" class="form-control {% if option.type == 'Date' %}date-picker {% if option.restrictions and 'weekdays-only' in option.restrictions %}weekdays-only{% endif %}  {% endif %}" id="{{ option_key }}" data-option-id="{{option.id}}" />
 														{% endif %}
 													</div>
 

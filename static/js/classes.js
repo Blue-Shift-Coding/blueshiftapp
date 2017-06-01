@@ -176,6 +176,25 @@
 	/*
 	 * Enable datepickers
 	 */
-	$(".date-picker").datepicker();
+	var weekDaysOnlyOptions = {
+		"beforeShowDay": function(date) {
+			var dayOfWeek, isWeekDay;
+
+			dayOfWeek = date.getDay();
+			isWeekDay = (dayOfWeek > 0 && dayOfWeek < 6);
+			return [isWeekDay];
+		}
+	}
+	$(".date-picker").each(function() {
+		var options;
+
+		if ($(this).hasClass("weekdays-only")) {
+			options = weekDaysOnlyOptions;
+		} else {
+			options = {}
+		}
+
+		$(this).datepicker(options);
+	});
 
 })(jQuery);
