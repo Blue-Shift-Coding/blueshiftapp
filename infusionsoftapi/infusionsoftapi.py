@@ -149,6 +149,16 @@ def get_all_products():
 						product.update({"image": "data:image/"+image_type+";base64,"+extra_product_datum["LargeImage"].data.encode("base64")})
 				break
 
+	# Add extra data to product options, as required
+	for product in products["products"]:
+		for option in product["product_options"]:
+			format_rgx = "\s*\(format:([^)]+)\)\s*$"
+			matches = re.search(format_rgx, option["label"])
+			if matches is not None:
+				match_parts = re.split("\s*;\s*", matches.group(1))
+				if (match_parts[0].lower() == "date"):
+					option.update({"type": "Date", "restrictions": [match_parts[1]], "label": re.sub(format_rgx, "", option["label"])})
+
 	return products
 
 def get_category_tree():
