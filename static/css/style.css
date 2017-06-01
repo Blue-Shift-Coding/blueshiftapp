@@ -76,7 +76,7 @@
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 14px;
   line-height: 21px;
   color: #666666;
@@ -99,7 +99,7 @@ p {
 }
 
 h1, h2, h3, h4, h5 {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: uppercase;
   color: #202020;
   margin-top: 0;
@@ -615,7 +615,7 @@ aside {
   }
 }
 @media (min-width: 768px) {
-  .whiteSection, .mainContent, .lightSection, .colorSection {
+  .whiteSection, .lightSection, .colorSection {
     padding: 100px 0;
   }
 }
@@ -629,7 +629,7 @@ aside {
 }
 
 .sectionTitle h2 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 36px;
   color: #f5c644;
   text-transform: capitalize;
@@ -672,7 +672,7 @@ aside {
 }
 .sectionTitleSmall h2 {
   text-align: center;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
   margin: 0 0 12px 0;
   color: #ffffff;
@@ -703,7 +703,7 @@ aside {
   color: #ffffff;
   margin-bottom: 40px;
   margin: 0 0 8px 0;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
   font-weight: 600;
 }
@@ -794,7 +794,7 @@ aside {
 }
 
 .resultInfo h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   color: #666666;
   font-size: 28px;
   text-transform: capitalize;
@@ -818,7 +818,7 @@ aside {
   color: #ffffff;
   text-transform: capitalize;
   font-weight: 700;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 .formPanel.panel .panel-body {
   border: 1px solid #dedede;
@@ -847,7 +847,7 @@ aside {
   font-size: 16px;
 }
 .formPanel.panel .panel-body .media-list li .media-body.iconContent .media-heading {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
   font-weight: 700;
 }
@@ -1059,7 +1059,7 @@ aside {
   }
 }
 .tabCommon .media-body .media-heading {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 28px;
   color: #f5c644;
   margin: 0 0 25px 0;
@@ -1441,7 +1441,7 @@ aside {
   }
 }
 .cart-dropdown .dropdown-menu li:first-child {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   color: #222222;
   text-transform: capitalize;
@@ -1479,7 +1479,7 @@ aside {
   border: none;
 }
 .cart-dropdown .dropdown-menu li:last-child span {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   color: #222222;
   font-weight: 700;
@@ -1538,7 +1538,7 @@ aside {
   }
 }
 .cart-dropdown .dropdown-menu .media-body h4 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
   color: #222222;
   text-transform: capitalize;
@@ -1663,7 +1663,7 @@ aside {
 }
 
 .errorInfo h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 48px;
   color: #222222;
   margin-bottom: 25px;
@@ -1997,7 +1997,7 @@ aside {
 .navbar-nav > li.dropdown.megaDropMenu .dropdown-menu .list-unstyled li.listHeading, .navbar-nav > li.dropdown.megaDropMenu .dropdown-menu .list-unstyled li:first-child {
   float: left;
   font-weight: 700;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 @media (min-width: 320px) {
   .navbar-nav > li.dropdown.megaDropMenu .dropdown-menu .list-unstyled li.listHeading, .navbar-nav > li.dropdown.megaDropMenu .dropdown-menu .list-unstyled li:first-child {
@@ -2523,7 +2523,7 @@ footer .color-bar {
   color: #ffffff;
   font-size: 20px;
   margin: 0;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 700;
   text-transform: capitalize;
 }
@@ -2589,7 +2589,7 @@ footer .color-bar {
   border-bottom: none;
 }
 .postLink li .media-body .media-heading {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 14px;
   font-size: 14px;
   font-weight: 400;
@@ -2743,7 +2743,7 @@ footer .color-bar {
   color: #66CCCC;
   font-size: 20px;
   margin: 0;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 700;
   text-transform: capitalize;
 }
@@ -2814,7 +2814,7 @@ footer .color-bar {
   border-bottom: none;
 }
 .postLink li .media-body .media-heading {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 14px;
   font-size: 14px;
   font-weight: 400;
@@ -2986,7 +2986,7 @@ footer .color-bar {
 .tp-caption.rs-caption-3 {
   white-space: normal !important;
   width: inherit;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 @media (min-width: 320px) {
@@ -3230,7 +3230,7 @@ footer .color-bar {
 .sectionLink .linkText {
   line-height: 190px;
   display: block;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: #ffffff;
@@ -3282,7 +3282,7 @@ footer .color-bar {
   font-size: 24px;
   line-height: 30px;
   color: #ffffff;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 700;
   text-transform: capitalize;
   text-overflow: ellipsis;
@@ -3352,7 +3352,7 @@ footer .color-bar {
   color: #ffffff;
   margin-bottom: 40px;
   margin: 0 0 23px 0;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
 }
 @media (min-width: 768px) {
@@ -3384,7 +3384,7 @@ footer .color-bar {
 
 /*=== 5.4 ABOUT SCHOOL ===*/
 .schoolInfo h2 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 36px;
   line-height: 42px;
   text-transform: capitalize;
@@ -3497,7 +3497,7 @@ footer .color-bar {
 
 /*=== 5.6 COURSES SECTION ===*/
 .block h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
   font-weight: 700;
   text-overflow: ellipsis;
@@ -3642,7 +3642,7 @@ footer .color-bar {
   line-height: 44px;
 }
 .thumbnailContent.alt > .caption .table.table-curved thead tr th:first-child {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
 }
 .thumbnailContent.alt > .caption .table.table-curved thead tr th:first-child i {
@@ -3662,7 +3662,7 @@ footer .color-bar {
 }
 .thumbnailContent.alt > .caption .table.table-curved tbody tr td span {
   display: block;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 15px;
@@ -3970,7 +3970,7 @@ footer .color-bar {
 .teachersInfo h3 {
   color: #f5c644;
   text-transform: capitalize;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 700;
   font-size: 28px;
   margin: 0 0 25px 0;
@@ -4073,9 +4073,6 @@ footer .color-bar {
 }
 
 .eventContent {
-  -webkit-border-radius: 13px;
-  -moz-border-radius: 13px;
-  border-radius: 13px;
   margin-bottom: 30px;
 }
 .eventContent .media-left {
@@ -4477,7 +4474,7 @@ footer .color-bar {
   line-height: 4px1;
   color: #f5c644;
   text-transform: capitalize;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   margin: 0 0 20px 0;
 }
 .homeContactContent p {
@@ -4799,7 +4796,7 @@ footer .color-bar {
   position: absolute;
 }
 .banner-bottom-inner .colContent-info h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
   color: #ffffff;
   text-transform: capitalize;
@@ -4942,7 +4939,7 @@ footer .color-bar {
   padding: 30px;
 }
 .box-info h4 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
   color: #ffffff;
   text-transform: capitalize;
@@ -5091,7 +5088,7 @@ footer .color-bar {
   font-size: 24px;
   color: #ffffff;
   text-transform: capitalize;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 .courseSidebar .panel-body {
   border: 1px solid #dedede;
@@ -5315,7 +5312,7 @@ footer .color-bar {
   }
 }
 .courseList .media-body .media-heading a {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
   font-weight: 700;
   line-height: 20px;
@@ -5459,7 +5456,7 @@ footer .color-bar {
   color: #ffffff;
   text-transform: capitalize;
   font-weight: 700;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 .rightSidebar .panel .panel-body {
   border: 1px solid #dedede;
@@ -5493,7 +5490,7 @@ footer .color-bar {
   font-size: 16px;
 }
 .rightSidebar .panel .panel-body .media-list li .media-body.iconContent .media-heading {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
   font-weight: 700;
 }
@@ -5528,7 +5525,7 @@ footer .color-bar {
   color: #ffffff;
   text-transform: capitalize;
   font-weight: 700;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 .eventSidebar.panel .panel-body {
   border: 1px solid #dedede;
@@ -5557,7 +5554,7 @@ footer .color-bar {
   font-size: 16px;
 }
 .eventSidebar.panel .panel-body .media-list li .media-body.iconContent .media-heading {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 20px;
   font-weight: 700;
 }
@@ -5603,7 +5600,7 @@ footer .color-bar {
   text-align: center;
 }
 .coursesCounter .counterInner h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 26px;
   font-weight: 700;
   color: #ffffff;
@@ -5658,7 +5655,7 @@ footer .color-bar {
 
 .thumbnailContent > .caption.singleBlog h3 {
   line-height: 34px;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
   font-weight: 700;
   margin: 0 0 20px 0;
@@ -5740,7 +5737,7 @@ footer .color-bar {
   margin-bottom: 20px;
 }
 .blogComments h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   color: #f5c644;
   font-weight: 700;
@@ -5862,7 +5859,7 @@ footer .color-bar {
   font-weight: 700;
   color: #222222;
   font-size: 4px1;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   text-transform: capitalize;
 }
 @media (min-width: 320px) {
@@ -5998,7 +5995,7 @@ footer .color-bar {
   margin: 0 auto;
   color: #84557e;
   text-align: center;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 .count-down #simple_timer .table-cell {
   display: inline-block;
@@ -6091,7 +6088,7 @@ footer .color-bar {
 }
 .servicesStyle > .media-body > .media-heading {
   text-transform: capitalize;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -6387,7 +6384,7 @@ footer .color-bar {
 .priceTitle h3 {
   margin: 0;
   color: #ffffff;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 34px;
   font-weight: 600;
   text-transform: capitalize;
@@ -6423,7 +6420,7 @@ footer .color-bar {
 
 .priceOffer li {
   margin-bottom: 25px;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   color: #666666;
   font-size: 18px;
 }
@@ -6437,7 +6434,7 @@ footer .color-bar {
 .priceBtn h4 {
   display: inline-block;
   float: right;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 34px;
   font-weight: 600;
   text-align: center;
@@ -6449,7 +6446,7 @@ footer .color-bar {
   font-size: 14px;
 }
 .priceBtn h5 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 28px;
   font-weight: 600;
   color: #222222;
@@ -6667,7 +6664,7 @@ footer .color-bar {
 
 .progress-wizard .progressInfo {
   text-align: center;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 600;
   font-size: 16px;
   color: #222222;
@@ -6703,7 +6700,7 @@ footer .color-bar {
   border-radius: 8px 8px 0 0;
 }
 .checkoutInfo .panel-heading .panel-title {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 700;
   font-size: 24px;
   color: #ffffff;
@@ -6754,7 +6751,7 @@ footer .color-bar {
 }
 
 .lowerPartTitle h4 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 700;
   font-size: 24px;
   color: #f5c644;
@@ -6779,7 +6776,7 @@ footer .color-bar {
   -webkit-border-radius: 7px;
   -moz-border-radius: 7px;
   border-radius: 7px;
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 600;
   font-size: 24px;
   color: #60a662;
@@ -6940,7 +6937,7 @@ footer .color-bar {
 }
 
 .product-info .product-title {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 40px;
   color: #222222;
   text-transform: capitalize;
@@ -7002,7 +6999,7 @@ footer .color-bar {
 }
 
 .share span {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   color: #222222;
   font-weight: 600;
@@ -7050,7 +7047,7 @@ footer .color-bar {
   box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 .product-review .tab-content h3 {
-  font-family: 'Dosis', sans-serif;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   color: #f5c644;
   text-transform: capitalize;
