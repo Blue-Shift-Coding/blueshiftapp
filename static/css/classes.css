@@ -12,3 +12,14 @@
 .dropdown .btn {
   padding:6px 12px;
 }
+
+.courseList .media-body .list-inline.btnPart > li button.btn-primary {
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #666666;
+}
+
+.courseList .modal-body {
+	background-color:#f8f8f8;
+}
+
