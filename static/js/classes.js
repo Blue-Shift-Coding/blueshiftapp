@@ -172,4 +172,10 @@
 		return str.replace(",", "，");
 	}
 
+
+	/*
+	 * Enable datepickers
+	 */
+	$(".date-picker").datepicker();
+
 })(jQuery);

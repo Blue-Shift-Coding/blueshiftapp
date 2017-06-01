@@ -102,8 +102,8 @@
 																{% endfor %}
 															</select>
 														{% endif %}
-														{% if option.type == 'Variable' %}
-															<input {% if option.required %}required{% endif %} type="text" class="form-control" id="{{ option_key }}" data-option-id="{{option.id}}" />
+														{% if option.type == 'Variable' or option.type == 'Date' %}
+															<input {% if option.required %}required{% endif %} type="text" class="form-control {% if option.type == 'Date' %}date-picker{% endif %}" id="{{ option_key }}" data-option-id="{{option.id}}" />
 														{% endif %}
 													</div>
 
