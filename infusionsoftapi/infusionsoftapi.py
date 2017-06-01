@@ -159,6 +159,15 @@ def get_all_products():
 				if (match_parts[0].lower() == "date"):
 					option.update({"type": "Date", "restrictions": [match_parts[1]], "label": re.sub(format_rgx, "", option["label"])})
 
+
+	# Add extra product options, as required
+	# TODO:WV:20170601:Restrict which fields show up on which products, using the category system
+	for product in products["products"]:
+		product.update({"extra_options": [
+			{"label": "Test extra option 1", "type": "Variable", "required": True, "id": "test1"},
+			{"label": "Test extra option 2", "type": "Variable", "required": True, "id": "test2"}]
+		})
+
 	return products
 
 def get_category_tree():
