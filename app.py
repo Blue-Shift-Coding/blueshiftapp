@@ -236,7 +236,6 @@ def api_authenticate():
 
 @app.route('/api-authenticate-done/')
 def api_authenticate_done():
-
     log_to_stdout(request.headers)
     log_to_stdout("\n---\n")
     log_to_stdout(request.get_data())
