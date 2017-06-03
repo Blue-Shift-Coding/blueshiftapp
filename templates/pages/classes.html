@@ -103,28 +103,12 @@
 
 													{% if product[option_index] %}
 														{% for option in product[option_index] %}
-															{% set option_key = option_key_prefix ~ '-' ~ option.id %}
-															<div class="form-group {{ option_class }}">
-																<label for="{{ option_key }}">{{ option.label }}</label>
-
-																{% if option.type == 'FixedList' %}
-																	<select {% if option.required %}required{% endif %} class="form-control" id="{{ option_key }}" data-option-id="{{option.id}}">
-																		<option></option>
-																		{% for option_value in option.get('values') %}
-																			<option value="{{option_value.id}}" {% if option_value.is_default %}selected{% endif %}>{{option_value.label}}</option>
-																		{% endfor %}
-																	</select>
-																{% endif %}
-																{% if option.type == 'Variable' or option.type == 'Date' %}
-																	<input {% if option.required %}required{% endif %} type="text" class="form-control {% if option.type == 'Date' %}date-picker {% if option.restrictions and 'weekdays-only' in option.restrictions %}weekdays-only{% endif %}  {% endif %}" id="{{ option_key }}" data-option-id="{{option.id}}" />
-																{% endif %}
-															</div>
+															{% include 'pages/classes/option-field.html' %}
 														{% endfor %}
 													{% endif %}
 
 
 												{% endfor %}
-
 
 
 												<button type="submit" class="btn btn-primary"><i class="fa fa-shopping-basket " aria-hidden="true"></i>Add to Cart</button>

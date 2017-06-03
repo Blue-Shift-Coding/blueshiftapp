@@ -167,18 +167,24 @@ def get_all_products():
 	for product in products["products"]:
 		if "is_for_adults" in product and product["is_for_adults"]:
 			extra_options = [
-				{"label": "First name of attendee", "type": "Variable", "required": True, "id": "first-name-of-attendee"},
-				{"label": "Last name of attendee", "type": "Variable", "required": True, "id": "last-name-of-attendee"},
+				{"label": "Attendee's name", "type": "Group", "fields": [
+					{"label": "First", "type": "Variable", "required": True, "id": "first-name-of-attendee"},
+					{"label": "Last", "type": "Variable", "required": True, "id": "last-name-of-attendee"},
+				]},
 				{"label": "Phone", "type": "Variable", "required": True, "id": "phone"},
 				{"label": "Email", "type": "Variable", "required": True, "id": "email"},
 				{"label": "Is there anything else we should know?", "type": "Variable", "required": False, "id": "other"}
 			]
 		else:
 			extra_options = [
-				{"label": "First name of child", "type": "Variable", "required": True, "id": "first-name-of-child"},
-				{"label": "Last name of child", "type": "Variable", "required": True, "id": "last-name-of-child"},
-				{"label": "Child's parent / carer main contact number", "type": "Variable", "required": True, "id": "carer-contact-number"},
-				{"label": "Child's parent / carer main email address", "type": "Variable", "required": True, "id": "carer-email-address"},
+				{"label": "Child's name", "type": "Group", "fields": [
+					{"label": "First", "type": "Variable", "required": True, "id": "first-name-of-child"},
+					{"label": "Last", "type": "Variable", "required": True, "id": "last-name-of-child"},
+				]},
+				{"label": "Parent / carer", "type": "Group", "fields": [
+					{"label": "Contact number", "type": "Variable", "required": True, "id": "carer-contact-number"},
+					{"label": "Email address", "type": "Variable", "required": True, "id": "carer-email-address"},
+				]},
 				{"label": "Name of child's school", "type": "Variable", "required": True, "id": "name-of-childs-school"},
 				{"label": "Please select your child's date of birth", "type": "Date", "required": True, "id": "childs-date-of-birth"},
 				{"label": "Does your child have any previous coding experience?", "type": "FixedList", "required": True, "id": "childs-previous-coding-experience", "values": [{"label": "No, beginner level", "id": "beginner"}, {"label": "Yes, intermediate level", "id": "intermediate"}, {"label": "Yes, advanced level", "id": "advanced"}]},

@@ -27,3 +27,6 @@
   display:none;
 }
 
+.courseList div.child-field input {
+  margin-right:1em;
+}
