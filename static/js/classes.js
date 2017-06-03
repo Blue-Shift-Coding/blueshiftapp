@@ -128,7 +128,7 @@
 		// TODO:WV:20170531:Find a suitable way to behave if there are NO product options (e.g. perhaps dont show the modal at all?)  Or is this not necessary - will there always be options?
 		// TODO:WV:20170531:Stop the Javascript error that is triggered if you press escape while the modal is showing (this would be the theme's problem, but good to fix or work-around anyway, perhaps by overriding the escape-button handler)
 		$(".classes-results").on("submit", "form.product-options", function(e) {
-			var form, productOptionIdsField, productOptionValuesField, ids = [], values = [], spamInterval;
+			var form, productOptionIdsField, productOptionValuesField, ids = [], values = [], purchaseFormTarget, spamInterval;
 
 			$form = $(this);
 
@@ -161,7 +161,7 @@
 			productOptionValuesField.val(values.join(","));
 
 			// Open a new window and allow the form to submit to it
-			var purchaseFormTarget = window.open('', 'purchase-form-target');
+			purchaseFormTarget = window.open('', 'purchase-form-target');
 			this.target = 'purchase-form-target';
 
 			// Spam the other window with the order data until an acknowledgement comes back
