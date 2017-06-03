@@ -186,7 +186,7 @@ def get_all_products():
 					{"label": "Email address", "type": "Variable", "required": True, "id": "carer-email-address"},
 				]},
 				{"label": "Name of child's school", "type": "Variable", "required": True, "id": "name-of-childs-school"},
-				{"label": "Please select your child's date of birth", "type": "Date", "required": True, "id": "childs-date-of-birth"},
+				{"label": "Please enter your child's date of birth", "type": "Variable", "required": True, "id": "childs-date-of-birth"},
 				{"label": "Does your child have any previous coding experience?", "type": "FixedList", "required": True, "id": "childs-previous-coding-experience", "values": [{"label": "No, beginner level", "id": "beginner"}, {"label": "Yes, intermediate level", "id": "intermediate"}, {"label": "Yes, advanced level", "id": "advanced"}]},
 				{"label": "Is there anything else we should know (e.g. medical information)?", "type": "Variable", "required": False, "id": "other"},
 				{"label": "Photo consent", "type": "FixedList", "required": True, "id": "photo-constent", "values": [{"label": "Yes, my child can be photographed or filmed", "id": "yes"}, {"label": "No, my child cannot be photographed or filmed", "id": "no"}]},
