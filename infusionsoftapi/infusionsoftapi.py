@@ -121,8 +121,16 @@ def get_all_products():
 			if product["id"] == product_category["ProductId"]:
 				for category_id in categories:
 					category = categories[category_id]
+
+					# If this actual category is associated with the product, add it
 					if category["category"]["id"] == product_category["ProductCategoryId"]:
 						product["categories"].append(category["category"]["id"])
+
+						# Spot classes for for adults, and flag them for later
+						if category["category"]["name"].lower() == "classes for adults":
+							product.update({"is_for_adults": True})
+
+					# If not, find any of its child categories that are associated with the product, and add them
 					else:
 						for child_category in category["children"]:
 							if child_category["id"] == product_category["ProductCategoryId"]:
@@ -138,8 +146,6 @@ def get_all_products():
 									if "times" not in product:
 										product["times"] = []
 									product["times"].append(child_category["name"])
-								if category["category"]["name"].lower() == "classes for adults":
-									product.update({"is_for_adults": True})
 
 	# Add images to products
 	extra_product_data = query_product_table()
