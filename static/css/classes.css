@@ -30,3 +30,7 @@
 .courseList div.child-field input {
   margin-right:1em;
 }
+
+.courseList .form-group.order_id {
+  display:none;
+}

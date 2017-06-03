@@ -15,7 +15,7 @@ for credential in [{"var": "BLUESHIFTAPP_INFUSIONSOFT_CLIENT_ID", "name":"client
 
 # These are also used outside the module
 categories_for_filtering = {"Age range": [], "Dates": []}
-categories_for_metadata = ["Times"]
+categories_for_metadata = ["Times", "Order form dates"]
 
 def have_access_token():
 	access_token_data = get_access_token_data()
@@ -113,6 +113,7 @@ def get_all_products():
 	# Add categories to products
 	# Also add maximum and minimum age, for colour coding on the website
 	# And add whether the class is for children or adults, based on the 'classes for adults' category, for choosing the set of extra product options to use
+	# Also work out what date options to include on the order form (if any)
 	categories = get_category_tree()
 	product_categories = query_product_category_assign_table()
 	for product in products["products"]:
@@ -146,6 +147,10 @@ def get_all_products():
 									if "times" not in product:
 										product["times"] = []
 									product["times"].append(child_category["name"])
+								if category["category"]["name"].lower() == "order form dates":
+									if "order_form_dates" not in product:
+										product["order_form_dates"] = []
+									product["order_form_dates"].append(child_category["name"])
 
 	# Add images to products
 	extra_product_data = query_product_table()
@@ -168,14 +173,23 @@ def get_all_products():
 				if (match_parts[0].lower() == "date"):
 					option.update({"type": "Date", "restrictions": [match_parts[1]], "label": re.sub(format_rgx, "", option["label"])})
 			if option["label"] == "orderid":
-				print "order ID"
 				option.update({"is_order_id": True})
 
 	# Add extra product options, as required
 	# TODO:WV:20170601:Restrict which fields show up on which products, using the category system
 	for product in products["products"]:
+		extra_options = {"before": [], "after": []}
+
+		if "order_form_dates" in product:
+			date_range_options = []
+			for date_range in product["order_form_dates"]:
+				date_range_options.append({"label": date_range, "id": date_range})
+			extra_options["before"].extend([
+				{"label": "Which dates would you like to book?", "type": "FixedList", "required": True, "id": "date-range", "values": date_range_options}
+			])
+
 		if "is_for_adults" in product and product["is_for_adults"]:
-			extra_options = [
+			extra_options["after"].extend([
 				{"label": "Attendee's name", "type": "Group", "fields": [
 					{"label": "First", "type": "Variable", "required": True, "id": "first-name-of-attendee"},
 					{"label": "Last", "type": "Variable", "required": True, "id": "last-name-of-attendee"},
@@ -183,9 +197,9 @@ def get_all_products():
 				{"label": "Phone", "type": "Variable", "required": True, "id": "phone"},
 				{"label": "Email", "type": "Variable", "required": True, "id": "email"},
 				{"label": "Is there anything else we should know?", "type": "Variable", "required": False, "id": "other"}
-			]
+			])
 		else:
-			extra_options = [
+			extra_options["after"].extend([
 				{"label": "Child's name", "type": "Group", "fields": [
 					{"label": "First", "type": "Variable", "required": True, "id": "first-name-of-child"},
 					{"label": "Last", "type": "Variable", "required": True, "id": "last-name-of-child"},
@@ -200,9 +214,9 @@ def get_all_products():
 				{"label": "Is there anything else we should know (e.g. medical information)?", "type": "Variable", "required": False, "id": "other"},
 				{"label": "Photo consent", "type": "FixedList", "required": True, "id": "photo-constent", "values": [{"label": "Yes, my child can be photographed or filmed", "id": "yes"}, {"label": "No, my child cannot be photographed or filmed", "id": "no"}]},
 				{"label": "How did you hear about blue{shift}?", "type": "FixedList", "required": True, "id": "how-heard-about", "values": [{"label": "Friends", "id": "friends"}, {"label": "Web search", "id": "web-search"}, {"label": "Twitter", "id": "twitter"}, {"label": "Facebook", "id": "facebook"}, {"label": "Flyer / leaflet", "id": "flyer"}, {"label": "Angel and Urchins / Storystock", "id": "storystock"}, {"label": "Kidrated", "id": "kidrated"}, {"label": "Kensington Mums", "id": "kensington-mums"}, {"label": "My child's school", "id": "childs-school"}]}
-			]
+			])
 
-		product.update({"extra_options": extra_options})
+		product.update({"extra_options_before": extra_options["before"], "extra_options_after": extra_options["after"]})
 
 	return products
 

@@ -87,7 +87,7 @@
 												<input type="hidden" name="productOptionId" value="" />
 												<input type="hidden" name="productOption" value="" />
 
-												{% for option_type in ['infusionsoft', 'extra'] %}
+												{% for option_type in ['extra_before', 'infusionsoft', 'extra_after'] %}
 
 													{% if option_type == 'infusionsoft' %}
 														{% set option_key_prefix = "option" %}
@@ -95,10 +95,15 @@
 														{% set option_index = "product_options" %}
 													{% endif %}
 
-													{% if option_type == 'extra' %}
+													{% if option_type == 'extra_before' or option_type == 'extra_after' %}
 														{% set option_key_prefix = "extra-option" %}
 														{% set option_class = "product-extra-option-field" %}
-														{% set option_index = "extra_options" %}
+														{% if option_type == 'extra_before' %}
+															{% set option_index = "extra_options_before" %}
+														{% endif %}
+														{% if option_type == 'extra_after' %}
+															{% set option_index = "extra_options_after" %}
+														{% endif %}
 													{% endif %}
 
 													{% if product[option_index] %}
