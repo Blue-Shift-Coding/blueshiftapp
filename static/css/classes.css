@@ -23,3 +23,7 @@
 	background-color:#f8f8f8;
 }
 
+.courseList .modal-footer button {
+  display:none;
+}
+

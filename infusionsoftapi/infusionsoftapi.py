@@ -112,6 +112,7 @@ def get_all_products():
 
 	# Add categories to products
 	# Also add maximum and minimum age, for colour coding on the website
+	# And add whether the class is for children or adults, based on the 'classes for adults' category, for choosing the set of extra product options to use
 	categories = get_category_tree()
 	product_categories = query_product_category_assign_table()
 	for product in products["products"]:
@@ -126,17 +127,19 @@ def get_all_products():
 						for child_category in category["children"]:
 							if child_category["id"] == product_category["ProductCategoryId"]:
 								product["categories"].append(child_category["id"])
-								if category["category"]["name"] == "Age range":
+								if category["category"]["name"].lower() == "age range":
 									matches = re.search("^([0-9]+)\-([0-9]+)$", child_category["name"])
 									if matches is not None:
 										min_age = int(matches.group(1))
 										max_age = int(matches.group(2))
 										product["min_age"] = min_age if product["min_age"] is None else min(product["min_age"], min_age)
 										product["max_age"] = max_age if product["max_age"] is None else max(product["max_age"], max_age)
-								if category["category"]["name"] == "Times":
+								if category["category"]["name"].lower() == "times":
 									if "times" not in product:
 										product["times"] = []
 									product["times"].append(child_category["name"])
+								if category["category"]["name"].lower() == "classes for adults":
+									product.update({"is_for_adults": True})
 
 	# Add images to products
 	extra_product_data = query_product_table()
@@ -163,10 +166,29 @@ def get_all_products():
 	# Add extra product options, as required
 	# TODO:WV:20170601:Restrict which fields show up on which products, using the category system
 	for product in products["products"]:
-		product.update({"extra_options": [
-			{"label": "Test extra option 1", "type": "Variable", "required": True, "id": "test1"},
-			{"label": "Test extra option 2", "type": "Variable", "required": True, "id": "test2"}]
-		})
+		if "is_for_adults" in product and product["is_for_adults"]:
+			extra_options = [
+				{"label": "First name of attendee", "type": "Variable", "required": True, "id": "first-name-of-attendee"},
+				{"label": "Last name of attendee", "type": "Variable", "required": True, "id": "last-name-of-attendee"},
+				{"label": "Phone", "type": "Variable", "required": True, "id": "phone"},
+				{"label": "Email", "type": "Variable", "required": True, "id": "email"},
+				{"label": "Is there anything else we should know?", "type": "Variable", "required": False, "id": "other"}
+			]
+		else:
+			extra_options = [
+				{"label": "First name of child", "type": "Variable", "required": True, "id": "first-name-of-child"},
+				{"label": "Last name of child", "type": "Variable", "required": True, "id": "last-name-of-child"},
+				{"label": "Child's parent / carer main contact number", "type": "Variable", "required": True, "id": "carer-contact-number"},
+				{"label": "Child's parent / carer main email address", "type": "Variable", "required": True, "id": "carer-email-address"},
+				{"label": "Name of child's school", "type": "Variable", "required": True, "id": "name-of-childs-school"},
+				{"label": "Please select your child's date of birth", "type": "Date", "required": True, "id": "childs-date-of-birth"},
+				{"label": "Does your child have any previous coding experience?", "type": "FixedList", "required": True, "id": "childs-previous-coding-experience", "values": [{"label": "No, beginner level", "id": "beginner"}, {"label": "Yes, intermediate level", "id": "intermediate"}, {"label": "Yes, advanced level", "id": "advanced"}]},
+				{"label": "Is there anything else we should know (e.g. medical information)?", "type": "Variable", "required": False, "id": "other"},
+				{"label": "Photo consent", "type": "FixedList", "required": True, "id": "photo-constent", "values": [{"label": "Yes, my child can be photographed or filmed", "id": "yes"}, {"label": "No, my child cannot be photographed or filmed", "id": "no"}]},
+				{"label": "How did you hear about blue{shift}?", "type": "FixedList", "required": True, "id": "how-heard-about", "values": [{"label": "Friends", "id": "friends"}, {"label": "Web search", "id": "web-search"}, {"label": "Twitter", "id": "twitter"}, {"label": "Facebook", "id": "facebook"}, {"label": "Flyer / leaflet", "id": "flyer"}, {"label": "Angel and Urchins / Storystock", "id": "storystock"}, {"label": "Kidrated", "id": "kidrated"}, {"label": "Kensington Mums", "id": "kensington-mums"}, {"label": "My child's school", "id": "childs-school"}]}
+			]
+
+		product.update({"extra_options": extra_options})
 
 	return products
 
