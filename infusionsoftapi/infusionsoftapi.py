@@ -176,7 +176,6 @@ def get_all_products():
 				option.update({"is_order_id": True})
 
 	# Add extra product options, as required
-	# TODO:WV:20170601:Restrict which fields show up on which products, using the category system
 	for product in products["products"]:
 		extra_options = {"before": [], "after": []}
 
