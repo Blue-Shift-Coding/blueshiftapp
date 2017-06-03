@@ -238,6 +238,13 @@ def api_authenticate():
 def api_authenticate_done():
     return "Done"
 
+# This should be set up with an appropriate domain in Infusionsoft.
+# Follow these instructions: http://help.infusionsoft.com/related-articles/automate-follow-up-based-when-a-purchase-is-made
+# (TLDR: in infusionsoft, to go E-Commerce > Actions and work it out)
+@app.route('/new-transaction-complete/')
+def new_transaction_complete():
+    return "Done"
+
 # TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
 # TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
 @app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None, "page_num": 1})
