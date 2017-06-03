@@ -160,25 +160,27 @@
 			productOptionIdsField.val(ids.join(","));
 			productOptionValuesField.val(values.join(","));
 
-			// Open a new window and allow the form to submit to it
-			purchaseFormTarget = window.open('', 'purchase-form-target');
-			this.target = 'purchase-form-target';
+			// Put an order ID in the order-id variable
+			// TODO:WV:20170603:Save this on our server first, or immediately after form submission (form could submit to our server, which could forward the user on - it's a GET form)
+			$form.find(".order_id input").val(generateHash($form.serialize())+(new Date).getTime());
 
-			// Spam the other window with the order data until an acknowledgement comes back
-			// TODO:WV:20170603:Origin restriction
-			spamInterval = setInterval(function() {
-				var extraFormData = $(".product-extra-option-field").find("input, select").serialize();
-				purchaseFormTarget.postMessage(JSON.stringify({"message-type": "extra-form-data", "data": extraFormData}), "*");
-			}, 400);
-
-			window.addEventListener("message", function(event) {
-
-				// TODO;WV:20170603:Check message content
-				console.log("Received event", event);
-				clearInterval(spamInterval);
-			}, false);
+			// Allow standard form submission (i.e. no 'preventDefault' or 'return false' here)
 		});
 	});
+
+	// From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+	function generateHash(string) {
+		var hash = 0;
+		if (string.length == 0) {
+			return hash;
+		}
+		for (i = 0; i < string.length; i++) {
+			char = string.charCodeAt(i);
+			hash = ((hash<<5)-hash)+char;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
+	}
 
 
 	/*

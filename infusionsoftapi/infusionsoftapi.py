@@ -167,6 +167,9 @@ def get_all_products():
 				match_parts = re.split("\s*;\s*", matches.group(1))
 				if (match_parts[0].lower() == "date"):
 					option.update({"type": "Date", "restrictions": [match_parts[1]], "label": re.sub(format_rgx, "", option["label"])})
+			if option["label"] == "orderid":
+				print "order ID"
+				option.update({"is_order_id": True})
 
 	# Add extra product options, as required
 	# TODO:WV:20170601:Restrict which fields show up on which products, using the category system
