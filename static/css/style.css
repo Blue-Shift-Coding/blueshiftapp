@@ -703,7 +703,8 @@ aside {
   margin-bottom: 40px;
   margin: 0 0 8px 0;
   font-family: 'Lato', sans-serif;
-  text-transform: capitalize;
+  text-transform: lowercase;
+  letter-spacing: 0.7px;
   font-weight: 600;
 }
 .pageTitleSection .pageTitleInfo .breadcrumb {
@@ -4077,7 +4078,6 @@ footer .color-bar {
 
 .eventContent {
   margin-bottom: 30px;
-  border-radius: 10px;
 }
 .eventContent .media-left {
   border-radius: 13px 0 0 13px;
@@ -4107,6 +4107,8 @@ footer .color-bar {
 }
 .eventContent .media-body h3 a {
   color: #ffffff;
+  text-transform: lowercase;
+  letter-spacing: 0.7px;
 }
 .eventContent .media-body .list-unstyled li {
   color: #ffffff;

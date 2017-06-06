@@ -31,4 +31,9 @@
 
 .mainContent.homepage-color-blocks {
   padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.mainContent.homepage-color-blocks .eventContent {
+  border-radius: 2px;
 }
