@@ -29,7 +29,8 @@
 .why-us h2 {
   text-align: center;
   color: #66CCCC;
-  text-transform: capitalize;
+  text-transform: lowercase;
+  letter-spacing: 0.7px;
   padding-bottom: 2em;
 }
 
