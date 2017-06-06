@@ -23,3 +23,14 @@
 	background-color:#f8f8f8;
 }
 
+.courseList .modal-footer button {
+  display:none;
+}
+
+.courseList div.child-field input {
+  margin-right:1em;
+}
+
+.courseList .form-group.order_id {
+  display:none;
+}

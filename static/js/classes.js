@@ -128,7 +128,7 @@
 		// TODO:WV:20170531:Find a suitable way to behave if there are NO product options (e.g. perhaps dont show the modal at all?)  Or is this not necessary - will there always be options?
 		// TODO:WV:20170531:Stop the Javascript error that is triggered if you press escape while the modal is showing (this would be the theme's problem, but good to fix or work-around anyway, perhaps by overriding the escape-button handler)
 		$(".classes-results").on("submit", "form.product-options", function(e) {
-			var form, productOptionIdsField, productOptionValuesField, ids = [], values = [];
+			var form, productOptionIdsField, productOptionValuesField, ids = [], values = [], purchaseFormTarget, spamInterval;
 
 			$form = $(this);
 
@@ -156,11 +156,31 @@
 				throw new Error("Missing form field: productOptionId or productOption");
 			}
 
-			// Concatenate data into fields, and then allow default submit action
+			// Concatenate data into fields
 			productOptionIdsField.val(ids.join(","));
 			productOptionValuesField.val(values.join(","));
+
+			// Put an order ID in the order-id variable
+			// TODO:WV:20170603:Save this on our server first, or immediately after form submission (form could submit to our server, which could forward the user on - it's a GET form)
+			$form.find(".order_id input").val(generateHash($form.serialize())+(new Date).getTime());
+
+			// Allow standard form submission (i.e. no 'preventDefault' or 'return false' here)
 		});
 	});
+
+	// From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+	function generateHash(string) {
+		var hash = 0;
+		if (string.length == 0) {
+			return hash;
+		}
+		for (i = 0; i < string.length; i++) {
+			char = string.charCodeAt(i);
+			hash = ((hash<<5)-hash)+char;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
+	}
 
 
 	/*
