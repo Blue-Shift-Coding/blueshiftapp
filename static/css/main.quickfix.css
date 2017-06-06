@@ -28,18 +28,3 @@
    padding-right: 0 !important;
    padding-left: 0 !important;
  }
-
- /*homepage why us section*/
-
- .why-us h2 {
-   text-align: center;
-   color: #66CCCC;
-   text-transform: capitalize;
-   padding-bottom: 2em;
- }
-
- @media screen and (min-width: 992px) {
-   .right-border {
-     border-right: #66cccc solid 1px;
-   }
- }

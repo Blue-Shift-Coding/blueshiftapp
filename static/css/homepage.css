@@ -1,0 +1,56 @@
+/*homepage custom css*/
+
+.whats-code {
+  width:100%;
+  background: url(http://blueshiftcoding.com/wp-content/uploads/2017/05/whats-code.jpg);
+  height: 23em;
+  background-size:
+  cover;
+}
+
+.whats-code-heading {
+  padding-top: 2.7em;
+  font-size: 36px !important;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.keep-up-to-date {
+  width:100% !important;
+  height: 23em !important;
+}
+
+.keep-up-to-date p {
+  color: #003366 !important;
+}
+
+/*homepage reasons to choose blueshift section*/
+
+.why-us h2 {
+  text-align: center;
+  color: #66CCCC;
+  text-transform: capitalize;
+  padding-bottom: 2em;
+}
+
+.fa-lightbulb-o {
+  color: #ea5461;
+}
+
+.fa-diamond {
+  color: #f5c644;
+}
+
+.fa-wrench {
+  color: #7ec2a2;
+}
+
+.fa-cog {
+  color: #84557e;
+}
+
+@media screen and (min-width: 992px) {
+  .right-border {
+    border-right: #66cccc solid 1px;
+  }
+}
