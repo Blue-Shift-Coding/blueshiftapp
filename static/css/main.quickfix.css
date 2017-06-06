@@ -37,3 +37,19 @@
 .mainContent.homepage-color-blocks .eventContent {
   border-radius: 2px;
 }
+
+.summer-camps:hover {
+  background-color: #addfe3 !important;
+}
+
+.latest-news:hover {
+  background-color: #fae3a1 !important;
+}
+
+.parent-workshops:hover {
+  background-color: #bee0d1 !important;
+}
+
+.hiring:hover {
+  background-color: #f5a9b0 !important;
+}
