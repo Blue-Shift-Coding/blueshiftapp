@@ -1206,7 +1206,10 @@ aside {
 /*=== 2.12 LIST ===*/
 .topList li {
   color: #003366;
+}
+.topList .info {
   border-right: solid #66CCCC 1px;
+  padding-right: 12px;
 }
 @media (min-width: 768px) {
   .topList li {
@@ -1817,7 +1820,8 @@ aside {
   padding: 0;
   line-height: 16px;
   text-align: center;
-  text-transform: capitalize;
+  text-transform: lowercase;
+  letter-spacing: 0.7px;
 }
 @media (min-width: 320px) {
   .navbar-default .navbar-nav > li > a > span {
@@ -2242,7 +2246,7 @@ aside {
   }
 }
 .navbar-default.lightHeader .navbar-nav > li > a {
-  color: #000000;
+  color: #5cc0c7;
 }
 .navbar-default.lightHeader .navbar-nav > li.active.color-1 > a {
   color: #84557e;
