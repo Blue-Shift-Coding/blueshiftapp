@@ -38,6 +38,8 @@
    padding-bottom: 2em;
  }
 
- .right-border {
-   border-right: #66cccc solid 1px;
+ @media screen and (min-width: 992px) {
+   .right-border {
+     border-right: #66cccc solid 1px;
+   }
  }
