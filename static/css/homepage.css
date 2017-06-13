@@ -55,3 +55,25 @@
     border-right: #66cccc solid 1px;
   }
 }
+
+.footerInfoArea {
+  position:relative;
+
+  /* Make space for partner logs on wide screens */
+  min-height:535px;
+}
+
+.partners-container {
+
+  /* Position at bottom of the footer, in the white area */
+  position:absolute;
+  bottom:10px;
+
+  /* Stretch all the way across the container */
+  left:0;
+  right:0;
+
+  /* Centre logos */
+  text-align: center;
+}
+
