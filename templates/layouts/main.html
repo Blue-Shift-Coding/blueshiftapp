@@ -114,7 +114,7 @@
           <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav navbar-right">
               <li {% if request.endpoint=='classes' %} class="active dropdown singleDrop color-1" {% else %} class="dropdown singleDrop color-1" {% endif %}>
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <a href="{{ url_for('classes') }}" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i></i>
                   <span>Courses</span>
                 </a>
@@ -135,7 +135,8 @@
 
                 <ul class="dropdown-menu dropdown-menu-left">
                   <li class="active"><a href="about_us.html">Schools we work with</a></li>
-                  <li class="dropdown dropdown-submenu">
+                  <li class="active"><a href="about_us.html">Services for schools</a></li>
+                  <!-- <li class="dropdown dropdown-submenu">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Services for schools<i class="fa fa-chevron-right" aria-hidden="true"></i>
                     </a>
                     <ul class="dropdown-menu">
@@ -145,17 +146,8 @@
                       <li><a href="teachers-details.html">CDP</a></li>
                       <li><a href="teachers-details.html">In school classes</a></li>
                     </ul>
-                  </li>
-                  <li><a href="testimonial.html">Online Resources</a></li>
-                  <li class="dropdown dropdown-submenu">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Events <i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </a>
-                    <ul class="dropdown-menu">
-                      <li><a href="all-events.html">All Events</a></li>
-                      <li><a href="single-event-left-sidebar.html">Single Event Left Sidebar</a></li>
-                      <li><a href="single-event-right-sidebar.html">Single Event Right Sidebar</a></li>
-                    </ul>
-                  </li>
+                  </li> -->
+                  <li><a href="testimonial.html">After School Clubs</a></li>
                 </ul>
               </li>
 
@@ -187,7 +179,7 @@
                 </a>
               </li> -->
               <li {% if request.endpoint=='news' %} class="active dropdown singleDrop color-4" {% else %} class="dropdown singleDrop color-4" {% endif %}>
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <a href="{{ url_for('news') }}" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i></i>
                   <span>News</span>
                 </a>
