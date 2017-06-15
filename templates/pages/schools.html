@@ -1,0 +1,125 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Schools{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
+{% block content %}
+
+<section class="mainContent full-width clearfix courseSingleSection">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-9 col-sm-8 col-xs-12 block">
+        <div class="thumbnail thumbnailContent alt">
+          <h3 class="color-1">A New Approach To Teaching Technology</h3>
+          <p>blue{shift} is West London’s premier provider of coding and robotics instruction and teaching and assessment materials. We were started in 2013  with the aim of teaching children aged 5 to 14 a creative approach to coding.</p>
+          <p>We care deeply about all children becoming active creators of technology, not simply, passive users. We teach coding, robotics, problem solving and encourage lateral thinking. We use the new National Curriculum in Computing as a framework for the classes we lead.</p>
+          <p>blue{shift} write much of our own content ranging from pre-computing concepts to Scratch to JavaScript. We have won many accolades for our work and have written a series of books for Hachette with another book for parents due to be published with Little Brown. Finally, all 4 teams that we mentored for a National Appathon in 2014 placed in the top 10 and received awards at the House of Commons.</p>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-4 col-xs-12">
+        <aside>
+          <div class="panel panel-default eventSidebar">
+            <div class="panel-heading bg-color-1 border-color-1">
+              <h3 class="panel-title">Get In Touch!</h3>
+            </div>
+            <div class="panel-body">
+              <div class="homeContactContent">
+                <form action="#" method="POST" role="form">
+                  <div class="form-group">
+                    <i class="fa fa-user"></i>
+                    <input type="text" class="form-control border-color-1" id="exampleInputEmail1" placeholder="First name">
+                  </div>
+                  <div class="form-group">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <input type="text" class="form-control border-color-2" id="exampleInputEmail2" placeholder="Email address">
+                  </div>
+                  <div class="form-group">
+                    <i class="fa fa-comments" aria-hidden="true"></i>
+                    <textarea class="form-control border-color-4" placeholder="Write message"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-Full">Send Message</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<section class="colorSection full-width clearfix bg-color-4 servicesSection">
+  <div class="container">
+    <div class="sectionTitle text-center alt">
+      <h2>
+        <span class="shape shape-left bg-color-3"></span>
+        <span>Our Services</span>
+        <span class="shape shape-right bg-color-3"></span>
+      </h2>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4 col-sm-offset-2 col-xs-12">
+        <div class="media servicesContent rightAlign">
+          <a class="media-left" href="service-details.html">
+            <i class="fa fa-cutlery bg-color-4" aria-hidden="true"></i>
+          </a>
+          <div class="media-body">
+            <h3 class="media-heading">Delicious Food</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+        </div>
+        <div class="media servicesContent rightAlign">
+          <a class="media-left" href="service-details.html">
+            <i class="fa fa-heart bg-color-4" aria-hidden="true"></i>
+          </a>
+          <div class="media-body">
+            <h3 class="media-heading">Love &amp; Care</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+        </div>
+        <div class="media servicesContent rightAlign">
+          <a class="media-left" href="service-details.html">
+            <i class="fa fa-shield bg-color-4" aria-hidden="true"></i>
+          </a>
+          <div class="media-body">
+            <h3 class="media-heading">Meny Sports</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 col-xs-12">
+        <div class="media servicesContent">
+          <a class="media-left" href="service-details.html">
+            <i class="fa fa-car bg-color-4" aria-hidden="true"></i>
+          </a>
+          <div class="media-body">
+            <h3 class="media-heading">Transportation</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+        </div>
+        <div class="media servicesContent">
+          <a class="media-left" href="service-details.html">
+            <i class="fa fa-graduation-cap bg-color-4" aria-hidden="true"></i>
+          </a>
+          <div class="media-body">
+            <h3 class="media-heading">Experience Teachers</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+        </div>
+        <div class="media servicesContent">
+          <a class="media-left" href="service-details.html">
+            <i class="fa fa-leaf bg-color-4" aria-hidden="true"></i>
+          </a>
+          <div class="media-body">
+            <h3 class="media-heading">Physical Activity</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

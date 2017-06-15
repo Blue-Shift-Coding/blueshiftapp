@@ -121,9 +121,13 @@ def team():
 def teachers():
     return render_template('pages/teachers.html')
 
-@app.route('/testimonials')
+@app.route('/who_we_are')
 def testimonials():
-    return render_template('pages/testimonials.html')
+    return render_template('pages/who_we_are.html')
+
+@app.route('/schools')
+def schools():
+    return render_template('pages/schools.html')
 
 @app.route('/curriculum/')
 def curriculum():
