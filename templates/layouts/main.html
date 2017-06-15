@@ -131,7 +131,7 @@
 
 
               <li class="dropdown singleDrop color-3">
-                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i></i> <span>Schools</span></a>
+                <a href="schools.html" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i></i> <span>Schools</span></a>
 
                 <ul class="dropdown-menu dropdown-menu-left">
                   <li class="active"><a href="about_us.html">Schools we work with</a></li>
@@ -153,22 +153,15 @@
 
 
               <li class="dropdown singleDrop color-5">
-                <a href="javascript:void(0)" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <a href="whoweare.html" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i></i>
                   <span>Who we are</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
-                  <li class="dropdown dropdown-submenu">
-
-                      <a href="{{ url_for('mission') }}"><i class="fa fa-chevron-right" aria-hidden="true"></i>Our Mission</a>
-                        <ul class="dropdown-menu">
-                          <li><a href="blog-grid.html">Why Coding?</a></li>
-                        </ul>
-                    </li>
+                  <li class=""><a href="{{ url_for('mission') }}">Our Mission</a></li>
+                  <li class=""><a href="{{ url_for('team') }}">Why Coding?</a></li>
                   <li class=""><a href="{{ url_for('story') }}">Our Story</a></li>
-                  <li class=""><a href="{{ url_for('team') }}">Our Team</a></li>
                   <li class=""><a href="{{ url_for('teachers') }}">Our Teachers</a></li>
-                  <li class=""><a href="{{ url_for('testimonials') }}">Testimonials</a></li>
                 </ul>
               </li>
 
@@ -183,10 +176,6 @@
                   <i></i>
                   <span>News</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
-                  <li><a href="{{ url_for('news') }}">Blog</a></li>
-                  <li><a href="{{ url_for('news') }}">Opinion Pieces</a></li>
-                </ul>
               </li>
 
               <li class="dropdown singleDrop color-2">
