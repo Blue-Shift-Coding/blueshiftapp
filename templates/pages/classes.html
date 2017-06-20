@@ -82,39 +82,16 @@
 											<h4 class="modal-title">{{ product.product_name }}</h4>
 										  </div>
 										  <div class="modal-body">
-											<form action="https://km362.infusionsoft.com/app/manageCart/addProduct" class="product-options">
+											<form action="javascript:alert('todo'); return false;" class="product-options">
 												<input type="hidden" name="productId" value="{{ product.id }}" />
 												<input type="hidden" name="productOptionId" value="" />
 												<input type="hidden" name="productOption" value="" />
 
-												{% for option_type in ['extra_before', 'infusionsoft', 'extra_after'] %}
-
-													{% if option_type == 'infusionsoft' %}
-														{% set option_key_prefix = "option" %}
-														{% set option_class = "product-option-field" %}
-														{% set option_index = "product_options" %}
-													{% endif %}
-
-													{% if option_type == 'extra_before' or option_type == 'extra_after' %}
-														{% set option_key_prefix = "extra-option" %}
-														{% set option_class = "product-extra-option-field" %}
-														{% if option_type == 'extra_before' %}
-															{% set option_index = "extra_options_before" %}
-														{% endif %}
-														{% if option_type == 'extra_after' %}
-															{% set option_index = "extra_options_after" %}
-														{% endif %}
-													{% endif %}
-
-													{% if product[option_index] %}
-														{% for option in product[option_index] %}
+													{% if product["product_options"] %}
+														{% for option in product["product_options"] %}
 															{% include 'pages/classes/option-field.html' %}
 														{% endfor %}
 													{% endif %}
-
-
-												{% endfor %}
-
 
 												<button type="submit" class="btn btn-primary"><i class="fa fa-shopping-basket " aria-hidden="true"></i>Add to Cart</button>
 											</form>

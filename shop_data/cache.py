@@ -1,15 +1,20 @@
 # To run this on the command line, use: 'python -m shop-data.download'
-import storage, infusionsoftapi
+import storage
+from woocommerce import API
 
-queue_key = "re-sync-queued"
+wcapi = API(
+    url="https://old.blueshiftcoding.com",
+    consumer_key="ck_8764d7d17bbbf01c7fcfaa765721fb9ae43e0095",
+    consumer_secret="cs_3970ccd6e87e3ff6327acaaf4ef342ccbdcbafe3"
+)
 
 def download_data():
-	infusionsoftapi.refresh_access_token_data_if_necessary()
-
-	products = infusionsoftapi.get_all_products()
+	response = wcapi.get("products")
+	products = response.json()
 	storage.set("products", products)
 
-	categories = infusionsoftapi.get_category_tree()
+	response = wcapi.get("products/categories")
+	categories = response.json()
 	storage.set("categories", categories)
 
 def get_products():

@@ -10,7 +10,7 @@ from forms import *
 import os, time, copy, math, json
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import infusionsoftapi, shop_data, storage
+import shop_data, storage
 from functools import wraps
 
 
@@ -85,8 +85,7 @@ def inject_class_categories():
     class_categories = []
     for category_index in categories:
         category = categories[category_index]
-        if category["category"]["name"] not in infusionsoftapi.categories_for_filtering and category["category"]["name"] not in infusionsoftapi.categories_for_metadata:
-            class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
+        class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
     class_categories.append({"name": "Browse all", "url": "/classes"})
 
     return dict(class_categories=class_categories)
@@ -186,68 +185,11 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
-# TODO:WV:20170526:How to prevent third parties maliciously requesting this.  Can we restrict to Infusionsoft IPs?
-@app.route('/re-sync', methods=['GET', 'POST'])
-def re_sync():
-
-    # If this request is Infusionsoft checking that the URL works, just ping back their hook-secret in a header
-    header_name = "X-Hook-Secret"
-    secret = request.headers.get(header_name)
-    if secret:
-        resp = Response("")
-        resp.headers[header_name] = secret
-        return resp
-
-    # Otherwise, queue a re-sync
-    storage.set(shop_data.cache.queue_key, 1)
-    return "Done"
-
 # This can be used for logging debug to Heroku logs (or to console, in dev)
 def log_to_stdout(log_message):
     ch = logging.StreamHandler()
     app.logger.addHandler(ch)
     app.logger.info(log_message)
-
-@app.route('/set-up-infusionsoft-callback-hooks')
-@requires_auth
-def set_up_infusionsoft_callback_hooks():
-    infusionsoftapi.refresh_access_token_data_if_necessary()
-    if not infusionsoftapi.have_access_token():
-        return "No access token - please visit /api-authenciate to enable the Infusionsoft API"
-
-    callback_url = url_for("re_sync", _external=True, _scheme='https')
-    event_keys = ["product.add", "product.delete", "product.edit"]
-    for event_key in event_keys:
-        infusionsoftapi.update_hook(event_key, callback_url)
-
-    return "Done"
-
-@app.route('/api-authenticate/')
-@requires_auth
-def api_authenticate():
-
-    # If at stage 2, there should be a 'code' in the URL.  Extract it here; if absent, assume at stage 1.
-    code = request.args.get("code")
-
-    # Stage 1 - get permission to get an access token
-    if not code:
-        url = infusionsoftapi.get_authorization_url(request.base_url)
-        return redirect(url, code=302)
-
-    # Stage 2 - get and save the access token
-    infusionsoftapi.download_initial_access_token_data(code=code, redirect_uri=request.base_url)
-    return redirect("/api-authenticate-done", code=302)
-
-@app.route('/api-authenticate-done/')
-def api_authenticate_done():
-    return "Done"
-
-# This should be set up with an appropriate domain in Infusionsoft.
-# Follow these instructions: http://help.infusionsoft.com/related-articles/automate-follow-up-based-when-a-purchase-is-made
-# (TLDR: in infusionsoft, to go E-Commerce > Actions and work it out)
-@app.route('/new-transaction-complete/')
-def new_transaction_complete():
-    return "Done"
 
 # TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
 # TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
@@ -271,8 +213,9 @@ def classes(url_category, dates, ages, page_num):
     products = shop_data.cache.get_products()
 
     # Get options for the filter-drop-downs
+    # TODO:WV:20170520:Filters
     categories = shop_data.cache.get_categories()
-    filters = copy.deepcopy(infusionsoftapi.categories_for_filtering)
+    filters = []
     for filter_category_name in filters:
         for category_index in categories:
             category = categories[category_index]
@@ -307,7 +250,7 @@ def classes(url_category, dates, ages, page_num):
         return filter_function
 
     # Filter products by category if a category was provided in the URL
-    if url_category is not None and url_category not in infusionsoftapi.categories_for_filtering:
+    if url_category is not None:
         products = filter(get_filter_function(url_category), products)
 
     # Filter products by date if a date was provided in the URL

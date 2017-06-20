@@ -1,5 +1,5 @@
-{% set option_key = option_key_prefix ~ '-' ~ option.id %}
-<div class="form-group {{ option_class }} {% if is_child_field %}child-field{% endif %} {% if option.is_order_id %}order_id{% endif %}">
+{% set option_key = "option" ~ '-' ~ option.id %}
+<div class="form-group product-option-field {% if is_child_field %}child-field{% endif %} {% if option.is_order_id %}order_id{% endif %}">
 
 	{% if not is_child_field or (option.type != 'Variable' and option.type != 'Date') %}
 		<label for="{{ option_key }}">{{ option.label }}</label>
