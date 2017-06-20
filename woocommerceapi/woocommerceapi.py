@@ -1,8 +1,16 @@
+import os
+
+required_environment_variables = ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL", "BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_KEY", "BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_SECRET"]
+
+for key in required_environment_variables:
+	required_environment_variable = required_environment_variables[key]
+	if not required_environment_variable in os.environ:
+		raise Exception("Environment variable '"+required_environment_variable+"' not found")
 
 wcapi = API(
-    url="https://old.blueshiftcoding.com",
-    consumer_key="ck_8764d7d17bbbf01c7fcfaa765721fb9ae43e0095",
-    consumer_secret="cs_3970ccd6e87e3ff6327acaaf4ef342ccbdcbafe3"
+    url=os.environ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL"],
+    consumer_key=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_KEY"],
+    consumer_secret=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_SECRET"]
 )
 
 def get(endpoint):
