@@ -43,37 +43,6 @@ def login_required(test):
 '''
 
 #----------------------------------------------------------------------------#
-# Basic Auth decorator
-#----------------------------------------------------------------------------#
-
-def check_auth(username, password):
-    """This function is called to check if a username /
-    password combination is valid.
-    """
-
-    if not ('BLUESHIFTAPP_ADMIN_USER' in os.environ and 'BLUESHIFTAPP_ADMIN_PASSWORD' in os.environ):
-        raise LookupError("Admin credentials not found in environment")
-
-    return username == os.environ['BLUESHIFTAPP_ADMIN_USER'] and password == os.environ['BLUESHIFTAPP_ADMIN_PASSWORD']
-
-def authenticate():
-    """Sends a 401 response that enables basic auth"""
-    return Response(
-    'Could not verify your access level for that URL.\n'
-    'You have to login with proper credentials', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
-
-
-#----------------------------------------------------------------------------#
 # Context Processors (for setting global template variables)
 #----------------------------------------------------------------------------#
 
