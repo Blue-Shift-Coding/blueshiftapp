@@ -13,9 +13,10 @@ def download_data():
 	products = response.json()
 	storage.set("products", products)
 
+	# TODO:WV:20170620:Add robustness in case of bad response
 	response = wcapi.get("products/categories")
 	categories = response.json()
-	storage.set("categories", categories)
+	storage.set("categories", categories["product_categories"])
 
 def get_products():
 	products = get_thing("products")

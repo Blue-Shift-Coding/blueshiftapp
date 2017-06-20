@@ -4,7 +4,7 @@
 
 from flask import Flask, render_template, request, redirect, Response, url_for
 # from flask.ext.sqlalchemy import SQLAlchemy
-import logging
+import logging, pprint
 from logging import Formatter, FileHandler
 from forms import *
 import os, time, copy, math, json
@@ -51,10 +51,10 @@ def inject_class_categories():
 
     # Add categories to the page, for the main nav menu
     categories = shop_data.cache.get_categories()
+
     class_categories = []
-    for category_index in categories:
-        category = categories[category_index]
-        class_categories.append({"name": category["category"]["name"], "url": "/classes/"+category["category"]["name"]})
+    for category in categories:
+        class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
     class_categories.append({"name": "Browse all", "url": "/classes"})
 
     return dict(class_categories=class_categories)
@@ -194,15 +194,24 @@ def classes(url_category, dates, ages, page_num):
 
     # Finds a category based on its name, and optionally its parent category
     def get_category(category_parent, category_child=None):
+        parent_category_found = None
         for category_index in categories:
             category = categories[category_index]
-            if category["category"]["name"] == category_parent:
-                if category_child is None:
-                    return category["category"]
-                else:
-                    for child_category in category["children"]:
-                        if child_category["name"] == category_child:
-                            return child_category
+            if category["name"] == category_parent:
+                parent_category_found = category
+                break
+
+        if parent_category_found is None:
+            return None
+
+        if category_child is None:
+            return parent_category_found
+
+        for category_index in categories:
+            category = categories[categoy_index]
+            if category["parent"] == parent_category_found["id"] and category["name"] == category_child:
+                return category
+
         return None
 
     # Returns a function to filter products by any category
@@ -242,8 +251,8 @@ def classes(url_category, dates, ages, page_num):
     return render_template(
         'pages/classes.html',
         products=products,
-        dates=filters["Dates"],
-        ages=filters["Age range"],
+        dates=filters["Dates"] if "Dates" in filters else [],
+        ages=filters["Age range"] if "Age range" in filters else [],
         pagination_data={
             "page_num":page_num,
             "total_pages":total_pages,
