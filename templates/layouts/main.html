@@ -223,7 +223,7 @@
 
     {% block content %}{% endblock %}
 
-    {% block pagination %} {% if pagination_data %}
+    {% block pagination %} {% if pagination_data and pagination_data.total_pages > 1 %}
     {% set page_num = pagination_data.page_num  %}
     {% set prev_page = page_num - 1  %}
     {% set next_page = page_num + 1  %}
