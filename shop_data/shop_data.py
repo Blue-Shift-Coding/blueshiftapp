@@ -15,7 +15,7 @@ data_lifetime_in_seconds = 7200
 def download_data():
 
 	# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get
-	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.
+	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.  WC providers response headers containing the total number of results and other relevant info (see the docs)
 	response = wcapi.get("products/categories?per_page=100")
 	categories = response.json()
 	storage.set("categories", categories, data_lifetime_in_seconds)
