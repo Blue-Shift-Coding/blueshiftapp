@@ -693,6 +693,18 @@ aside {
   color: #ffffff;
   padding: 75px 0;
 }
+.pageTitleSection.faq {
+ background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/faqs-header.png)
+}
+.pageTitleSection.news {
+  background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/news-header.png)
+}
+.pageTitleSection.schools {
+  background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/schools-header.png)
+}
+.pageTitleSection.whoweare {
+  background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/whoweare-header.png)
+}
 .pageTitleSection .pageTitleInfo {
   text-align: center;
 }

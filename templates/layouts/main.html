@@ -206,12 +206,12 @@
     {% endfor %} {% endif %} {% endwith %}
 
     {% block page_header %}
-    <section class="pageTitleSection">
+    <section class="pageTitleSection {{ self.title().replace(" ", "") }}">
       <div class="container">
        <div class="pageTitleInfo">
           <h2>{{ self.title() }}</h2>
           <ol class="breadcrumb">
-            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('home') }}">home</a></li>
             <li class="active">{{ self.title() }}</li>
           </ol>
         </div>
