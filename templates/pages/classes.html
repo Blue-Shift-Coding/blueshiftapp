@@ -11,34 +11,22 @@
 
 				<span class="filters-label">Filter</span>
 
-				<div class="dropdown classes-filter" data-filtername="dates" data-defaultvalue="" data-defaultlabel="All dates">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuDates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					<span class="selected-item" data-filtervalue=""></span>
-					<span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" aria-labelledby="dropdownMenuDates">
-					<li><a href="#" class="default-option"></a></li>
-					<li role="separator" class="divider"></li>
-					{% for date in dates %}
-					<li><a href="javascript:void(0)" data-filtervalue="{{ date }}">{{ date }}</a></li>
-					{% endfor %}
-				  </ul>
-				</div>
+				{% for filter in class_filters %}
+					<div class="dropdown classes-filter" data-filtername="{{ filter.category.name.lower() }}" data-defaultvalue="" data-defaultlabel="All {{ filter.category.name }}">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuFilter{{ filter.category.name }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span class="selected-item" data-filtervalue=""></span>
+						<span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenuFilter{{ filter.category.name }}">
+						<li><a href="#" class="default-option"></a></li>
+						<li role="separator" class="divider"></li>
+						{% for option in filter.child_categories %}
+						<li><a href="javascript:void(0)" data-filtervalue="{{ option.name }}">{{ option.name }}</a></li>
+						{% endfor %}
+					  </ul>
+					</div>
+				{% endfor %}
 
-
-				<div class="dropdown classes-filter" data-filtername="ages" data-defaultvalue="" data-defaultlabel="All ages">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuAges" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					<span class="selected-item" data-filtervalue=""></span>
-					<span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" aria-labelledby="dropdownMenuAges">
-					<li><a href="javascript:void(0)" class="default-option"></a></li>
-					<li role="separator" class="divider"></li>
-					{% for age in ages %}
-					<li><a href="javascript:void(0)" data-filtervalue="{{ age }}">{{ age }}</a></li>
-					{% endfor %}
-				  </ul>
-				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -47,6 +35,8 @@
 				{% for product in products %}
 
 					{# color number must be between 1 and 6 #}
+
+					{# TODO:WV:20170622:This needs to be updated #}
 
 					{% if 'Ages 5 - 6' in product.categories %}
 						{% set color_number = 1 %}
@@ -65,7 +55,7 @@
 							<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
 						</a>
 						<div class="media-body">
-							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ color_number }}">{{product.title}}</a></h3>
+							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ color_number }}">{{product.name}}</a></h3>
 
 							{{product.description|safe}}
 							<ul class="list-inline btn-yellow btnPart">

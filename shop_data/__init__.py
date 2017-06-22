@@ -1,1 +1,1 @@
-from shop_data import cache
+from shop_data import *
