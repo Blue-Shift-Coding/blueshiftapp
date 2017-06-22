@@ -1,1 +1,1 @@
-from storage import get, set
+from storage import get, set, delete, flush

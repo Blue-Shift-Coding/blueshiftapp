@@ -11,6 +11,7 @@ wcapi = API(
 )
 
 def download_data():
+
 	# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get
 	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.
 	response = wcapi.get("products/categories?per_page=100")
@@ -25,7 +26,7 @@ def download_products_in_category(category=None):
 	item_name = "products"
 	if category is not None:
 		category_id = str(category["id"])
-		api_url = item_name+"?category="+category_id
+		api_url = item_name+"?on_sale=1&category="+category_id
 		storage_key = item_name+"-category-"+category_id
 	else:
 		api_url = item_name
