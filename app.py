@@ -180,35 +180,38 @@ def log_to_stdout(log_message):
 @app.route('/classes//<dates>/<ages>', defaults={"url_category": None, "page_num": 1})
 @app.route('/classes//<dates>/<ages>/<page_num>', defaults={"url_category": None})
 def classes(url_category, dates, ages, page_num):
-    products = shop_data.get_products()
-    categories = shop_data.get_categories()
 
     # Add filter drop-downs, with options
+    categories = shop_data.get_categories()
     filters_category = shop_data.get_category("FILTERS")
+    filter_category_ids = {}
     if filters_category is None:
         filters = []
     else:
         filters = []
         for category in categories:
             if category["parent"] == filters_category["id"]:
+                filter_category_ids[category["name"].lower()] = category["id"]
                 filters.append({"category": category, "child_categories": []})
         for class_filter in filters:
             for category in categories:
                 if category["parent"] == class_filter["category"]["id"]:
                     class_filter["child_categories"].append(category)
 
-    # Filter products by category if a category was provided in the URL
+    # Compile list of categories to restrict products by
+    active_categories = []
     if url_category is not None:
-        category = shop_data.get_category(url_category)
-        products = shop_data.get_products(category)
+        active_categories.append(shop_data.get_category(url_category))
+    if dates is not None:
+        if "dates" not in filter_category_ids:
+            raise Error("No dates filter ID found")
+        active_categories.append(shop_data.get_category(dates, parent_id=filter_category_ids["dates"]))
+    if ages is not None:
+        if "ages" not in filter_category_ids:
+            raise Error("No ages filter ID found")
+        active_categories.append(shop_data.get_category(ages, parent_id=filter_category_ids["ages"]))
 
-    # Filter products by date if a date was provided in the URL
-    #if dates is not None:
-    #    products = filter(get_filter_function("Dates", dates), products)
-
-    # Filter products by age if an age range was provided in the URL
-    #if ages is not None:
-    #    products = filter(get_filter_function("Age range", ages), products)
+    products = shop_data.get_products(active_categories)
 
     # Get pagination data for template
     per_page = 10
