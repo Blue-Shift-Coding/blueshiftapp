@@ -36,6 +36,8 @@
 
 					{# color number must be between 1 and 6 #}
 
+					{# TODO:WV:20170622:This needs to be updated #}
+
 					{% if 'Ages 5 - 6' in product.categories %}
 						{% set color_number = 1 %}
 					{% elif 'Ages 7 - 8' in product.categories %}
@@ -53,7 +55,7 @@
 							<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
 						</a>
 						<div class="media-body">
-							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ color_number }}">{{product.title}}</a></h3>
+							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ color_number }}">{{product.name}}</a></h3>
 
 							{{product.description|safe}}
 							<ul class="list-inline btn-yellow btnPart">

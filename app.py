@@ -205,11 +205,16 @@ def classes(url_category, dates, ages, page_num):
     if dates is not None:
         if "dates" not in filter_category_ids:
             raise Error("No dates filter ID found")
-        active_categories.append(shop_data.get_category(dates, parent_id=filter_category_ids["dates"]))
+        date_filter_category = shop_data.get_category(dates, parent_id=filter_category_ids["dates"])
+        active_categories.append(date_filter_category)
     if ages is not None:
         if "ages" not in filter_category_ids:
             raise Error("No ages filter ID found")
-        active_categories.append(shop_data.get_category(ages, parent_id=filter_category_ids["ages"]))
+        ages_filter_category = shop_data.get_category(ages, parent_id=filter_category_ids["ages"])
+        print "Ages filter category"
+        print "Looking for name "+ages
+        pprint.pprint(ages_filter_category)
+        active_categories.append(ages_filter_category)
 
     products = shop_data.get_products(active_categories)
 

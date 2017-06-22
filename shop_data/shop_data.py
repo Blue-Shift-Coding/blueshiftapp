@@ -5,15 +5,16 @@ from woocommerce import API
 wcapi = API(
     url="https://old.blueshiftcoding.com",
     consumer_key="ck_8764d7d17bbbf01c7fcfaa765721fb9ae43e0095",
-    consumer_secret="cs_3970ccd6e87e3ff6327acaaf4ef342ccbdcbafe3"
+    consumer_secret="cs_3970ccd6e87e3ff6327acaaf4ef342ccbdcbafe3",
+    wp_api=True,
+    version="wc/v2"
 )
 
 def download_data():
 	# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get
 	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.
 	response = wcapi.get("products/categories?per_page=100")
-	response_data = response.json()
-	categories = response_data["product_categories"]
+	categories = response.json()
 	storage.set("categories", categories)
 
 	download_products_in_category()
@@ -31,8 +32,7 @@ def download_products_in_category(category=None):
 		storage_key = item_name
 
 	response = wcapi.get(api_url)
-	response_data = response.json()
-	products = response_data["products"]
+	products = response.json()
 	storage.set(storage_key, products)
 
 def get_categories():
@@ -40,22 +40,13 @@ def get_categories():
 	return categories
 
 # Finds a category based on its name, and optionally its parent category
-def get_category(name, parent_name = None, parent_id = None):
+def get_category(name, parent_id = None):
 	categories = get_categories()
 	parent_category_found = None
 	for category in categories:
-		if (parent_name is None and parent_id is None and category["name"] == name) or (parent_name is not None and category["name"] == parent_name) or (parent_id is not None and category["id"] == parent_id):
-			parent_category_found = category
-			break
-
-	if parent_category_found is None:
-		return None
-
-	if parent_name is None:
-		return parent_category_found
-
-	for category in categories:
-		if category["parent"] == parent_category_found["id"] and category["name"] == name:
+		correct_name = (name == category["name"])
+		correct_parent = ((parent_id is None and category["parent"] == 0) or (parent_id is not None and category["parent"] == parent_id))
+		if correct_name and correct_parent:
 			return category
 
 	return None
@@ -79,13 +70,13 @@ def get_products(categories=None):
 			return fn
 
 		products = []
-		first_product = True
+		first_category = True
 		for category in categories:
 			this_category_products = get_thing("products-category-"+str(category["id"]))
 
-			if first_product:
+			if first_category:
 				products = this_category_products
-				first_product = False
+				first_category = False
 			else:
 				products = filter(get_filter_function(products), this_category_products)
 
@@ -93,6 +84,6 @@ def get_products(categories=None):
 
 def get_thing(thingname):
 	thing = storage.get(thingname)
-	if not thing:
+	if thing  is None:
 		raise Exception("No "+thingname+" found.  Please run the download.py script to fetch them from the API.")
 	return thing
