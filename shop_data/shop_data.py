@@ -20,23 +20,22 @@ def download_data():
 	categories = response.json()
 	storage.set("categories", categories, data_lifetime_in_seconds)
 
-	download_products_in_category()
-	for category in categories:
-		download_products_in_category(category)
-
-def download_products_in_category(category=None):
-	item_name = "products"
-	if category is not None:
-		category_id = str(category["id"])
-		api_url = item_name+"?on_sale=1&category="+category_id
-		storage_key = item_name+"-category-"+category_id
-	else:
-		api_url = item_name
-		storage_key = item_name
-
-	response = wcapi.get(api_url)
+	response = wcapi.get("products?on_sale=1&per_page=100")
 	products = response.json()
-	storage.set(storage_key, products, data_lifetime_in_seconds)
+	storage.set("products", products, data_lifetime_in_seconds)
+
+	def get_filter_products_in_category(category):
+		def fn(product):
+			for product_category in product["categories"]:
+				if product_category["id"] == category["id"]:
+					return True
+			return False
+		return fn
+
+	# Generate category-specific product lists in storage, for faster searching later
+	for category in categories:
+		products_this_category = filter(get_filter_products_in_category(category), products)
+		storage.set("products-category-"+str(category["id"]), products_this_category, data_lifetime_in_seconds)
 
 def get_categories():
 	categories = get_thing("categories")
