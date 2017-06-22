@@ -13,6 +13,18 @@
   padding:6px 12px;
 }
 
+@media (min-width: 1024px) {
+  .courseList .media-left img {
+    max-width:470px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .courseList .media-left img {
+    max-width:300px;
+  }
+}
+
 .courseList .media-body .list-inline.btnPart > li button.btn-primary {
     font-size: 14px;
     background-color: #ffffff;
