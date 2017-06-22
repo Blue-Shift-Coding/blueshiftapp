@@ -18,13 +18,36 @@ def download_data():
 	categories = response.json()
 	storage.set("categories", categories["product_categories"])
 
-def get_products():
-	products = get_thing("products")
-	return products["products"]
-
+# TODO:WV:20170622:Handle pagination if there are more than 10 categories
 def get_categories():
 	categories = get_thing("categories")
 	return categories
+
+# Finds a category based on its name, and optionally its parent category
+def get_category(name, parent_name = None):
+	categories = get_categories()
+	parent_category_found = None
+	for category in categories:
+		if (parent_name is None and category["name"] == name) or (parent_name is not None and category["name"] == parent_name):
+			parent_category_found = category
+			break
+
+	if parent_category_found is None:
+		return None
+
+	if parent_name is None:
+		return parent_category_found
+
+	for category in categories:
+		if category["parent"] == parent_category_found["id"] and category["name"] == name:
+			return category
+
+	return None
+
+
+def get_products(category=None):
+	products = get_thing("products")
+	return products["products"]
 
 def get_thing(thingname):
 	thing = storage.get(thingname)

@@ -50,11 +50,12 @@ def login_required(test):
 def inject_class_categories():
 
     # Add categories to the page, for the main nav menu
-    categories = shop_data.cache.get_categories()
+    categories = shop_data.get_categories()
 
     class_categories = []
     for category in categories:
-        class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
+        if category["parent"] == 0 or category["parent"] is None:
+            class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
     class_categories.append({"name": "Browse all", "url": "/classes"})
 
     return dict(class_categories=class_categories)
@@ -179,65 +180,29 @@ def log_to_stdout(log_message):
 @app.route('/classes//<dates>/<ages>', defaults={"url_category": None, "page_num": 1})
 @app.route('/classes//<dates>/<ages>/<page_num>', defaults={"url_category": None})
 def classes(url_category, dates, ages, page_num):
-    products = shop_data.cache.get_products()
+    products = shop_data.get_products()
 
     # Get options for the filter-drop-downs
-    # TODO:WV:20170520:Filters
-    categories = shop_data.cache.get_categories()
+    categories = shop_data.get_categories()
     filters = []
     for filter_category_name in filters:
-        for category_index in categories:
-            category = categories[category_index]
+        for category in categories:
             if category["category"]["name"] == filter_category_name and len(category["children"]) != 0:
                 for child_category in category["children"]:
                     filters[filter_category_name].append(child_category["name"])
 
-    # Finds a category based on its name, and optionally its parent category
-    def get_category(category_parent, category_child=None):
-        parent_category_found = None
-        for category_index in categories:
-            category = categories[category_index]
-            if category["name"] == category_parent:
-                parent_category_found = category
-                break
-
-        if parent_category_found is None:
-            return None
-
-        if category_child is None:
-            return parent_category_found
-
-        for category_index in categories:
-            category = categories[categoy_index]
-            if category["parent"] == parent_category_found["id"] and category["name"] == category_child:
-                return category
-
-        return None
-
-    # Returns a function to filter products by any category
-    def get_filter_function(filter_category_parent, filter_category=None):
-
-        # Find category id to filter by
-        # NB not passed in URL for SEO reasons
-        category = get_category(filter_category_parent, filter_category)
-        category_id = None if category is None else category["id"]
-
-        def filter_function(product):
-            return category_id is not None and category_id in product["categories"]
-
-        return filter_function
-
     # Filter products by category if a category was provided in the URL
     if url_category is not None:
-        products = filter(get_filter_function(url_category), products)
+        category = shop_data.get_category(url_category)
+        products = shop_data.get_products(category)
 
     # Filter products by date if a date was provided in the URL
-    if dates is not None:
-        products = filter(get_filter_function("Dates", dates), products)
+    #if dates is not None:
+    #    products = filter(get_filter_function("Dates", dates), products)
 
     # Filter products by age if an age range was provided in the URL
-    if ages is not None:
-        products = filter(get_filter_function("Age range", ages), products)
+    #if ages is not None:
+    #    products = filter(get_filter_function("Age range", ages), products)
 
     # Get pagination data for template
     per_page = 10
