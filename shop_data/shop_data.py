@@ -3,9 +3,9 @@ import storage, pprint
 from woocommerce import API
 
 wcapi = API(
-    url="https://old.blueshiftcoding.com",
-    consumer_key="ck_8764d7d17bbbf01c7fcfaa765721fb9ae43e0095",
-    consumer_secret="cs_3970ccd6e87e3ff6327acaaf4ef342ccbdcbafe3",
+    url=os.environ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL"],
+    consumer_key=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_KEY"],
+    consumer_secret=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_SECRET"],
     wp_api=True,
     version="wc/v2"
 )
