@@ -181,15 +181,21 @@ def log_to_stdout(log_message):
 @app.route('/classes//<dates>/<ages>/<page_num>', defaults={"url_category": None})
 def classes(url_category, dates, ages, page_num):
     products = shop_data.get_products()
-
-    # Get options for the filter-drop-downs
     categories = shop_data.get_categories()
-    filters = []
-    for filter_category_name in filters:
+
+    # Add filter drop-downs, with options
+    filters_category = shop_data.get_category("FILTERS")
+    if filters_category is None:
+        filters = []
+    else:
+        filters = []
         for category in categories:
-            if category["category"]["name"] == filter_category_name and len(category["children"]) != 0:
-                for child_category in category["children"]:
-                    filters[filter_category_name].append(child_category["name"])
+            if category["parent"] == filters_category["id"]:
+                filters.append({"category": category, "child_categories": []})
+        for class_filter in filters:
+            for category in categories:
+                if category["parent"] == class_filter["category"]["id"]:
+                    class_filter["child_categories"].append(category)
 
     # Filter products by category if a category was provided in the URL
     if url_category is not None:
@@ -216,6 +222,7 @@ def classes(url_category, dates, ages, page_num):
     return render_template(
         'pages/classes.html',
         products=products,
+        class_filters=filters,
         dates=filters["Dates"] if "Dates" in filters else [],
         ages=filters["Age range"] if "Age range" in filters else [],
         pagination_data={

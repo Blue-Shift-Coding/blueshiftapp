@@ -11,34 +11,22 @@
 
 				<span class="filters-label">Filter</span>
 
-				<div class="dropdown classes-filter" data-filtername="dates" data-defaultvalue="" data-defaultlabel="All dates">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuDates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					<span class="selected-item" data-filtervalue=""></span>
-					<span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" aria-labelledby="dropdownMenuDates">
-					<li><a href="#" class="default-option"></a></li>
-					<li role="separator" class="divider"></li>
-					{% for date in dates %}
-					<li><a href="javascript:void(0)" data-filtervalue="{{ date }}">{{ date }}</a></li>
-					{% endfor %}
-				  </ul>
-				</div>
+				{% for filter in class_filters %}
+					<div class="dropdown classes-filter" data-filtername="{{ filter.category.name.lower() }}" data-defaultvalue="" data-defaultlabel="All {{ filter.category.name }}">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuFilter{{ filter.category.name }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span class="selected-item" data-filtervalue=""></span>
+						<span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenuFilter{{ filter.category.name }}">
+						<li><a href="#" class="default-option"></a></li>
+						<li role="separator" class="divider"></li>
+						{% for option in filter.child_categories %}
+						<li><a href="javascript:void(0)" data-filtervalue="{{ option.name }}">{{ option.name }}</a></li>
+						{% endfor %}
+					  </ul>
+					</div>
+				{% endfor %}
 
-
-				<div class="dropdown classes-filter" data-filtername="ages" data-defaultvalue="" data-defaultlabel="All ages">
-				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuAges" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					<span class="selected-item" data-filtervalue=""></span>
-					<span class="caret"></span>
-				  </button>
-				  <ul class="dropdown-menu" aria-labelledby="dropdownMenuAges">
-					<li><a href="javascript:void(0)" class="default-option"></a></li>
-					<li role="separator" class="divider"></li>
-					{% for age in ages %}
-					<li><a href="javascript:void(0)" data-filtervalue="{{ age }}">{{ age }}</a></li>
-					{% endfor %}
-				  </ul>
-				</div>
 			</div>
 		</div>
 		<div class="row">

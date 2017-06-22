@@ -19,6 +19,7 @@
 		});
 
 		// Set filters on page load
+		// TODO:WV:20170622:Adapt to what filters are actually set in WC, rather than hard-coding dates and ages, or prevent editing of these filters in WC via a Wordpress plugin
 		var urlParts = location.pathname.split("/");
 		var filternames = ["dates", "ages"];
 		var urlPartOffset = 3;
