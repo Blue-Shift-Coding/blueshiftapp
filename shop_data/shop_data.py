@@ -10,13 +10,15 @@ wcapi = API(
     version="wc/v2"
 )
 
+data_lifetime_in_seconds = 7200
+
 def download_data():
 
 	# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get
 	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.
 	response = wcapi.get("products/categories?per_page=100")
 	categories = response.json()
-	storage.set("categories", categories)
+	storage.set("categories", categories, data_lifetime_in_seconds)
 
 	download_products_in_category()
 	for category in categories:
@@ -34,7 +36,7 @@ def download_products_in_category(category=None):
 
 	response = wcapi.get(api_url)
 	products = response.json()
-	storage.set(storage_key, products)
+	storage.set(storage_key, products, data_lifetime_in_seconds)
 
 def get_categories():
 	categories = get_thing("categories")
@@ -62,14 +64,19 @@ def get_products(categories=None):
 		if not isinstance(categories, list):
 			categories = [categories]
 
-		def get_filter_function(all_products_so_far):
-			def fn(product):
-				for existing_product in all_products_so_far:
-					if product["id"] == existing_product["id"]:
+		def get_filter_function(allowed_items):
+			def fn(item):
+				for allowed_item in allowed_items:
+					if item["id"] == allowed_item["id"]:
 						return True
 				return False
 			return fn
 
+		# Skip categories that were not included in the last download of data (to avoid providing data from dead categories)
+		all_categories = get_categories()
+		categories = filter(get_filter_function(all_categories), categories)
+
+		# Filter products to only those included in all provided categories
 		products = []
 		first_category = True
 		for category in categories:
