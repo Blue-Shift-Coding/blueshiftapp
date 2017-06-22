@@ -1,4 +1,4 @@
-# To run this on the command line, use: 'python -m shop-data.download'
+# To run this on the command line, use: 'python -m shop_data.download'
 import storage
 from woocommerce import API
 
@@ -14,7 +14,8 @@ def download_data():
 	storage.set("products", products)
 
 	# TODO:WV:20170620:Add robustness in case of bad response
-	response = wcapi.get("products/categories")
+	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.
+	response = wcapi.get("products/categories?per_page=100")
 	categories = response.json()
 	storage.set("categories", categories["product_categories"])
 

@@ -54,7 +54,7 @@ def inject_class_categories():
 
     class_categories = []
     for category in categories:
-        if category["parent"] == 0 or category["parent"] is None:
+        if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
             class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
     class_categories.append({"name": "Browse all", "url": "/classes"})
 

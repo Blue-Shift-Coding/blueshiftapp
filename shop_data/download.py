@@ -1,4 +1,4 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import cache
+import shop_data
 
-cache.download_data()
+shop_data.download_data()
