@@ -1,5 +1,5 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import storage, pprint
+import storage, pprint, os
 from woocommerce import API
 
 wcapi = API(
