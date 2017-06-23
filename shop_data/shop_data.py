@@ -17,13 +17,17 @@ wcapi = API(
     version="wc/v2"
 )
 
+def ids_to_items(item_type, ids):
+	items = []
+	for item_id in ids:
+		items.append(storage.get(get_single_item_storage_key(item_name, item_id)))
+	return items
+
 def iterate_paginated_set(item_name, callback):
 	summary = get_summary(item_name)
 	for i in range(0, int(summary["num_pages"])):
 		page_of_ids = storage.get(get_item_page_storage_key(item_name, i + 1))
-		page_of_items = []
-		for item_id in page_of_ids:
-			page_of_items.append(storage.get(get_single_item_storage_key(item_name, item_id)))
+		page_of_items = ids_to_items(item_name, page_of_ids)
 		result = callback(page_of_items)
 
 		# If the callback returned a value, stop iterating here and pass it on
@@ -52,9 +56,12 @@ def download_data():
 				for product in products_in_category_this_page:
 					product_ids_this_category.append(product["id"])
 			iterate_paginated_set("products", products_iterator)
-			storage.set("products-category-"+str(category["id"]), product_ids_this_category, expiry_time)
+			storage.set(get_products_category_storage_key(category["id"]), product_ids_this_category, expiry_time)
 
 	iterate_paginated_set("categories", categories_iterator)
+
+def get_products_category_storage_key(category_id):
+	return "products-category-"+str(category_id)
 
 def get_item_page_storage_key(item_name, page_number):
 	return item_name+"_page_"+str(page_number)
@@ -132,35 +139,39 @@ def get_category(name, parent_id = None):
 def get_products(categories=None, page_num=1):
 
 	if categories is None:
-		products = get_thing("products")
+		products = ids_to_items(storage.get(get_item_page_storage_key("products", page_num)))
+
+	elif not isinstance(categories, list):
+
+		# TODO:WV:20170623:These documents should be paginated
+		# TODO:WV:20170623:Test for expired categories (not included in the last data download) and ignore them - find an appropriate place to do this
+		products = ids_to_items(storage.get(get_products_category_storage_key(categories["id"])))
 
 	else:
-		if not isinstance(categories, list):
-			categories = [categories]
-
-		def get_filter_function(allowed_items):
-			def fn(item):
-				for allowed_item in allowed_items:
-					if item["id"] == allowed_item["id"]:
-						return True
-				return False
-			return fn
-
-		# Skip categories that were not included in the last download of data (to avoid providing data from dead categories)
-		all_categories = get_categories()
-		categories = filter(get_filter_function(all_categories), categories)
-
-		# Filter products to only those included in all provided categories
+		# Find the correct page of appropriately categorised products
+		num_products_to_skip = (page_num - 1) * per_page
+		num_products_skipped = 0
 		products = []
-		first_category = True
-		for category in categories:
-			this_category_products = get_thing("products-category-"+str(category["id"]))
+		def products_iterator(page_of_products):
+			for category in categories:
+				this_category_product_ids = get_products_category_storage_key(category["id"])
 
-			if first_category:
-				products = this_category_products
-				first_category = False
-			else:
-				products = filter(get_filter_function(products), this_category_products)
+				num_products_still_to_skip = num_products_to_skip - num_products_skipped
+				num_products_this_category = len(this_category_product_ids)
+
+				# TODO:WV:20170623:Products-in-category-x documents should themselves be paginated (in case, say, all products are in a particular category)
+				if num_products_still_to_skip >= num_products_this_category:
+					num_products_skipped += num_products_this_category
+					continue
+				else:
+					offset = num_products_to_skip - num_products_skipped
+					products.extend(ids_to_items(this_category_product_ids[offset:per_page]))
+					num_products_skipped += offset
+
+				# Stop if enough products have now been added
+				if len(products) == per_page:
+					return
+		iterate_paginated_set("products", products_iterator)
 
 	return products
 
