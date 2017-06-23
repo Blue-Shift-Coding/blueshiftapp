@@ -1,5 +1,5 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import storage, pprint, os
+import storage, pprint, os, time
 from woocommerce import API
 
 wcapi = API(
@@ -11,18 +11,13 @@ wcapi = API(
 )
 
 data_lifetime_in_seconds = 7200
+per_page = 10
 
 def download_data():
+	expiry_time = time.time() + data_lifetime_in_seconds
 
-	# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get
-	# TODO:WV:20170620:Paginate properly through categories so that the case of more than 100 categories is handled.  WC providers response headers containing the total number of results and other relevant info (see the docs)
-	response = wcapi.get("products/categories?per_page=100")
-	categories = response.json()
-	storage.set("categories", categories, data_lifetime_in_seconds)
-
-	response = wcapi.get("products?on_sale=1&per_page=100")
-	products = response.json()
-	storage.set("products", products, data_lifetime_in_seconds)
+	categories_summary = download_paginated_set("categories", "products/categories?", expiry_time)
+	products_summary = download_paginated_set("products", "products?on_sale=1&", expiry_time)
 
 	def get_filter_products_in_category(category):
 		def fn(product):
@@ -33,9 +28,51 @@ def download_data():
 		return fn
 
 	# Generate category-specific product lists in storage, for faster searching later
-	for category in categories:
-		products_this_category = filter(get_filter_products_in_category(category), products)
-		storage.set("products-category-"+str(category["id"]), products_this_category, data_lifetime_in_seconds)
+	for i in range(0, int(categories_summary["num_pages"])):
+		page_of_categories = storage.get(get_item_page_storage_key("categories", i + 1))
+		for category in page_of_categories:
+			products_this_category = []
+			for j in range(0, int(products_summary["num_pages"])):
+				page_of_products = storage.get(get_item_page_storage_key("products", j + 1))
+				products_this_category.extend(filter(get_filter_products_in_category(category), page_of_products))
+			storage.set("products-category-"+str(category["id"]), products_this_category, expiry_time)
+
+def get_item_page_storage_key(item_name, page_number):
+	return item_name+"_page_"+str(page_number)
+
+def download_paginated_set(item_name, base_query, expiry_time):
+	page_num = 1
+
+	summary = None
+	while True:
+
+		# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get.  I.e. dont assume response.json() will be sensible.  Also handle HTTPs timeout.
+		url = base_query+"page="+str(page_num)+"&per_page="+str(per_page)
+		response = wcapi.get(url)
+
+		storage.set(
+			get_item_page_storage_key(item_name, page_num),
+			response.json(),
+			expiry_time
+		)
+
+		if summary is None:
+			summary = {
+				"num_total": response.headers.get("X-WP-Total"),
+				"num_pages": response.headers.get("X-WP-TotalPages"),
+				"per_page": per_page
+			}
+			storage.set(
+				item_name+"_summary",
+				summary,
+				expiry_time
+			)
+
+		page_num += 1
+		if page_num > int(summary["num_pages"]):
+			break
+
+	return summary
 
 def get_categories():
 	categories = get_thing("categories")
