@@ -2,8 +2,13 @@
 import storage, pprint, os, time
 from woocommerce import API
 
+#### Config
+
 # NB this per_page value is also used to determine the number of items on each page of the actual shop, for performance reasons
 per_page = 10
+data_lifetime_in_seconds = 14400
+#### /Config
+
 
 wcapi = API(
     url=os.environ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL"],
@@ -12,9 +17,6 @@ wcapi = API(
     wp_api=True,
     version="wc/v2"
 )
-
-data_lifetime_in_seconds = 14400
-
 
 def iterate_paginated_set(item_name, callback):
 	summary = get_summary(item_name)
