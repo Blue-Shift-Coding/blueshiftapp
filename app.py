@@ -220,10 +220,9 @@ def classes(url_category, dates, ages, page_num):
         ages_filter_category = shop_data.get_category(ages, parent_id=filter_category_ids["ages"])
         active_categories.append(ages_filter_category)
 
-    products_summary = shop_data.get_summary("products")
-
+    # Fetch list of products and generate page
     products = shop_data.get_products(active_categories, page_num)
-
+    products_summary = shop_data.get_summary("products")
     return render_template(
         'pages/classes.html',
         products=products,
