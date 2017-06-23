@@ -2,6 +2,9 @@
 import storage, pprint, os, time
 from woocommerce import API
 
+# NB this per_page value is also used to determine the number of items on each page of the actual shop, for performance reasons
+per_page = 10
+
 wcapi = API(
     url=os.environ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL"],
     consumer_key=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_KEY"],
@@ -11,7 +14,7 @@ wcapi = API(
 )
 
 data_lifetime_in_seconds = 14400
-per_page = 10
+
 
 def iterate_paginated_set(item_name, callback):
 	summary = get_summary(item_name)
@@ -20,7 +23,11 @@ def iterate_paginated_set(item_name, callback):
 		page_of_items = []
 		for item_id in page_of_ids:
 			page_of_items.append(storage.get(get_single_item_storage_key(item_name, item_id)))
-		callback(page_of_items)
+		result = callback(page_of_items)
+
+		# If the callback returned a value, stop iterating here and pass it on
+		if result is not None:
+			return result
 
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
@@ -108,24 +115,20 @@ def download_paginated_set(item_name, base_query, expiry_time):
 def get_summary(item_name):
 	return storage.get(get_item_summary_storage_key(item_name))
 
-def get_categories():
-	categories = get_thing("categories")
-	return categories
-
 # Finds a category based on its name, and optionally its parent category
 def get_category(name, parent_id = None):
-	categories = get_categories()
-	parent_category_found = None
-	for category in categories:
-		correct_name = (name == category["name"])
-		correct_parent = ((parent_id is None and category["parent"] == 0) or (parent_id is not None and category["parent"] == parent_id))
-		if correct_name and correct_parent:
-			return category
 
-	return None
+	def categories_iterator(page_of_categories):
+		for category in categories:
+			correct_name = (name == category["name"])
+			correct_parent = ((parent_id is None and category["parent"] == 0) or (parent_id is not None and category["parent"] == parent_id))
+			if correct_name and correct_parent:
+				return category
+	category = iterate_paginated_set("categories", categories_iterator)
+	return category
 
 # TODO:WV:20170622:Add robustness here if thing not found
-def get_products(categories=None):
+def get_products(categories=None, page_num=1):
 
 	if categories is None:
 		products = get_thing("products")
