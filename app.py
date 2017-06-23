@@ -165,23 +165,22 @@ def log_to_stdout(log_message):
 @app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None, "page_num": 1})
 @app.route('/classes/<int:page_num>', defaults={"url_category": None, "dates": None, "ages": None})
 @app.route('/classes/<url_category>', defaults={"dates": None, "ages": None, "page_num": 1})
-@app.route('/classes/<url_category>/<page_num>', defaults={"dates": None, "ages": None})
+@app.route('/classes/<url_category>/<int:page_num>', defaults={"dates": None, "ages": None})
 @app.route('/classes/<url_category>/<dates>', defaults={"ages": None, "page_num": 1})
-@app.route('/classes/<url_category>/<dates>/<page_num>', defaults={"ages": None})
+@app.route('/classes/<url_category>/<dates>/<int:page_num>', defaults={"ages": None})
 @app.route('/classes/<url_category>//<ages>', defaults={"dates": None, "page_num": 1})
-@app.route('/classes/<url_category>//<ages>/<page_num>', defaults={"dates": None})
+@app.route('/classes/<url_category>//<ages>/<int:page_num>', defaults={"dates": None})
 @app.route('/classes/<url_category>/<dates>/<ages>', defaults={"page_num": 1})
-@app.route('/classes/<url_category>/<dates>/<ages>/<page_num>', defaults={})
+@app.route('/classes/<url_category>/<dates>/<ages>/<int:page_num>', defaults={})
 @app.route('/classes//<dates>', defaults={"url_category": None, "ages": None, "page_num": 1})
-@app.route('/classes//<dates>/<page_num>', defaults={"url_category": None, "ages": None})
+@app.route('/classes//<dates>/<int:page_num>', defaults={"url_category": None, "ages": None})
 @app.route('/classes///<ages>', defaults={"url_category": None, "dates": None, "page_num": 1})
-@app.route('/classes///<ages>/<page_num>', defaults={"url_category": None, "dates": None})
+@app.route('/classes///<ages>/<int:page_num>', defaults={"url_category": None, "dates": None})
 @app.route('/classes//<dates>/<ages>', defaults={"url_category": None, "page_num": 1})
-@app.route('/classes//<dates>/<ages>/<page_num>', defaults={"url_category": None})
+@app.route('/classes//<dates>/<ages>/<int:page_num>', defaults={"url_category": None})
 def classes(url_category, dates, ages, page_num):
 
     # Add filter drop-downs, with options
-    categories = shop_data.get_categories()
     filters_category = shop_data.get_category("FILTERS")
     filter_category_ids = {}
     if filters_category is None:
@@ -200,7 +199,7 @@ def classes(url_category, dates, ages, page_num):
         # Find filter options
         for class_filter in filters:
             def categories_iterator(page_of_categories):
-                for category in categories:
+                for category in page_of_categories:
                     if category["parent"] == class_filter["category"]["id"]:
                         class_filter["child_categories"].append(category)
             shop_data.iterate_paginated_set("categories", categories_iterator)
@@ -223,6 +222,7 @@ def classes(url_category, dates, ages, page_num):
     # Fetch list of products and generate page
     products = shop_data.get_products(active_categories, page_num)
     products_summary = shop_data.get_summary("products")
+
     return render_template(
         'pages/classes.html',
         products=products,
@@ -231,7 +231,7 @@ def classes(url_category, dates, ages, page_num):
         ages=filters["Age range"] if "Age range" in filters else [],
         pagination_data={
             "page_num":page_num,
-            "total_pages":products_summary["num_pages"],
+            "total_pages":int(products_summary["num_pages"]),
             "route_function": {
                 "name": "classes",
                 "arguments": {

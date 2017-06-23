@@ -25,6 +25,7 @@ def ids_to_items(item_name, ids):
 
 def iterate_paginated_set(item_name, callback):
 	summary = get_summary(item_name)
+
 	for i in range(0, int(summary["num_pages"])):
 		page_of_ids = storage.get(get_item_page_storage_key(item_name, i + 1))
 		page_of_items = ids_to_items(item_name, page_of_ids)
@@ -37,6 +38,7 @@ def iterate_paginated_set(item_name, callback):
 # The following two variables need to be variables to get around the fact that Python doesn't allow
 # Them to by declared in categories_iterator and then referenced from withint products_iterator.
 # There will be a pythonic way of doing this.  What is it?
+# NB I think wrapping an object in a list, and using that might do it, e.g. see 'filters' in app.py
 # TODO:WV:20170623:Find and implement the proper way of doing it
 product_ids_this_category = None
 product_category_page_num = None
@@ -79,12 +81,24 @@ def download_data():
 			iterate_paginated_set("products", products_iterator)
 
 			# Save final page of this category, if there is one
-			if len(product_ids_this_category) != 0:
+			num_product_ids_this_category = len(product_ids_this_category)
+			if num_product_ids_this_category != 0:
 				storage.set(
 					get_products_category_storage_key(category["id"], product_category_page_num),
 					product_ids_this_category,
 					expiry_time
 				)
+
+			summary = {
+				"num_total": (product_category_page_num - 1) * per_page + len(product_ids_this_category),
+				"num_pages": product_category_page_num,
+				"per_page": per_page
+			}
+			storage.set(
+				get_item_summary_storage_key(get_products_category_item_name(category["id"])),
+				summary,
+				expiry_time
+			)
 
 	iterate_paginated_set("categories", categories_iterator)
 
@@ -157,33 +171,45 @@ def get_summary(item_name):
 # Finds a category based on its name, and optionally its parent category
 def get_category(name, parent_id = None):
 
+	print "Looking for category"
+	print name
+	print str(parent_id)
+
 	def categories_iterator(page_of_categories):
-		for category in categories:
+		for category in page_of_categories:
 			correct_name = (name == category["name"])
 			correct_parent = ((parent_id is None and category["parent"] == 0) or (parent_id is not None and category["parent"] == parent_id))
 			if correct_name and correct_parent:
 				return category
 	category = iterate_paginated_set("categories", categories_iterator)
+
 	return category
 
 # TODO:WV:20170622:Add robustness here if thing not found
+# TODO:WV:20170622:As elsewhere, find the correct way to avoid needing to use global variables here
+num_products_to_skip = None
+num_products_skipped = None
+num_categories = None
+get_products_output = None
 def get_products(categories=None, page_num=1):
+	global num_products_to_skip, num_products_skipped, num_categories, get_products_output
 
 	if categories is None:
-		products = ids_to_items(storage.get(get_item_page_storage_key("products", page_num)))
+		get_products_output = ids_to_items(storage.get(get_item_page_storage_key("products", page_num)))
 
 	elif not isinstance(categories, list):
 
 		# TODO:WV:20170623:Test for expired categories (not included in the last data download) and ignore them - find an appropriate place to do this
-		products = ids_to_items(storage.get(get_products_category_storage_key(categories["id"], page_num)))
+		get_products_output = ids_to_items(storage.get(get_products_category_storage_key(categories["id"], page_num)))
 
 	else:
 		# Find the correct page of appropriately categorised products
 		num_products_to_skip = (page_num - 1) * per_page
 		num_products_skipped = 0
 		num_categories = len(categories)
-		products = []
+		get_products_output = []
 		def products_iterator(page_of_products):
+			global num_products_to_skip, num_products_skipped, num_categories, get_products_output
 
 			for product in page_of_products:
 
@@ -200,17 +226,17 @@ def get_products(categories=None, page_num=1):
 				if num_categories_product_found_in == num_categories:
 					num_products_still_to_skip = num_products_to_skip - num_products_skipped
 					if num_products_still_to_skip < 1:
-						products.append(product)
+						get_products_output.append(product)
 
 						# Can stop iterating if we now have enough products
-						if len(products) == per_page:
+						if len(get_products_output) == per_page:
 							return True
 					else:
 						num_products_skipped += 1
 
 		iterate_paginated_set("products", products_iterator)
 
-	return products
+	return get_products_output
 
 def get_thing(thingname):
 	thing = storage.get(thingname)
