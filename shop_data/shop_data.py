@@ -37,9 +37,11 @@ def iterate_paginated_set(item_name, callback):
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
+	# Download all raw data
 	download_paginated_set("categories", "products/categories?", expiry_time)
 	download_paginated_set("products", "products?on_sale=1&", expiry_time)
 
+	# Save category-specific lists of products
 	def get_filter_products_in_category(category):
 		def fn(product):
 			for product_category in product["categories"]:
@@ -47,21 +49,39 @@ def download_data():
 					return True
 			return False
 		return fn
-
 	def categories_iterator(page_of_categories):
 		for category in page_of_categories:
 			product_ids_this_category = []
+			product_category_page_num = 1
 			def products_iterator(page_of_products):
 				products_in_category_this_page = filter(get_filter_products_in_category(category), page_of_products)
 				for product in products_in_category_this_page:
 					product_ids_this_category.append(product["id"])
+					if len(product_ids_this_category) == per_page:
+						storage.set(
+							get_products_category_storage_key(category["id"], product_category_page_num),
+							product_ids_this_category,
+							expiry_time
+						)
+						product_ids_this_category = []
+						product_category_page_num += 1
 			iterate_paginated_set("products", products_iterator)
-			storage.set(get_products_category_storage_key(category["id"]), product_ids_this_category, expiry_time)
+
+			# Save final page of this category, if there is one
+			if len(product_ids_this_category) != 0:
+				storage.set(
+					get_products_category_storage_key(category["id"], product_category_page_num),
+					product_ids_this_category,
+					expiry_time
+				)
 
 	iterate_paginated_set("categories", categories_iterator)
 
-def get_products_category_storage_key(category_id):
-	return "products-category-"+str(category_id)
+def get_products_category_item_name(category_id):
+	return "products_category_"+str(category_id)
+
+def get_products_category_storage_key(category_id, page_number):
+	return get_item_page_storage_key(get_products_category_item_name(category_id), page_number)
 
 def get_item_page_storage_key(item_name, page_number):
 	return item_name+"_page_"+str(page_number)
@@ -143,34 +163,40 @@ def get_products(categories=None, page_num=1):
 
 	elif not isinstance(categories, list):
 
-		# TODO:WV:20170623:These documents should be paginated
 		# TODO:WV:20170623:Test for expired categories (not included in the last data download) and ignore them - find an appropriate place to do this
-		products = ids_to_items(storage.get(get_products_category_storage_key(categories["id"])))
+		products = ids_to_items(storage.get(get_products_category_storage_key(categories["id"], page_num)))
 
 	else:
 		# Find the correct page of appropriately categorised products
 		num_products_to_skip = (page_num - 1) * per_page
 		num_products_skipped = 0
+		num_categories = len(categories)
 		products = []
 		def products_iterator(page_of_products):
-			for category in categories:
-				this_category_product_ids = get_products_category_storage_key(category["id"])
 
-				num_products_still_to_skip = num_products_to_skip - num_products_skipped
-				num_products_this_category = len(this_category_product_ids)
+			for product in page_of_products:
 
-				# TODO:WV:20170623:Products-in-category-x documents should themselves be paginated (in case, say, all products are in a particular category)
-				if num_products_still_to_skip >= num_products_this_category:
-					num_products_skipped += num_products_this_category
-					continue
-				else:
-					offset = num_products_to_skip - num_products_skipped
-					products.extend(ids_to_items(this_category_product_ids[offset:per_page]))
-					num_products_skipped += offset
+				# Count how many of the specified categories the product was found in
+				num_categories_product_found_in = 0
+				for category in categories:
+					def product_category_iterator(page_of_products_in_this_category):
+						if product in page_of_products_in_this_category:
+							num_categories_product_found_in += 1
+							return True
+					iterate_paginated_set(get_products_category_item_name(category["id"]), product_category_iterator)
 
-				# Stop if enough products have now been added
-				if len(products) == per_page:
-					return
+				# If the product was in all of the specified categories, and it is in the correct page of results, add it to the output
+				if num_categories_product_found_in == num_categories:
+					num_products_still_to_skip = num_products_to_skip - num_products_skipped
+					if num_products_still_to_skip < 1:
+						products.append(product)
+
+						# Can stop iterating if we now have enough products
+						if len(products) == per_page:
+							return True
+					else:
+						num_products_skipped += 1
+
 		iterate_paginated_set("products", products_iterator)
 
 	return products
