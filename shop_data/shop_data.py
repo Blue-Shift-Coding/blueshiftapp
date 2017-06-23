@@ -13,11 +13,17 @@ wcapi = API(
 data_lifetime_in_seconds = 7200
 per_page = 10
 
+def iterate_paginated_set(item_name, callback):
+	summary = get_summary(item_name)
+	for i in range(0, int(summary["num_pages"])):
+		page_of_items = storage.get(get_item_page_storage_key(item_name, i + 1))
+		callback(page_of_items)
+
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
-	categories_summary = download_paginated_set("categories", "products/categories?", expiry_time)
-	products_summary = download_paginated_set("products", "products?on_sale=1&", expiry_time)
+	download_paginated_set("categories", "products/categories?", expiry_time)
+	download_paginated_set("products", "products?on_sale=1&", expiry_time)
 
 	def get_filter_products_in_category(category):
 		def fn(product):
@@ -27,18 +33,21 @@ def download_data():
 			return False
 		return fn
 
-	# Generate category-specific product lists in storage, for faster searching later
-	for i in range(0, int(categories_summary["num_pages"])):
-		page_of_categories = storage.get(get_item_page_storage_key("categories", i + 1))
+	def categories_iterator(page_of_categories):
 		for category in page_of_categories:
 			products_this_category = []
-			for j in range(0, int(products_summary["num_pages"])):
-				page_of_products = storage.get(get_item_page_storage_key("products", j + 1))
+			def products_iterator(page_of_products):
 				products_this_category.extend(filter(get_filter_products_in_category(category), page_of_products))
+			iterate_paginated_set("products", products_iterator)
 			storage.set("products-category-"+str(category["id"]), products_this_category, expiry_time)
+
+	iterate_paginated_set("categories", categories_iterator)
 
 def get_item_page_storage_key(item_name, page_number):
 	return item_name+"_page_"+str(page_number)
+
+def get_item_summary_storage_key(item_name):
+	return item_name+"_summary"
 
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
@@ -63,7 +72,7 @@ def download_paginated_set(item_name, base_query, expiry_time):
 				"per_page": per_page
 			}
 			storage.set(
-				item_name+"_summary",
+				get_item_summary_storage_key(item_name),
 				summary,
 				expiry_time
 			)
@@ -73,6 +82,9 @@ def download_paginated_set(item_name, base_query, expiry_time):
 			break
 
 	return summary
+
+def get_summary(item_name):
+	return storage.get(get_item_summary_storage_key(item_name))
 
 def get_categories():
 	categories = get_thing("categories")
