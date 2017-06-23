@@ -10,13 +10,16 @@ wcapi = API(
     version="wc/v2"
 )
 
-data_lifetime_in_seconds = 7200
+data_lifetime_in_seconds = 14400
 per_page = 10
 
 def iterate_paginated_set(item_name, callback):
 	summary = get_summary(item_name)
 	for i in range(0, int(summary["num_pages"])):
-		page_of_items = storage.get(get_item_page_storage_key(item_name, i + 1))
+		page_of_ids = storage.get(get_item_page_storage_key(item_name, i + 1))
+		page_of_items = []
+		for item_id in page_of_ids:
+			page_of_items.append(storage.get(get_single_item_storage_key(item_name, item_id)))
 		callback(page_of_items)
 
 def download_data():
@@ -35,16 +38,21 @@ def download_data():
 
 	def categories_iterator(page_of_categories):
 		for category in page_of_categories:
-			products_this_category = []
+			product_ids_this_category = []
 			def products_iterator(page_of_products):
-				products_this_category.extend(filter(get_filter_products_in_category(category), page_of_products))
+				products_in_category_this_page = filter(get_filter_products_in_category(category), page_of_products)
+				for product in products_in_category_this_page:
+					product_ids_this_category.append(product["id"])
 			iterate_paginated_set("products", products_iterator)
-			storage.set("products-category-"+str(category["id"]), products_this_category, expiry_time)
+			storage.set("products-category-"+str(category["id"]), product_ids_this_category, expiry_time)
 
 	iterate_paginated_set("categories", categories_iterator)
 
 def get_item_page_storage_key(item_name, page_number):
 	return item_name+"_page_"+str(page_number)
+
+def get_single_item_storage_key(item_name, item_id):
+	return item_name+"_"+str(item_id)
 
 def get_item_summary_storage_key(item_name):
 	return item_name+"_summary"
@@ -58,13 +66,26 @@ def download_paginated_set(item_name, base_query, expiry_time):
 		# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get.  I.e. dont assume response.json() will be sensible.  Also handle HTTPs timeout.
 		url = base_query+"page="+str(page_num)+"&per_page="+str(per_page)
 		response = wcapi.get(url)
+		items = response.json()
 
+		# Save single items and collate IDs
+		item_ids = []
+		for item in items:
+			item_ids.append(item["id"])
+			storage.set(
+				get_single_item_storage_key(item_name, item["id"]),
+				item,
+				expiry_time
+			)
+
+		# Save record of all ids in this page
 		storage.set(
 			get_item_page_storage_key(item_name, page_num),
-			response.json(),
+			item_ids,
 			expiry_time
 		)
 
+		# Create and save summary
 		if summary is None:
 			summary = {
 				"num_total": response.headers.get("X-WP-Total"),
@@ -77,6 +98,7 @@ def download_paginated_set(item_name, base_query, expiry_time):
 				expiry_time
 			)
 
+		# Stop looping if this is the end of the paginated set
 		page_num += 1
 		if page_num > int(summary["num_pages"]):
 			break
