@@ -3,7 +3,6 @@ import storage, pprint, os, time
 from woocommerce import API
 
 #### Config
-
 # NB this per_page value is also used to determine the number of items on each page of the actual shop, for performance reasons
 per_page = 10
 data_lifetime_in_seconds = 14400
