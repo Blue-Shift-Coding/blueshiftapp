@@ -17,7 +17,7 @@ wcapi = API(
     version="wc/v2"
 )
 
-def ids_to_items(item_type, ids):
+def ids_to_items(item_name, ids):
 	items = []
 	for item_id in ids:
 		items.append(storage.get(get_single_item_storage_key(item_name, item_id)))
