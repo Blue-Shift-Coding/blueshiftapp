@@ -17,17 +17,23 @@ wcapi = API(
 
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
-
-	# Download all raw data
-	# TODO:WV:20170624:Delete items that have been removed since last download
-	download_paginated_set("categories", "products/categories?", expiry_time)
-	download_paginated_set("products", "products?on_sale=1&", expiry_time)
+	update_paginated_set("categories", "products/categories?", expiry_time)
+	update_paginated_set("products", "products?on_sale=1&", expiry_time)
 
 def get_products_category_item_name(category_id):
 	return "products_category_"+str(category_id)
 
 def get_single_item_storage_key(item_name, item_id):
 	return item_name+"_"+str(item_id)
+
+def update_paginated_set(item_name, base_query, expiry_time):
+	ids_before = storage.get(item_name)
+	download_paginated_set(item_name, base_query, expiry_time)
+	ids_after = storage.get(item_name)
+	deleted_ids = list(set(ids_before).difference(ids_after))
+	for item_id in deleted_ids:
+		storage.delete(get_single_item_storage_key(item_name, item_id))
+
 
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
