@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, Response, url_for
 import logging, pprint
 from logging import Formatter, FileHandler
 from forms import *
-import os, time, copy, math, json
+import os, time, copy, math, json, re
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import shop_data
@@ -160,23 +160,21 @@ def log_to_stdout(log_message):
 
 # TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
 # TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
-@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None, "page_num": 1})
-@app.route('/classes/<int:page_num>', defaults={"url_category": None, "dates": None, "ages": None})
-@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None, "page_num": 1})
-@app.route('/classes/<url_category>/<int:page_num>', defaults={"dates": None, "ages": None})
-@app.route('/classes/<url_category>/<dates>', defaults={"ages": None, "page_num": 1})
-@app.route('/classes/<url_category>/<dates>/<int:page_num>', defaults={"ages": None})
-@app.route('/classes/<url_category>//<ages>', defaults={"dates": None, "page_num": 1})
-@app.route('/classes/<url_category>//<ages>/<int:page_num>', defaults={"dates": None})
-@app.route('/classes/<url_category>/<dates>/<ages>', defaults={"page_num": 1})
-@app.route('/classes/<url_category>/<dates>/<ages>/<int:page_num>', defaults={})
-@app.route('/classes//<dates>', defaults={"url_category": None, "ages": None, "page_num": 1})
-@app.route('/classes//<dates>/<int:page_num>', defaults={"url_category": None, "ages": None})
-@app.route('/classes///<ages>', defaults={"url_category": None, "dates": None, "page_num": 1})
-@app.route('/classes///<ages>/<int:page_num>', defaults={"url_category": None, "dates": None})
-@app.route('/classes//<dates>/<ages>', defaults={"url_category": None, "page_num": 1})
-@app.route('/classes//<dates>/<ages>/<int:page_num>', defaults={"url_category": None})
-def classes(url_category, dates, ages, page_num):
+@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None})
+@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None})
+@app.route('/classes/<url_category>/<dates>', defaults={"ages": None})
+@app.route('/classes/<url_category>//<ages>', defaults={"dates": None})
+@app.route('/classes/<url_category>/<dates>/<ages>')
+@app.route('/classes//<dates>', defaults={"url_category": None, "ages": None})
+@app.route('/classes///<ages>', defaults={"url_category": None, "dates": None})
+@app.route('/classes//<dates>/<ages>', defaults={"url_category": None})
+def classes(url_category, dates, ages):
+
+    # Find page number from query string - default to 1
+    if "page_num" in request.args and rgx_matches("^[0-9]+$", request.args["page_num"]):
+        page_num = int(request.args["page_num"])
+    else:
+        page_num = 1
 
     # Add filter drop-downs, with options
     filters_category = shop_data.get_category("FILTERS")
@@ -240,6 +238,9 @@ def classes(url_category, dates, ages, page_num):
 
 # Error handlers.
 
+def rgx_matches(rgx, string):
+    matches = re.search(rgx, string)
+    return matches is not None
 
 @app.errorhandler(500)
 def internal_error(error):
