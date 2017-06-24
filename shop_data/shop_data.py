@@ -103,8 +103,6 @@ def get_products(categories=None, page_num=1, per_page=10):
 	offset_first_product = (page_num - 1) * per_page
 	offset_last_product = page_num * per_page
 
-	products_found = []
-
 	if categories is None:
 		return {
 			"num_total": len(product_ids),
@@ -116,6 +114,8 @@ def get_products(categories=None, page_num=1, per_page=10):
 		products_skipped = 0
 		products_added = 0
 		total_matching_products_found = 0
+
+		products_found = []
 
 		if not isinstance(categories, list):
 			categories = [categories]
