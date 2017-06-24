@@ -35,13 +35,6 @@ def iterate_paginated_set(item_name, callback):
 		if result is not None:
 			return result
 
-# The following two variables need to be variables to get around the fact that Python doesn't allow
-# Them to by declared in categories_iterator and then referenced from withint products_iterator.
-# There will be a pythonic way of doing this.  What is it?
-# NB I think wrapping an object in a list, and using that might do it, e.g. see 'filters' in app.py
-# TODO:WV:20170623:Find and implement the proper way of doing it
-product_ids_this_category = None
-product_category_page_num = None
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
@@ -57,16 +50,11 @@ def download_data():
 					return True
 			return False
 		return fn
-
 	def categories_iterator(page_of_categories):
-		global product_ids_this_category, product_category_page_num
-
 		for category in page_of_categories:
 			product_ids_this_category = []
 			product_category_page_num = 1
 			def products_iterator(page_of_products):
-				global product_ids_this_category, product_category_page_num
-
 				products_in_category_this_page = filter(get_filter_products_in_category(category), page_of_products)
 				for product in products_in_category_this_page:
 					product_ids_this_category.append(product["id"])
