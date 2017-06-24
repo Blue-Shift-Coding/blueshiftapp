@@ -219,13 +219,13 @@ def classes(url_category, dates, ages, page_num):
 
     return render_template(
         'pages/classes.html',
-        products=products,
+        products=products["products"],
         class_filters=filters,
         dates=filters["Dates"] if "Dates" in filters else [],
         ages=filters["Age range"] if "Age range" in filters else [],
         pagination_data={
             "page_num":page_num,
-            "total_pages":math.ceil(len(products) / float(per_page)),
+            "total_pages":int(math.ceil(products["num_total"] / float(per_page))),
             "route_function": {
                 "name": "classes",
                 "arguments": {

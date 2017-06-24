@@ -93,12 +93,16 @@ def get_products(categories=None, page_num=1, per_page=10):
 	products_found = []
 
 	if categories is None:
-		return ids_to_items("products", product_ids[offset_first_product:offset_last_product])
+		return {
+			"num_total": len(product_ids),
+			"products": ids_to_items("products", product_ids[offset_first_product:offset_last_product])
+		}
 
 	else:
 
 		products_skipped = 0
 		products_added = 0
+		total_matching_products_found = 0
 
 		if not isinstance(categories, list):
 			categories = [categories]
@@ -112,15 +116,21 @@ def get_products(categories=None, page_num=1, per_page=10):
 						num_categories_product_found_in += 1
 						break
 			if num_categories_product_found_in == len(categories):
+				total_matching_products_found += 1
+
+				if products_added == per_page:
+					continue
+
 				if products_skipped == offset_first_product:
 					products_found.append(product)
 					products_added += 1
-					if products_added == per_page:
-						break
 				else:
 					products_skipped += 1
 
-		return products_found
+		return {
+			"num_total": total_matching_products_found,
+			"products": products_found
+		}
 
 def get_categories():
 	category_ids = storage.get("categories")
