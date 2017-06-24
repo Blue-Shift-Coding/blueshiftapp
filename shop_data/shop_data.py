@@ -20,9 +20,6 @@ def download_data():
 	update_paginated_set("categories", "products/categories?", expiry_time)
 	update_paginated_set("products", "products?on_sale=1&", expiry_time)
 
-def get_single_item_storage_key(item_name, item_id):
-	return item_name+"_"+str(item_id)
-
 def update_paginated_set(item_name, base_query, expiry_time):
 	ids_before = storage.get(item_name)
 	download_paginated_set(item_name, base_query, expiry_time)
@@ -30,6 +27,9 @@ def update_paginated_set(item_name, base_query, expiry_time):
 	deleted_ids = list(set(ids_before).difference(ids_after))
 	for item_id in deleted_ids:
 		storage.delete(get_single_item_storage_key(item_name, item_id))
+
+def get_single_item_storage_key(item_name, item_id):
+	return item_name+"_"+str(item_id)
 
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
