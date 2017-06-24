@@ -22,24 +22,25 @@
 		// Set filters on page load
 		queryStringParts, i, queryStringData
 		queryStringParts = location.search.split(/[?=&]/).slice(1);
+		queryStringData = {};
 		for (i in queryStringParts) {
-			if (i % 2 == 0) {
-				queryStringData[i] == queryStringData[i + 1];
+			i = parseInt(i);
+			if (i % 2 == 0 && queryStringParts[i + 1] != "" && typeof queryStringParts[i + 1] != "undefined") {
+				queryStringData[queryStringParts[i]] = queryStringParts[i + 1];
 			}
 		}
+
 		filters.each(function() {
 			var filter, filterName;
 
 			filter = $(this);
 			filterName = filter.attr("data-filtername");
 
-			if (typeof queryStringData[filtername] != "undefined") {
-				setFilter(filterName, queryStringData[filtername]);
+			if (typeof queryStringData[filterName] != "undefined") {
+				setFilter(filterName, queryStringData[filterName]);
 			} else {
 				setFilter(filterName);
 			}
-
-			valuefromquerystring = location.search.match(new RegExp("/[?&]([^=]+)=[^&]+/"))
 		});
 
 		// Set filters when changed
