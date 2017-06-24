@@ -23,22 +23,6 @@ def download_data():
 	download_paginated_set("categories", "products/categories?", expiry_time)
 	download_paginated_set("products", "products?on_sale=1&", expiry_time)
 
-	# Save category-specific lists of categories
-	category_ids = storage.get("categories")
-	product_ids = storage.get("products")
-	for category_id in category_ids:
-		product_ids_this_category = []
-		for product_id in product_ids:
-			product = storage.get(get_single_item_storage_key("products", product_id))
-			for product_category in product["categories"]:
-				if product_category["id"] == category_id:
-					product_ids_this_category.append(product_id)
-		storage.set(
-			get_products_category_item_name(category_id),
-			product_ids_this_category,
-			expiry_time
-		)
-
 def get_products_category_item_name(category_id):
 	return "products_category_"+str(category_id)
 
