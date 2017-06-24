@@ -93,7 +93,6 @@ def get_category(name, parent_id = None):
 		if correct_name and correct_parent:
 			return category
 
-# TODO:WV:20170622:Add robustness here if thing not found
 def get_products(categories=None, page_num=1, per_page=10):
 	product_ids = storage.get("products")
 
