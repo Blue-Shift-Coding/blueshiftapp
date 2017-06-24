@@ -160,21 +160,9 @@ def log_to_stdout(log_message):
 
 # TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
 # TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
-@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None})
-@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None})
-@app.route('/classes/<url_category>/<dates>', defaults={"ages": None})
-@app.route('/classes/<url_category>//<ages>', defaults={"dates": None})
-@app.route('/classes/<url_category>/<dates>/<ages>')
-@app.route('/classes//<dates>', defaults={"url_category": None, "ages": None})
-@app.route('/classes///<ages>', defaults={"url_category": None, "dates": None})
-@app.route('/classes//<dates>/<ages>', defaults={"url_category": None})
-def classes(url_category, dates, ages):
-
-    # Find page number from query string - default to 1
-    if "page_num" in request.args and rgx_matches("^[0-9]+$", request.args["page_num"]):
-        page_num = int(request.args["page_num"])
-    else:
-        page_num = 1
+@app.route('/classes/', defaults={"url_category": None})
+@app.route('/classes/<url_category>')
+def classes(url_category):
 
     # Add filter drop-downs, with options
     filters_category = shop_data.get_category("FILTERS")
@@ -200,16 +188,24 @@ def classes(url_category, dates, ages):
     active_categories = []
     if url_category is not None:
         active_categories.append(shop_data.get_category(url_category))
-    if dates is not None:
+    if "dates" in request.args:
         if "dates" not in filter_category_ids:
             raise Error("No dates filter ID found")
-        date_filter_category = shop_data.get_category(dates, parent_id=filter_category_ids["dates"])
-        active_categories.append(date_filter_category)
-    if ages is not None:
+        date_filter_category = shop_data.get_category(request.args["dates"], parent_id=filter_category_ids["dates"])
+        if date_filter_category is not None:
+            active_categories.append(date_filter_category)
+    if "ages" in request.args:
         if "ages" not in filter_category_ids:
             raise Error("No ages filter ID found")
-        ages_filter_category = shop_data.get_category(ages, parent_id=filter_category_ids["ages"])
-        active_categories.append(ages_filter_category)
+        ages_filter_category = shop_data.get_category(request.args["ages"], parent_id=filter_category_ids["ages"])
+        if ages_filter_category is not None:
+            active_categories.append(ages_filter_category)
+
+    # Find page number from query string - default to 1
+    if "page_num" in request.args and rgx_matches("^[0-9]+$", request.args["page_num"]):
+        page_num = int(request.args["page_num"])
+    else:
+        page_num = 1
 
     # Fetch list of products and generate page
     per_page = 10
@@ -228,8 +224,8 @@ def classes(url_category, dates, ages):
                 "name": "classes",
                 "arguments": {
                     "url_category":url_category,
-                    "dates":dates,
-                    "ages":ages
+                    "dates":None if "dates" not in request.args else request.args["dates"],
+                    "ages":None if "ages" not in request.args else request.args["ages"]
                 }
             }
         },

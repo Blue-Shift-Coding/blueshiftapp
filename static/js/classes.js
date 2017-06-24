@@ -28,7 +28,7 @@
 			if (typeof urlParts[urlPartOffset + i] != "undefined") {
 				setFilter(filternames[i], urlParts[urlPartOffset + i]);
 			} else {
-				setFilter(filternames[i])
+				setFilter(filternames[i]);
 			}
 		}
 		var category;
@@ -51,16 +51,19 @@
 
 			setFilter(filterName, newFilterValue);
 
-			newFilterValuesForURL = [
-				getFilterValue("dates"),
-				getFilterValue("ages")
-			];
+			newFilterValuesForURL = {
+				"dates": getFilterValue("dates"),
+				"ages": getFilterValue("ages")
+			}
 
-			newPathName = "/classes/"+category+"/"+(newFilterValuesForURL.join("/"));
-			newPathName = newPathName.replace(/\/+$/, "");
+			newLocation = "/classes/"+category+"?";
+			for (filter_name in newFilterValuesForURL) {
+				newLocation += (encodeURIComponent(filter_name)+"="+encodeURIComponent(newFilterValuesForURL[filter_name])+"&");
+			}
+			newLocation = newLocation.replace(/&$/, "");
 
 			// Update list
-			location.pathname = newPathName;
+			location.replace(newLocation);
 
 			e.preventDefault();
 			return false;
