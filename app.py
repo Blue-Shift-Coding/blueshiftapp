@@ -186,18 +186,11 @@ def classes(url_category):
     active_categories = []
     if url_category is not None:
         active_categories.append(shop_data.get_category(url_category))
-    if "dates" in request.args:
-        if "dates" not in filter_category_ids:
-            raise Error("No dates filter ID found")
-        date_filter_category = shop_data.get_category(request.args["dates"], parent_id=filter_category_ids["dates"])
-        if date_filter_category is not None:
-            active_categories.append(date_filter_category)
-    if "ages" in request.args:
-        if "ages" not in filter_category_ids:
-            raise Error("No ages filter ID found")
-        ages_filter_category = shop_data.get_category(request.args["ages"], parent_id=filter_category_ids["ages"])
-        if ages_filter_category is not None:
-            active_categories.append(ages_filter_category)
+    for arg in request.args:
+        if request.args[arg] and arg in filter_category_ids:
+            filter_category = shop_data.get_category(request.args[arg], parent_id=filter_category_ids[arg])
+            if filter_category is not None:
+                active_categories.append(filter_category)
 
     # Find page number from query string - default to 1
     if "page_num" in request.args and rgx_matches("^[0-9]+$", request.args["page_num"]):
