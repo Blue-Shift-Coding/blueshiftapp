@@ -34,7 +34,6 @@ def update_paginated_set(item_name, base_query, expiry_time):
 	for item_id in deleted_ids:
 		storage.delete(get_single_item_storage_key(item_name, item_id))
 
-
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
 	per_page = 10
