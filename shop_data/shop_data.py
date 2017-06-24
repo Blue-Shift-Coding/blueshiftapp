@@ -20,9 +20,6 @@ def download_data():
 	update_paginated_set("categories", "products/categories?", expiry_time)
 	update_paginated_set("products", "products?on_sale=1&", expiry_time)
 
-def get_products_category_item_name(category_id):
-	return "products_category_"+str(category_id)
-
 def get_single_item_storage_key(item_name, item_id):
 	return item_name+"_"+str(item_id)
 
