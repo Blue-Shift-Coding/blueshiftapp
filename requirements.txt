@@ -13,7 +13,6 @@ MarkupSafe==0.18
 ordereddict==1.1
 packaging==16.8
 paramiko==1.12.2
-pkg-resources==0.0.0
 pycrypto==2.6.1
 pyparsing==2.2.0
 python-binary-memcached==0.26.0
