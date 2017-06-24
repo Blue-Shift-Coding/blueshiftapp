@@ -4,9 +4,10 @@
  */
 (function($) {
 	$(function() {
+		var filters, queryStringParts, i, queryStringData, urlParts, category;
 
 		// Set up default options in filters on page load
-		var filters = $(".classes-filter");
+		filters = $(".classes-filter");
 		filters.each(function() {
 			var filter, defaultValue, defaultLabel;
 
@@ -19,24 +20,35 @@
 		});
 
 		// Set filters on page load
-		// TODO:WV:20170622:Adapt to what filters are actually set in WC, rather than hard-coding dates and ages, or prevent editing of these filters in WC via a Wordpress plugin
-		var urlParts = location.pathname.split("/");
-		var filternames = ["dates", "ages"];
-		var urlPartOffset = 3;
-		for (var i in filternames) {
-			i = parseInt(i);
-			if (typeof urlParts[urlPartOffset + i] != "undefined") {
-				setFilter(filternames[i], urlParts[urlPartOffset + i]);
-			} else {
-				setFilter(filternames[i]);
+		queryStringParts, i, queryStringData
+		queryStringParts = location.search.split(/[?=&]/).slice(1);
+		for (i in queryStringParts) {
+			if (i % 2 == 0) {
+				queryStringData[i] == queryStringData[i + 1];
 			}
 		}
-		var category;
-		if (typeof urlParts[2] != "undefined") {
-			category = urlParts[2];
-		}
+		filters.each(function() {
+			var filter, filterName;
+
+			filter = $(this);
+			filterName = filter.attr("data-filtername");
+
+			if (typeof queryStringData[filtername] != "undefined") {
+				setFilter(filterName, queryStringData[filtername]);
+			} else {
+				setFilter(filterName);
+			}
+
+			valuefromquerystring = location.search.match(new RegExp("/[?&]([^=]+)=[^&]+/"))
+		});
 
 		// Set filters when changed
+		urlParts = location.pathname.split("/");
+		if (typeof urlParts[2] != "undefined") {
+			category = urlParts[2];
+		} else {
+			category = null;
+		}
 		filters.on("click", "a", function(e) {
 			var clickedOption, filterName, newFilterValue, newFilterValues, newFilterValuesForURL, newPathName;
 
@@ -56,7 +68,12 @@
 				"ages": getFilterValue("ages")
 			}
 
-			newLocation = "/classes/"+category+"?";
+			newLocation = "/classes";
+			if (category !== null) {
+				newLocation += "/"+category;
+			}
+
+			newLocation += "?";
 			for (filter_name in newFilterValuesForURL) {
 				newLocation += (encodeURIComponent(filter_name)+"="+encodeURIComponent(newFilterValuesForURL[filter_name])+"&");
 			}
