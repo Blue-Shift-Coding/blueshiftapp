@@ -158,8 +158,6 @@ def log_to_stdout(log_message):
     app.logger.addHandler(ch)
     app.logger.info(log_message)
 
-# TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
-# TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')
 def classes(url_category):
