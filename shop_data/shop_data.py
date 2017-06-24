@@ -22,8 +22,12 @@ def download_data():
 
 def update_paginated_set(item_name, base_query, expiry_time):
 	ids_before = storage.get(item_name)
+	if ids_before is None:
+		ids_before = []
 	download_paginated_set(item_name, base_query, expiry_time)
 	ids_after = storage.get(item_name)
+	if ids_after is None:
+		ids_after = []
 	deleted_ids = list(set(ids_before).difference(ids_after))
 	for item_id in deleted_ids:
 		storage.delete(get_single_item_storage_key(item_name, item_id))
@@ -78,6 +82,10 @@ def ids_to_items(item_name, ids):
 # Finds a category based on its name, and optionally its parent category
 def get_category(name, parent_id = None):
 	category_ids = storage.get("categories")
+
+	if category_ids is None:
+		return []
+
 	for category_id in category_ids:
 		category = storage.get(get_single_item_storage_key("categories", category_id))
 		correct_name = (name == category["name"])
@@ -88,6 +96,10 @@ def get_category(name, parent_id = None):
 # TODO:WV:20170622:Add robustness here if thing not found
 def get_products(categories=None, page_num=1, per_page=10):
 	product_ids = storage.get("products")
+
+	if product_ids is None:
+		print "No product IDs found - please run the download script to get data from WooCommerce"
+		product_ids = []
 
 	offset_first_product = (page_num - 1) * per_page
 	offset_last_product = page_num * per_page
@@ -136,4 +148,8 @@ def get_products(categories=None, page_num=1, per_page=10):
 
 def get_categories():
 	category_ids = storage.get("categories")
+
+	if category_ids is None:
+		return []
+
 	return ids_to_items("categories", category_ids)
