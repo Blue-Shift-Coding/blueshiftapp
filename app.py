@@ -49,13 +49,11 @@ def login_required(test):
 @app.context_processor
 def inject_class_categories():
     class_categories = []
-
-    def category_iterator(page_of_categories):
-        for category in page_of_categories:
-            if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
-                class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
-        class_categories.append({"name": "Browse all", "url": "/classes"})
-    shop_data.iterate_paginated_set("categories", category_iterator)
+    categories = shop_data.get_categories()
+    for category in categories:
+        if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
+            class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
+    class_categories.append({"name": "Browse all", "url": "/classes"})
 
     return dict(class_categories=class_categories)
 
@@ -188,21 +186,17 @@ def classes(url_category, dates, ages, page_num):
     else:
         filters = []
 
-        # Find filter titles
-        def categories_iterator(page_of_categories):
-            for category in page_of_categories:
-                if category["parent"] == filters_category["id"]:
-                    filter_category_ids[category["name"].lower()] = category["id"]
-                    filters.append({"category": category, "child_categories": []})
-        shop_data.iterate_paginated_set("categories", categories_iterator)
+        categories = shop_data.get_categories()
+        for category in categories:
+            if category["parent"] == filters_category["id"]:
+                filter_category_ids[category["name"].lower()] = category["id"]
+                filters.append({"category": category, "child_categories": []})
 
         # Find filter options
         for class_filter in filters:
-            def categories_iterator(page_of_categories):
-                for category in page_of_categories:
-                    if category["parent"] == class_filter["category"]["id"]:
-                        class_filter["child_categories"].append(category)
-            shop_data.iterate_paginated_set("categories", categories_iterator)
+            for category in categories:
+                if category["parent"] == class_filter["category"]["id"]:
+                    class_filter["child_categories"].append(category)
 
     # Compile list of categories to restrict products by
     active_categories = []
@@ -220,8 +214,8 @@ def classes(url_category, dates, ages, page_num):
         active_categories.append(ages_filter_category)
 
     # Fetch list of products and generate page
-    products = shop_data.get_products(active_categories, page_num)
-    products_summary = shop_data.get_summary("products")
+    per_page = 10
+    products = shop_data.get_products(active_categories, page_num, per_page)
 
     return render_template(
         'pages/classes.html',
@@ -231,7 +225,7 @@ def classes(url_category, dates, ages, page_num):
         ages=filters["Age range"] if "Age range" in filters else [],
         pagination_data={
             "page_num":page_num,
-            "total_pages":int(products_summary["num_pages"]),
+            "total_pages":math.ceil(len(products) / float(per_page)),
             "route_function": {
                 "name": "classes",
                 "arguments": {
