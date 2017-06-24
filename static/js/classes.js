@@ -29,7 +29,6 @@
 				queryStringData[queryStringParts[i]] = queryStringParts[i + 1];
 			}
 		}
-
 		filters.each(function() {
 			var filter, filterName;
 
@@ -37,9 +36,9 @@
 			filterName = filter.attr("data-filtername");
 
 			if (typeof queryStringData[filterName] != "undefined") {
-				setFilter(filterName, queryStringData[filterName]);
+				setFilter(filter, queryStringData[filterName]);
 			} else {
-				setFilter(filterName);
+				setFilter(filter);
 			}
 		});
 
@@ -51,56 +50,53 @@
 			category = null;
 		}
 		filters.on("click", "a", function(e) {
-			var clickedOption, filterName, newFilterValue, newFilterValues, newFilterValuesForURL, newPathName;
+			var clickedOption, filter, newFilterValue, newFilterValues, newFilterValuesForURL, newPathName;
 
 			clickedOption = $(e.target);
 
-			filterName = clickedOption.closest(".classes-filter").attr("data-filtername");
-			if (filterName == "") {
-				throw new Error("No filter name supplied");
-			}
-
+			filter = clickedOption.closest(".classes-filter");
 			newFilterValue = clickedOption.attr("data-filtervalue");
+			setFilter(filter, newFilterValue);
 
-			setFilter(filterName, newFilterValue);
+			// Collate new filter values for inclusion in the URL
+			newFilterValuesForURL = {}
+			filters.each(function() {
+				var filter, filterName, filterValue;
 
-			newFilterValuesForURL = {
-				"dates": getFilterValue("dates"),
-				"ages": getFilterValue("ages")
-			}
+				filter = $(this);
+				filterName = filter.attr("data-filtername");
+				filterValue = getFilterValue(filter);
 
+				newFilterValuesForURL[filterName] = filterValue;
+			});
+
+			// Build new URL and redirect to it
 			newLocation = "/classes";
 			if (category !== null) {
 				newLocation += "/"+category;
 			}
-
 			newLocation += "?";
 			for (filter_name in newFilterValuesForURL) {
 				newLocation += (encodeURIComponent(filter_name)+"="+encodeURIComponent(newFilterValuesForURL[filter_name])+"&");
 			}
 			newLocation = newLocation.replace(/&$/, "");
-
-			// Update list
 			location.replace(newLocation);
 
+			// Stop the form actually submitting
 			e.preventDefault();
 			return false;
 		});
 	});
 
-	function getFilterValue(filterName) {
-		var filter, value;
+	function getFilterValue(filter) {
+		var value;
 
-		filter = getFilter(filterName);
 		value = filter.find(".selected-item").attr("data-filtervalue");
-
 		return value;
 	}
 
-	function setFilter(filterName, newValue) {
-		var filter, item, newLabel;
-
-		filter = getFilter(filterName);
+	function setFilter(filter, newValue) {
+		var item, newLabel;
 
 		if (typeof newValue == "undefined") {
 			newValue = filter.attr("data-defaultvalue");
@@ -112,7 +108,7 @@
 			if (item.length == 0) {
 
 				// Set default value
-				setFilter(filterName);
+				setFilter(filter);
 
 				return;
 			}
@@ -126,16 +122,6 @@
 		}
 
 		filter.find(".selected-item").attr("data-filtervalue", newValue).text(newLabel);
-	}
-
-	function getFilter(filterName) {
-		var filter;
-
-		filter = $(".classes-filter").filter(function() {
-			return ($(this).attr("data-filtername") == filterName);
-		});
-
-		return filter;
 	}
 
 })(jQuery);
