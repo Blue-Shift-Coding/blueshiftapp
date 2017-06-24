@@ -21,16 +21,21 @@ def download_data():
 	update_paginated_set("products", "products?on_sale=1&", expiry_time)
 
 def update_paginated_set(item_name, base_query, expiry_time):
-	ids_before = storage.get(item_name)
-	if ids_before is None:
-		ids_before = []
+	ids_before = get_item_ids(item_name)
 	download_paginated_set(item_name, base_query, expiry_time)
-	ids_after = storage.get(item_name)
-	if ids_after is None:
-		ids_after = []
-	deleted_ids = list(set(ids_before).difference(ids_after))
+	ids_after = get_item_ids(item_name)
+	deleted_ids = list_diff(ids_before, ids_after)
 	for item_id in deleted_ids:
 		storage.delete(get_single_item_storage_key(item_name, item_id))
+
+def list_diff(list1, list2):
+	deleted_ids = list(set(list1).difference(list2))
+
+def get_item_ids(item_name):
+	ids = storage.get(item_name)
+	if ids is None:
+		ids = []
+	return ids
 
 def get_single_item_storage_key(item_name, item_id):
 	return item_name+"_"+str(item_id)
@@ -81,10 +86,7 @@ def ids_to_items(item_name, ids):
 
 # Finds a category based on its name, and optionally its parent category
 def get_category(name, parent_id = None):
-	category_ids = storage.get("categories")
-
-	if category_ids is None:
-		return []
+	category_ids = get_item_ids("categories")
 
 	for category_id in category_ids:
 		category = storage.get(get_single_item_storage_key("categories", category_id))
@@ -94,11 +96,7 @@ def get_category(name, parent_id = None):
 			return category
 
 def get_products(categories=None, page_num=1, per_page=10):
-	product_ids = storage.get("products")
-
-	if product_ids is None:
-		print "No product IDs found - please run the download script to get data from WooCommerce"
-		product_ids = []
+	product_ids = get_item_ids("products")
 
 	offset_first_product = (page_num - 1) * per_page
 	offset_last_product = page_num * per_page
@@ -146,9 +144,5 @@ def get_products(categories=None, page_num=1, per_page=10):
 		}
 
 def get_categories():
-	category_ids = storage.get("categories")
-
-	if category_ids is None:
-		return []
-
+	category_ids = get_item_ids("categories")
 	return ids_to_items("categories", category_ids)
