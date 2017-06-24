@@ -130,4 +130,5 @@ def get_products(categories=None, page_num=1, per_page=10):
 		return products_found[offset_first_product:offset_last_product]
 
 def get_categories():
-	return ids_to_items(storage.get("categories"))
+	category_ids = storage.get("categories")
+	return ids_to_items("categories", category_ids)
