@@ -29,7 +29,7 @@ def update_paginated_set(item_name, base_query, expiry_time):
 		storage.delete(get_single_item_storage_key(item_name, item_id))
 
 def list_diff(list1, list2):
-	deleted_ids = list(set(list1).difference(list2))
+	return list(set(list1).difference(list2))
 
 def get_item_ids(item_name):
 	ids = storage.get(item_name)
