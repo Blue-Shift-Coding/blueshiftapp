@@ -26,7 +26,7 @@
 					<tr>
 						<td>
 							<form action="/cart" method="POST">
-								<input type="hidden" name="product_id" value="{{ basket[item].product.name }}" />
+								<input type="hidden" name="product_id" value="{{ basket[item].product.id }}" />
 								<input type="hidden" name="quantity" value="0" />
 								<button>X</button>
 							</form>
