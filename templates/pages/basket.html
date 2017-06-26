@@ -37,6 +37,8 @@
 
 						<td>{{ basket[item].product.name }} </td>
 						<td>{{ basket[item].product.price }}</td>
+
+						{# TODO:WV:20170626:Add old-browser-compatible validation for these 'number' fields #}
 						<td><input type="number" class="quantity-field" data-product-id="{{ basket[item].product.id }}" value="{{ basket[item].quantity }}" min="0" step="1" /></td>
 						<td>{{ (basket[item].product.price|float * basket[item].quantity|int)|currency }}</td>
 					</tr>
