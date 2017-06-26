@@ -50,21 +50,28 @@
 						{% set color_number = 4 %}
 					{% endif %}
 
+					{% set product_url = '/classes/'+product.slug %}
+
 					{# color number must be between 1 and 6 - map to maximum age #}
 					<div class="media courseList couresListPage">
-						<a class="media-left border-color-{{ color_number }}" href="course-single-left-sidebar.html">
+						<a class="media-left border-color-{{ color_number }}" href="{{ product_url }}">
 							<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
 							<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
 						</a>
 						<div class="media-body">
-							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ color_number }}">{{product.name}}</a></h3>
+							<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ color_number }}">{{product.name}}</a></h3>
 
-							{{product.description|safe}}
+							{{product.short_description|safe}}
+
 							<ul class="list-inline btn-yellow btnPart">
 								<li>
 
 									<a target="_blank" data-toggle="modal" data-target="#add-product-{{ product.id }}" class="btn btn-primary ">
 										Book now
+									</a>
+
+									<a target="_blank" href="{{ product_url }}" class="btn btn-primary read-more-button">
+										Read more
 									</a>
 
 									<div id="add-product-{{product.id}}" class="modal fade" role="dialog">

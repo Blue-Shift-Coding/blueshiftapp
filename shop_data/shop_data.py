@@ -18,6 +18,9 @@ wcapi = API(
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 	update_paginated_set("categories", "products/categories?", expiry_time)
+
+	# TODO:WV:20170626:Confirm what happens if a product is removed from sale in the WC interface
+	# TODO:WV:20170626:Make sure products are listed in the correct order (e.g. ascending / descending date, and present/future only)
 	update_paginated_set("products", "products?", expiry_time)
 
 def update_paginated_set(item_name, base_query, expiry_time):
@@ -51,7 +54,6 @@ def download_paginated_set(item_name, base_query, expiry_time):
 		url = base_query+"page="+str(page_num)+"&per_page="+str(per_page)
 		response = wcapi.get(url)
 		items = response.json()
-
 
 		# Save single items and collate IDs
 		for item in items:
