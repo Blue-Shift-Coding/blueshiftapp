@@ -10,9 +10,11 @@
 		<div class="row">
 			<div class="col-xs-12">
 
-			<table>
+			<table class="shopping-basket">
 				<thead>
 					<tr>
+						<th></th>
+						<th></th>
 						<th>Product name</th>
 						<th>Price</th>
 						<th>Quantity</th>
@@ -22,9 +24,20 @@
 				<tbody>
 					{% for item in basket %}
 					<tr>
+						<td>
+							<form action="/cart" method="POST">
+								<input type="hidden" name="product_id" value="{{ basket[item].product.name }}" />
+								<input type="hidden" name="quantity" value="0" />
+								<button>X</button>
+							</form>
+						</td>
+
+						{# TODO:WV:20170626:These images take ages to load.  Would be good to, at some point, generate some smaller ones for inclusion here #}
+						<td><img src="{{ basket[item].product.images[0].src }}" alt="Image"></td>
+
 						<td>{{ basket[item].product.name }} </td>
 						<td>{{ basket[item].product.price }}</td>
-						<td>{{ basket[item].quantity }}</td>
+						<td><input type="number" class="quantity-field" value="{{ basket[item].quantity }}" min="0" step="1" /></td>
 						<td>{{ basket[item].product.price * basket[item].quantity }}</td>
 					</tr>
 					{% endfor %}

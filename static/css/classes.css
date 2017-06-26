@@ -46,3 +46,15 @@
 .courseList .form-group.order_id {
   display:none;
 }
+
+.shopping-basket td {
+  padding:5px 10px;
+}
+
+.shopping-basket img {
+  max-width:100px;
+}
+
+.shopping-basket .quantity-field {
+  width:50px;
+}
