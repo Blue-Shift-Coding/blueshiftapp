@@ -40,13 +40,24 @@ def get_item_ids(item_name):
 		ids = []
 	return ids
 
-def get_single_item_storage_key(item_name, item_id):
+def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
+	if item_id is None:
+		if item_slug is None:
+			raise Exception("Please provide either an item ID or a slug")
+		slugs = storage.get(get_slugs_storage_key(item_name))
+		if slugs[item_slug]:
+			item_id = slugs[item_slug]
+
 	return item_name+"_"+str(item_id)
+
+def get_slugs_storage_key(item_name):
+	return item_name+"_slugs"
 
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
 	per_page = 100
 	item_ids = []
+	item_slugs = {}
 	num_pages = None
 	while True:
 
@@ -55,9 +66,10 @@ def download_paginated_set(item_name, base_query, expiry_time):
 		response = wcapi.get(url)
 		items = response.json()
 
-		# Save single items and collate IDs
+		# Save single items and collate indexing data
 		for item in items:
 			item_ids.append(item["id"])
+			item_slugs.update({item["slug"]: item["id"]})
 			storage.set(
 				get_single_item_storage_key(item_name, item["id"]),
 				item,
@@ -72,10 +84,15 @@ def download_paginated_set(item_name, base_query, expiry_time):
 		if page_num > num_pages:
 			break
 
-	# Save record of all ids
+	# Save indexing data
 	storage.set(
 		item_name,
 		item_ids,
+		expiry_time
+	)
+	storage.set(
+		get_slugs_storage_key(item_name),
+		item_slugs,
 		expiry_time
 	)
 
@@ -97,6 +114,10 @@ def get_category(name, parent_id = None):
 		correct_parent = ((parent_id is None and category["parent"] == 0) or (parent_id is not None and category["parent"] == parent_id))
 		if correct_name and correct_parent:
 			return category
+
+def get_product(id=None, slug=None):
+	storage_key = get_single_item_storage_key("products", item_id=id, item_slug=slug)
+	return storage.get(storage_key)
 
 def get_products(categories=None, page_num=1, per_page=10):
 	product_ids = get_item_ids("products")

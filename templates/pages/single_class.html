@@ -1,0 +1,97 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Our Courses{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
+{% block content %}
+
+
+<section class="mainContent full-width clearfix">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-xs-12 classes-results">
+
+
+				{# color number must be between 1 and 6 #}
+
+				{# TODO:WV:20170622:This needs to be updated #}
+				{# TODO:WV:20170622:De-dup between here and the courses index.  The only changeis currently using full product.description rather than product.short_description. #}
+
+				{% if 'Ages 5 - 6' in product.categories %}
+					{% set color_number = 1 %}
+				{% elif 'Ages 7 - 8' in product.categories %}
+					{% set color_number = 2 %}
+				{% elif 'Ages 9 - 10' in product.categories %}
+					{% set color_number = 3 %}
+				{% else %}
+					{% set color_number = 4 %}
+				{% endif %}
+
+				{% set product_url = '/class/'+product.slug %}
+
+				{# color number must be between 1 and 6 - map to maximum age #}
+				<div class="media courseList couresListPage">
+					<a class="media-left border-color-{{ color_number }}" href="{{ product_url }}">
+						<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
+						<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
+					</a>
+					<div class="media-body">
+						<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ color_number }}">{{product.name}}</a></h3>
+
+						{{product.description|safe}}
+
+						<ul class="list-inline btn-yellow btnPart">
+							<li>
+
+								<a target="_blank" data-toggle="modal" data-target="#add-product-{{ product.id }}" class="btn btn-primary ">
+									Book now
+								</a>
+
+								<a target="_blank" href="{{ product_url }}" class="btn btn-primary read-more-button">
+									Read more
+								</a>
+
+								<div id="add-product-{{product.id}}" class="modal fade" role="dialog">
+								  <div class="modal-dialog">
+									<div class="modal-content">
+									  <div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h4 class="modal-title">{{ product.title }}</h4>
+									  </div>
+									  <div class="modal-body">
+										<form action="javascript:alert('todo'); return false;" class="product-options">
+											<input type="hidden" name="productId" value="{{ product.id }}" />
+											<input type="hidden" name="productOptionId" value="" />
+											<input type="hidden" name="productOption" value="" />
+
+												{% if product["product_options"] %}
+													{% for option in product["product_options"] %}
+														{% include 'pages/classes/option-field.html' %}
+													{% endfor %}
+												{% endif %}
+
+											<button type="submit" class="btn btn-primary"><i class="fa fa-shopping-basket " aria-hidden="true"></i>Add to Cart</button>
+										</form>
+									  </div>
+									  <div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									  </div>
+									</div>
+								  </div>
+								</div>
+							</li>
+
+							<!--
+							WV:20170511:Commented out because we don't actually have any more information for this to link to at the moment
+							<li><a href="course-single-left-sidebar.html" class="btn btn-link"><i class="fa fa-angle-double-right" aria-hidden="true"></i> More</a></li>
+							-->
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{% endblock %}

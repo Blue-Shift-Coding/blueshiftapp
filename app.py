@@ -158,11 +158,23 @@ def log_to_stdout(log_message):
     app.logger.addHandler(ch)
     app.logger.info(log_message)
 
+@app.route('/class/<slug>')
+def singleclass(slug):
+    product = shop_data.get_product(slug=slug)
+
+    return render_template(
+        'pages/single_class.html',
+        product=product
+    )
+
+    return product
+
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')
 def classes(url_category):
 
     # Add filter drop-downs, with options
+    # TODO:WV:20170626:Add Wordpress plugin to prevent editing the FILTERS category name or adding any others called FILTERS at the same level in the category hierarchy
     filters_category = shop_data.get_category("FILTERS")
     filter_category_ids = {}
     if filters_category is None:
