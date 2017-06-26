@@ -66,8 +66,7 @@
 							<ul class="list-inline btn-yellow btnPart">
 								<li>
 									<form action="/cart" method="POST">
-										<input type="hidden" name="product_id" value="{{ product.id }}" />
-										<input type="hidden" name="quantity" value="+1" />
+										<input type="hidden" name="updates" value="{{ product.id }}|+1" />
 										<button class="btn btn-primary ">Book now</button>
 									</form>
 								</li>
