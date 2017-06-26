@@ -1,0 +1,41 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Shopping basket{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
+{% block content %}
+
+
+<section class="mainContent full-width clearfix">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-xs-12">
+
+			<table>
+				<thead>
+					<tr>
+						<th>Product name</th>
+						<th>Price</th>
+						<th>Quantity</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in basket %}
+					<tr>
+						<td>{{ item.product.title }} </td>
+						<td>{{ item.product.price }}</td>
+						<td>{{ item.quantity }}</td>
+						<td>{{ item.product.price * item.quantity }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+
+			</table>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{% endblock %}

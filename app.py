@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect, Response, url_for
+from flask import Flask, render_template, request, redirect, Response, url_for, session
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging, pprint
 from logging import Formatter, FileHandler
@@ -20,6 +20,8 @@ from functools import wraps
 
 app = Flask(__name__)
 app.config.from_object('config')
+app.secret_key = os.environ["BLUESHIFTAPP_SESSION_SIGNING_KEY"]
+
 #db = SQLAlchemy(app)
 
 # Automatically tear down SQLAlchemy.
@@ -158,6 +160,57 @@ def log_to_stdout(log_message):
     app.logger.addHandler(ch)
     app.logger.info(log_message)
 
+@app.route('/cart')
+def cart():
+
+    # Extract input from post-data
+    product_id = None if "product_id" not in request.form else request.form["product_id"]
+    quantity = None if "quantity" not in request.form else request.form["quantity"]
+
+    # Update basket if necessary
+    if product_id is not None:
+
+        product = shop_data.get_product(id=product_id)
+        if product is None:
+
+            # TODO:WV:20170626:User-friendly error here
+            raise Exception("Product not found")
+
+        if quantity is None or not rgx_matches("^[+\-]?[0-9]+$", quantity):
+
+            # TODO:WV:20170626:User-friendly error here
+            raise Exception("Invalid quantity")
+
+        # Upadte basket in the session
+        if "basket" not in session:
+            session["basket"] = {}
+        old_quantity = 0 if product_id not in session["basket"] else session["basket"][product_id]
+        operator = quantity[0:1]
+        if operator == "+":
+            new_quantity = old_quantity + int(quantity[1])
+        elif operator == "-":
+            new_quantity = old_quantity - int(quantity[1])
+        else:
+            new_quantity = int(quantity)
+        if new_quantity <= 0:
+            session["basket"].pop(product_id, None)
+        else:
+            session["basket"][product_id] = new_quantity
+
+    # Generate full basket, with product data etc, and output to the user
+    full_basket = {}
+    if "basket" in session:
+        for item in session["basket"]:
+            full_basket[item] = {
+                "product": shop_data.get_product(id=product_id),
+                "quantity": session["basket"][product_id]
+            }
+
+    return render_template(
+        "pages/basket.html",
+        basket=full_basket
+    )
+
 @app.route('/class/<slug>')
 def singleclass(slug):
     product = shop_data.get_product(slug=slug)
@@ -168,6 +221,7 @@ def singleclass(slug):
     )
 
     return product
+
 
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')
