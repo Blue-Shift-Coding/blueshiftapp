@@ -160,7 +160,7 @@ def log_to_stdout(log_message):
     app.logger.addHandler(ch)
     app.logger.info(log_message)
 
-@app.route('/cart')
+@app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
     # Extract input from post-data

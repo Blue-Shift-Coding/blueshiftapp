@@ -40,14 +40,17 @@
 
 						<ul class="list-inline btn-yellow btnPart">
 							<li>
-								<a target="_blank" class="btn btn-primary ">
-									Book now
-								</a>
-								<a target="_blank" href="{{ product_url }}" class="btn btn-primary read-more-button">
-									Read more
-								</a>
+								<form action="/cart" method="POST">
+									<input type="hidden" name="product_id" value="{{ product.id }}" />
+									<input type="hidden" name="quantity" value="+1" />
+									<button class="btn btn-primary ">Book now</button>
+								</form>
+							</li>
+							<li>
+								<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
 							</li>
 						</ul>
+
 					</div>
 				</div>
 
