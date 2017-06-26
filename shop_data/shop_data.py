@@ -42,7 +42,7 @@ def get_single_item_storage_key(item_name, item_id):
 
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
-	per_page = 10
+	per_page = 100
 	item_ids = []
 	num_pages = None
 	while True:
@@ -51,6 +51,7 @@ def download_paginated_set(item_name, base_query, expiry_time):
 		url = base_query+"page="+str(page_num)+"&per_page="+str(per_page)
 		response = wcapi.get(url)
 		items = response.json()
+
 
 		# Save single items and collate IDs
 		for item in items:
