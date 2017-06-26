@@ -18,7 +18,7 @@ wcapi = API(
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 	update_paginated_set("categories", "products/categories?", expiry_time)
-	update_paginated_set("products", "products?on_sale=1&", expiry_time)
+	update_paginated_set("products", "products?", expiry_time)
 
 def update_paginated_set(item_name, base_query, expiry_time):
 	ids_before = get_item_ids(item_name)
