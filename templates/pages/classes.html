@@ -65,50 +65,15 @@
 
 							<ul class="list-inline btn-yellow btnPart">
 								<li>
-
-									<a target="_blank" data-toggle="modal" data-target="#add-product-{{ product.id }}" class="btn btn-primary ">
+									<a target="_blank" class="btn btn-primary ">
 										Book now
 									</a>
-
 									<a target="_blank" href="{{ product_url }}" class="btn btn-primary read-more-button">
 										Read more
 									</a>
-
-									<div id="add-product-{{product.id}}" class="modal fade" role="dialog">
-									  <div class="modal-dialog">
-										<div class="modal-content">
-										  <div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h4 class="modal-title">{{ product.title }}</h4>
-										  </div>
-										  <div class="modal-body">
-											<form action="javascript:alert('todo'); return false;" class="product-options">
-												<input type="hidden" name="productId" value="{{ product.id }}" />
-												<input type="hidden" name="productOptionId" value="" />
-												<input type="hidden" name="productOption" value="" />
-
-													{% if product["product_options"] %}
-														{% for option in product["product_options"] %}
-															{% include 'pages/classes/option-field.html' %}
-														{% endfor %}
-													{% endif %}
-
-												<button type="submit" class="btn btn-primary"><i class="fa fa-shopping-basket " aria-hidden="true"></i>Add to Cart</button>
-											</form>
-										  </div>
-										  <div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-										  </div>
-										</div>
-									  </div>
-									</div>
 								</li>
-
-								<!--
-								WV:20170511:Commented out because we don't actually have any more information for this to link to at the moment
-								<li><a href="course-single-left-sidebar.html" class="btn btn-link"><i class="fa fa-angle-double-right" aria-hidden="true"></i> More</a></li>
-								-->
 							</ul>
+
 						</div>
 					</div>
 				{% endfor %}
