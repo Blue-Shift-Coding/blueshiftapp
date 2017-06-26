@@ -200,8 +200,8 @@ def cart():
     # Generate full basket, with product data etc, and output to the user
     full_basket = {}
     if "basket" in session:
-        for item in session["basket"]:
-            full_basket[item] = {
+        for product_id in session["basket"]:
+            full_basket[product_id] = {
                 "product": shop_data.get_product(id=product_id),
                 "quantity": session["basket"][product_id]
             }

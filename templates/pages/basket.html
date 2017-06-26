@@ -22,10 +22,10 @@
 				<tbody>
 					{% for item in basket %}
 					<tr>
-						<td>{{ item.product.title }} </td>
-						<td>{{ item.product.price }}</td>
-						<td>{{ item.quantity }}</td>
-						<td>{{ item.product.price * item.quantity }}</td>
+						<td>{{ basket[item].product.name }} </td>
+						<td>{{ basket[item].product.price }}</td>
+						<td>{{ basket[item].quantity }}</td>
+						<td>{{ basket[item].product.price * basket[item].quantity }}</td>
 					</tr>
 					{% endfor %}
 				</tbody>
