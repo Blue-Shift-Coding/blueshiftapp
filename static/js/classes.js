@@ -128,10 +128,30 @@
 
 
 /*
- * Product options
+ * Shopping basket
  */
 (function($) {
 	$(function() {
+
+		$(".update-shopping-basket-form").on("submit", function(e) {
+			var $form, $shoppingBasket, newQuantities = {};
+
+			$form = $(this);
+			$shoppingBasket = $form.closest(".container").find(".shopping-basket");
+			$shoppingBasket.find(".quantity-field").each(function() {
+				var $field = $(this);
+				newQuantities[$field.attr("data-product-id")] = $field.val();
+			});
+
+			$form.find("input[name=updates]").remove();
+			for (productId in newQuantities) {
+				var input;
+
+				input = $("<input type='hidden' name='updates' />")
+				input.val(productId+"|"+newQuantities[productId]);
+				$form.append(input);
+			}
+		});
 
 	});
 })(jQuery);

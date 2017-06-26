@@ -47,8 +47,16 @@
   display:none;
 }
 
+
+/* Shopping basket */
+
+.shopping-basket {
+  width:100%;
+}
+
 .shopping-basket td {
   padding:5px 10px;
+  text-align:center;
 }
 
 .shopping-basket img {
@@ -57,4 +65,8 @@
 
 .shopping-basket .quantity-field {
   width:50px;
+}
+
+.update-shopping-basket-form {
+  float:right;
 }

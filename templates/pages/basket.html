@@ -37,13 +37,17 @@
 
 						<td>{{ basket[item].product.name }} </td>
 						<td>{{ basket[item].product.price }}</td>
-						<td><input type="number" class="quantity-field" value="{{ basket[item].quantity }}" min="0" step="1" /></td>
-						<td>{{ basket[item].product.price * basket[item].quantity }}</td>
+						<td><input type="number" class="quantity-field" data-product-id="{{ basket[item].product.id }}" value="{{ basket[item].quantity }}" min="0" step="1" /></td>
+						<td>{{ (basket[item].product.price|float * basket[item].quantity|int)|currency }}</td>
 					</tr>
 					{% endfor %}
 				</tbody>
 
 			</table>
+
+			<form class="update-shopping-basket-form" action="/cart" method="POST">
+				<button class="btn btn-default">Update cart</button>
+			</form>
 
 			</div>
 		</div>
