@@ -34,7 +34,8 @@ gf = GravityFormsClient(
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
-	# TODO:WV:20170629:Handle error in 'get_forms'
+	# TODO:WV:20170629:The gravityforms add-on, if enabled, interferes with the site's URLs, meaning that the woo-commerce API doesn't work.  Solution: write a wordpress plugin that hooks into the hooks here: https://developer.wordpress.org/reference/functions/get_option/ and overrides the option 'gravityformsaddon_webapi_settings' (confirm the 'webapi' part - should be the 'plugin name') if the request is for the woocommerce API, to set 'enabled' to false for the current request only
+	# TODO:WV:20170629:Handle any error in 'get_forms'
 	update_set("forms", expiry_time=expiry_time, items=gf.get_forms().values())
 	update_set("categories", expiry_time=expiry_time, base_query="products/categories?")
 	update_set("products", expiry_time=expiry_time, base_query="products?")
