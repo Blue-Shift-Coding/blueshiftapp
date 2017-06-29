@@ -14,7 +14,6 @@ ordereddict==1.1
 packaging==16.8
 paramiko==1.12.2
 pycrypto==2.6.1
-pygfapi==0.0.3
 pyparsing==2.2.0
 python-binary-memcached==0.26.0
 requests==2.13.0
