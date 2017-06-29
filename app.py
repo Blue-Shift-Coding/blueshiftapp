@@ -1,5 +1,4 @@
-# coding: utf-8
-#----------------------------------------------------------------------------#
+1#----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
 
@@ -49,8 +48,6 @@ def login_required(test):
 # Context Processors (for setting global template variables)
 #----------------------------------------------------------------------------#
 
-
-
 @app.context_processor
 def inject_class_categories():
     class_categories = []
@@ -61,15 +58,6 @@ def inject_class_categories():
     class_categories.append({"name": "Browse all", "url": "/classes"})
 
     return dict(class_categories=class_categories)
-
-
-#----------------------------------------------------------------------------#
-# Custom template filters.
-#----------------------------------------------------------------------------#
-
-@app.template_filter('currency')
-def format_currency(value):
-    return u"£{:,.2f}".format(value)
 
 #----------------------------------------------------------------------------#
 # Controllers.
@@ -175,42 +163,39 @@ def log_to_stdout(log_message):
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
-    # Extract 'updates' from post data
-    updates = {}
-    for key in request.form.keys():
-        if key == "updates":
-            for value in request.form.getlist(key):
-                product_id, updates[product_id] = value.split("|")
+    # Extract input from post-data
+    product_id = None if "product_id" not in request.form else request.form["product_id"]
+    quantity = None if "quantity" not in request.form else request.form["quantity"]
 
-    if not len(updates) == 0:
+    # Update basket if necessary
+    if product_id is not None:
 
-        for product_id in updates:
+        product = shop_data.get_product(id=product_id)
+        if product is None:
 
-            product = shop_data.get_product(id=product_id)
-            quantity = updates[product_id]
+            # TODO:WV:20170626:User-friendly error here
+            raise Exception("Product not found")
 
-            # Skip invalid data
-            if product is None or quantity is None or not rgx_matches("^[+\-]?[0-9]+$", quantity):
-                continue
+        if quantity is None or not rgx_matches("^[+\-]?[0-9]+$", quantity):
 
-            # Update basket in the session
-            if "basket" not in session:
-                session["basket"] = {}
-            old_quantity = 0 if product_id not in session["basket"] else session["basket"][product_id]
-            operator = quantity[0:1]
-            if operator == "+":
-                new_quantity = old_quantity + int(quantity[1])
-            elif operator == "-":
-                new_quantity = old_quantity - int(quantity[1])
-            else:
-                new_quantity = int(quantity)
-            if new_quantity <= 0:
-                session["basket"].pop(product_id, None)
-            else:
-                session["basket"][product_id] = new_quantity
+            # TODO:WV:20170626:User-friendly error here
+            raise Exception("Invalid quantity")
 
-        # Redirect to /cart with no form-data, to prevent resubmission problem
-        return redirect(url_for('cart'))
+        # Upadte basket in the session
+        if "basket" not in session:
+            session["basket"] = {}
+        old_quantity = 0 if product_id not in session["basket"] else session["basket"][product_id]
+        operator = quantity[0:1]
+        if operator == "+":
+            new_quantity = old_quantity + int(quantity[1])
+        elif operator == "-":
+            new_quantity = old_quantity - int(quantity[1])
+        else:
+            new_quantity = int(quantity)
+        if new_quantity <= 0:
+            session["basket"].pop(product_id, None)
+        else:
+            session["basket"][product_id] = new_quantity
 
     # Generate full basket, with product data etc, and output to the user
     full_basket = {}
