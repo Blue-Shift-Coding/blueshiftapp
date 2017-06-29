@@ -145,7 +145,7 @@ def download_paginated_set(item_name, base_query, expiry_time):
 
 def save_items(item_name, items, expiry_time):
 	item_ids = []
-	item_slugs = []
+	item_slugs = {}
 	for item in items:
 		item_ids.append(item["id"])
 		if "slug" in item:
