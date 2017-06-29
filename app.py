@@ -187,7 +187,7 @@ def cart():
             # TODO:WV:20170626:User-friendly error here
             raise Exception("Product not found")
 
-        if quantity is None or not rgx_matches("^[+\-]?[0-9]+$", quantity):
+        if quantity is None or not (quantity in ["+1", "-1", "0"]):
 
             # TODO:WV:20170626:User-friendly error here
             raise Exception("Invalid quantity")
