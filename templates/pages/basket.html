@@ -17,8 +17,6 @@
 						<th></th>
 						<th>Product name</th>
 						<th>Price</th>
-						<th>Quantity</th>
-						<th>Total</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -36,19 +34,15 @@
 						<td><img src="{{ basket[item].product.images[0].src }}" alt="Image"></td>
 
 						<td>{{ basket[item].product.name }} </td>
-						<td>{{ basket[item].product.price }}</td>
-
-						{# TODO:WV:20170626:Add old-browser-compatible validation for these 'number' fields #}
-						<td><input type="number" class="quantity-field" data-product-id="{{ basket[item].product.id }}" value="{{ basket[item].quantity }}" min="0" step="1" /></td>
-						<td>{{ (basket[item].product.price|float * basket[item].quantity|int)|currency }}</td>
+						<td>{{ basket[item].product.price|float|currency }}</td>
 					</tr>
 					{% endfor %}
 				</tbody>
 
 			</table>
 
-			<form class="update-shopping-basket-form" action="/cart" method="POST">
-				<button class="btn btn-default">Update cart</button>
+			<form class="shopping-basket-proceed-to-checkout-form" action="/cart" method="POST">
+				<button class="btn btn-default">Checkout</button>
 			</form>
 
 			</div>
