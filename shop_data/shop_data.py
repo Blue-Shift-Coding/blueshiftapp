@@ -1,6 +1,7 @@
 # To run this on the command line, use: 'python -m shop_data.download'
 import storage, pprint, os, time
 from woocommerce import API
+from pygfapi import Client as GravityFormsClient
 
 #### Config
 data_lifetime_in_seconds = 14400
@@ -15,8 +16,16 @@ wcapi = API(
     version="wc/v2"
 )
 
+gf = GravityFormsClient(
+	os.environ["BLUESHIFTAPP_GRAVITY_FORMS_BASE_URL"]+"/gravityformsapi/",
+	os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PUBLIC_KEY"],
+	os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PRIVATE_KEY"]
+)
+
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
+
+
 	update_paginated_set("categories", "products/categories?", expiry_time)
 
 	# TODO:WV:20170626:Confirm what happens if a product is removed from sale in the WC interface
