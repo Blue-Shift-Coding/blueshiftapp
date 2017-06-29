@@ -1,11 +1,20 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import storage, pprint, os, time
+import storage, pprint, os, time, sys
 from woocommerce import API
 from pygfapi import Client as GravityFormsClient
 
 #### Config
 data_lifetime_in_seconds = 14400
 #### /Config
+
+
+#### Not-config (things that look like config but which actually cannot be changed, or the script will break)
+items_apis = {
+	"products": "woocommerce",
+	"categories": "woocommerce",
+	"forms": "gravityforms"
+}
+#### /Not-config
 
 
 wcapi = API(
@@ -25,16 +34,47 @@ gf = GravityFormsClient(
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
+	# TODO:WV:20170629:Handle error in 'get_forms'
+	update_set("forms", expiry_time=expiry_time, items=gf.get_forms().values())
+	update_set("categories", expiry_time=expiry_time, base_query="products/categories?")
+	update_set("products", expiry_time=expiry_time, base_query="products?")
 
-	update_paginated_set("categories", "products/categories?", expiry_time)
+def update_set(item_name, expiry_time, base_query=None, items=None):
 
-	# TODO:WV:20170626:Confirm what happens if a product is removed from sale in the WC interface
-	# TODO:WV:20170626:Make sure products are listed in the correct order (e.g. ascending / descending date, and present/future only)
-	update_paginated_set("products", "products?", expiry_time)
+	# Find item_type
+	if item_name in items_apis:
+		api_to_use = items_apis[item_name]
+	else:
+		raise Exception("Unknown item name")
 
-def update_paginated_set(item_name, base_query, expiry_time):
+	# Validate input to this function
+	if api_to_use == "woocommerce":
+		if base_query is None:
+			raise Exception("Please supply a base query")
+	elif api_to_use == "gravityforms":
+		if items is None:
+			raise Exception("Please supply all current items")
+	else:
+		raise Exception("Unknown API")
+
+	# Save new data and remove data that is no longer present
+	# TODO:WV:20170629:Re-test this, especially for gravityforms
 	ids_before = get_item_ids(item_name)
-	download_paginated_set(item_name, base_query, expiry_time)
+	if api_to_use == "woocommerce":
+		download_paginated_set(item_name, base_query, expiry_time)
+	elif api_to_use == "gravityforms":
+		items_data = save_items(
+			item_name,
+			items,
+			expiry_time
+		)
+		storage.set(
+			item_name,
+			items_data["item_ids"],
+			expiry_time
+		)
+	else:
+		raise Exception("Unknown API")
 	ids_after = get_item_ids(item_name)
 	deleted_ids = list_diff(ids_before, ids_after)
 	for item_id in deleted_ids:
@@ -69,21 +109,17 @@ def download_paginated_set(item_name, base_query, expiry_time):
 	item_slugs = {}
 	num_pages = None
 	while True:
-
-		# TODO:WV:20170620:Add robustness in case of bad response to wcapi.get.  I.e. dont assume response.json() will be sensible.  Also handle HTTPs timeout.
 		url = base_query+"page="+str(page_num)+"&per_page="+str(per_page)
-		response = wcapi.get(url)
-		items = response.json()
+		try:
+			response = wcapi.get(url)
+			items = response.json()
+		except:
+			print "Invalid response downloading - leaving them as-is "+item_name
+			return
 
-		# Save single items and collate indexing data
-		for item in items:
-			item_ids.append(item["id"])
-			item_slugs.update({item["slug"]: item["id"]})
-			storage.set(
-				get_single_item_storage_key(item_name, item["id"]),
-				item,
-				expiry_time
-			)
+		items_data = save_items(item_name, items, expiry_time)
+		item_ids.extend(items_data["item_ids"])
+		item_slugs.update(items_data["item_slugs"])
 
 		if num_pages is None:
 			num_pages = int(response.headers.get("X-WP-TotalPages"))
@@ -106,6 +142,20 @@ def download_paginated_set(item_name, base_query, expiry_time):
 	)
 
 	return num_pages
+
+def save_items(item_name, items, expiry_time):
+	item_ids = []
+	item_slugs = []
+	for item in items:
+		item_ids.append(item["id"])
+		if "slug" in item:
+			item_slugs.update({item["slug"]: item["id"]})
+		storage.set(
+			get_single_item_storage_key(item_name, item["id"]),
+			item,
+			expiry_time
+		)
+	return {"item_ids":item_ids, "item_slugs": item_slugs}
 
 def ids_to_items(item_name, ids):
 	items = []
