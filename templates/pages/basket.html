@@ -10,39 +10,45 @@
 		<div class="row">
 			<div class="col-xs-12">
 
-			<table class="shopping-basket">
-				<thead>
-					<tr>
-						<th></th>
-						<th></th>
-						<th>Product name</th>
-						<th>Price</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for item_id in basket %}
-					<tr>
-						<td>
-							<form action="/cart" method="POST">
-								<input type="hidden" name="delete_item_id" value="item_id" />
-								<button>X</button>
-							</form>
-						</td>
+			{% if form %}
+				<p>Form goes here</p>
+			{% else %}
+				<table class="shopping-basket">
+					<thead>
+						<tr>
+							<th></th>
+							<th></th>
+							<th>Product name</th>
+							<th>Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item_id in basket %}
+							{% set product = products[basket[item_id]["product_id"]] %}
+							<tr>
+								<td>
+									<form action="/cart" method="POST">
+										<input type="hidden" name="delete_item_id" value="{{ item_id }}" />
+										<button>X</button>
+									</form>
+								</td>
 
-						{# TODO:WV:20170626:These images take ages to load.  Would be good to, at some point, generate some smaller ones for inclusion here #}
-						<td><img src="{{ basket[item].product.images[0].src }}" alt="Image"></td>
+								{# TODO:WV:20170626:These images take ages to load.  Would be good to, at some point, generate some smaller ones for inclusion here #}
+								<td><img src="{{ product.images[0].src }}" alt="Image"></td>
 
-						<td>{{ basket[item].product.name }} </td>
-						<td>{{ basket[item].product.price|float|currency }}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
+								<td>{{ product.name }} </td>
+								<td>{{ product.price|float|currency }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
 
-			</table>
+				</table>
 
-			<form class="shopping-basket-proceed-to-checkout-form" action="/cart" method="POST">
-				<button class="btn btn-default">Checkout</button>
-			</form>
+				<form class="shopping-basket-proceed-to-checkout-form" action="/cart" method="POST">
+					<button class="btn btn-default">Checkout</button>
+				</form>
+			{% endif %}
+
 
 			</div>
 		</div>

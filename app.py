@@ -194,9 +194,7 @@ def cart():
 
         product = shop_data.get_product(id=product_id)
         if product is None:
-
-            # TODO:WV:20170626:User-friendly error here
-            raise Exception("Product not found")
+            return redirect(url_for('cart'))
 
         booking_information = None if "booking_information" not in request.form else request.form["booking_information"]
 
@@ -205,8 +203,8 @@ def cart():
         if booking_information is None:
             form_id = None
             for meta_datum in product["meta_data"]:
-                if key == "_gravity_form_data":
-                    form_id = meta_datum["id"]
+                if meta_datum["key"] == "_gravity_form_data":
+                    form_id = meta_datum["value"]["id"]
                     break
             if form_id is not None:
                 form = shop_data.get_form(form_id)
