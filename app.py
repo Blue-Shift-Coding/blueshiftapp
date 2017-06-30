@@ -186,10 +186,23 @@ class BookingInformationFormBuilder():
     def add_field(self, name, field):
         setattr(BookingInformationForm, name, field)
 
+    def add_heading(self, text, heading_level="2"):
+        self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
+
+    def get_heading_widget(self, text, heading_level="2"):
+        def heading_widget(field, **kwargs):
+            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
+        return heading_widget
+
     def build_booking_form(self):
         for gf_field in self.gravity_forms_data["fields"]:
             field_name = "gravity_forms_field_"+str(gf_field["id"])
             if not "inputType" in gf_field:
+                if gf_field["type"] == "section":
+                    if "label" in gf_field and gf_field["label"] != "":
+                        self.add_heading(gf_field["label"])
+                    if "description" in gf_field and gf_field["description"] != "":
+                        self.add_heading(gf_field["description"], "3")
 
                 # TODO:WV:20170630:This could be a 'section' in which case a gravity-forms fieldList or other fieldEnclosure may be appropriaite
                 # TODO:WV:20170630:See http://wtforms.simplecodes.com/docs/0.6/fields.html.  Otherwise find (or create) a field type that simply outputs the label and description.
