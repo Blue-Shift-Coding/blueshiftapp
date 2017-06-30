@@ -174,22 +174,6 @@ def log_to_stdout(log_message):
 def uniqid(prefix = ''):
     return prefix + hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
 
-# Dynamic class generating code, from here:
-# https://stackoverflow.com/questions/15247075/how-can-i-dynamically-create-derived-classes-from-a-base-class
-def BookingInformationFormFactory(name, argnames, BaseClass=wtforms.Form):
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            # here, the argnames variable is the one passed to the
-            # ClassFactory call
-            if key not in argnames:
-                raise TypeError("Argument %s not valid for %s"
-                    % (key, self.__class__.__name__))
-            setattr(self, key, value)
-        BaseClass.__init__(self, name[:-len("Class")])
-    newclass = type(name, (BaseClass,),{"__init__": __init__})
-    return newclass
-
-
 class BookingInformationForm(wtforms.Form):
     pass
 
