@@ -194,7 +194,7 @@ class BookingInformationFormBuilder():
                 # TODO:WV:20170630:This could be a 'section' in which case a gravity-forms fieldList or other fieldEnclosure may be appropriaite
                 # TODO:WV:20170630:See http://wtforms.simplecodes.com/docs/0.6/fields.html.  Otherwise find (or create) a field type that simply outputs the label and description.
                 continue
-            if gf_field["inputType"] == "radio":
+            elif gf_field["inputType"] == "radio":
                 choices = []
                 for gf_choice in gf_field["choices"]:
                     choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice else "")))
