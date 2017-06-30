@@ -205,7 +205,6 @@ class BookingInformationFormBuilder():
     def build_booking_form(self):
         for gf_field in self.gravity_forms_data["fields"]:
             field_name = "gravity_forms_field_"+str(gf_field["id"])
-            print field_name+": "+gf_field["label"]
             if gf_field["type"] == "section":
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
