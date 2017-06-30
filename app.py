@@ -176,15 +176,17 @@ def uniqid(prefix = ''):
     output = prefix + hex(int(current_time))[2:10] + hex(int(current_time*1000000) % 0x100000)[2:7]
     return output
 
-class BookingInformationForm(wtforms.Form):
-    pass
 
 class BookingInformationFormBuilder():
+
     def __init__(self, gravity_forms_data):
         self.gravity_forms_data = gravity_forms_data
+        class BookingInformationForm(wtforms.Form):
+            pass
+        self.form_class = BookingInformationForm
 
     def add_field(self, name, field):
-        setattr(BookingInformationForm, name, field)
+        setattr(self.form_class, name, field)
 
     def add_heading(self, text, heading_level="2"):
         self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
@@ -216,6 +218,7 @@ class BookingInformationFormBuilder():
             # Assume text field if no 'inputType' (a lot of the text fields seem to have an empty string in the inputType)
             else:
                 self.add_field(field_name, wtforms.StringField())
+        return self.form_class
 
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -252,7 +255,7 @@ def cart():
                     break
             if form_id is not None:
                 builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
-                builder.build_booking_form()
+                BookingInformationForm = builder.build_booking_form()
                 form = BookingInformationForm(request.form)
         else:
             # TODO:WV:20170630:Validate booking information
