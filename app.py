@@ -205,10 +205,6 @@ class BookingInformationFormBuilder():
                         self.add_heading(gf_field["label"])
                     if "description" in gf_field and gf_field["description"] != "":
                         self.add_heading(gf_field["description"], "3")
-
-                # TODO:WV:20170630:This could be a 'section' in which case a gravity-forms fieldList or other fieldEnclosure may be appropriaite
-                # TODO:WV:20170630:See http://wtforms.simplecodes.com/docs/0.6/fields.html.  Otherwise find (or create) a field type that simply outputs the label and description.
-                continue
             elif gf_field["inputType"] == "radio":
                 choices = []
                 for gf_choice in gf_field["choices"]:
