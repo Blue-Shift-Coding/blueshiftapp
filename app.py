@@ -213,7 +213,7 @@ class BookingInformationFormBuilder():
 
             # Assume text field if no 'inputType' (a lot of the text fields seem to have an empty string in the inputType)
             else:
-                self.add_field(field_name, wtforms.StringField())
+                self.add_field(field_name, wtforms.StringField(gf_field["label"]))
         return self.form_class
 
 
