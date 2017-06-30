@@ -172,7 +172,9 @@ def log_to_stdout(log_message):
     app.logger.info(log_message)
 
 def uniqid(prefix = ''):
-    return prefix + hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
+    current_time = time.time() * 1000
+    output = prefix + hex(int(current_time))[2:10] + hex(int(current_time*1000000) % 0x100000)[2:7]
+    return output
 
 class BookingInformationForm(wtforms.Form):
     pass
