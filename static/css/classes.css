@@ -48,6 +48,13 @@
 }
 
 
+/* Add-to-basket form */
+
+.add-to-basket-form .errors {
+  color:red;
+  font-weight: bold;
+}
+
 /* Shopping basket */
 
 .shopping-basket {
