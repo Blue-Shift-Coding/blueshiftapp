@@ -174,11 +174,35 @@ def log_to_stdout(log_message):
 def uniqid(prefix = ''):
     return prefix + hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
 
-# TODO:WV:20170630:Should be in a separate file?
+# Dynamic class generating code, from here:
+# https://stackoverflow.com/questions/15247075/how-can-i-dynamically-create-derived-classes-from-a-base-class
+def BookingInformationFormFactory(name, argnames, BaseClass=wtforms.Form):
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            # here, the argnames variable is the one passed to the
+            # ClassFactory call
+            if key not in argnames:
+                raise TypeError("Argument %s not valid for %s"
+                    % (key, self.__class__.__name__))
+            setattr(self, key, value)
+        BaseClass.__init__(self, name[:-len("Class")])
+    newclass = type(name, (BaseClass,),{"__init__": __init__})
+    return newclass
+
+
 class BookingInformationForm(wtforms.Form):
+    pass
+
+class BookingInformationFormBuilder():
     def __init__(self, gravity_forms_data):
-        self.fields = []
-        for gf_field in gravity_forms_data["fields"]:
+        self.gravity_forms_data = gravity_forms_data
+
+    def add_field(self, name, field):
+        setattr(BookingInformationForm, name, field)
+
+    def build_booking_form(self):
+        for gf_field in self.gravity_forms_data["fields"]:
+            field_name = "gravity_forms_field_"+str(gf_field["id"])
             if not "inputType" in gf_field:
 
                 # TODO:WV:20170630:This could be a 'section' in which case a gravity-forms fieldList or other fieldEnclosure may be appropriaite
@@ -188,11 +212,11 @@ class BookingInformationForm(wtforms.Form):
                 choices = []
                 for gf_choice in gf_field["choices"]:
                     choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice else "")))
-                self.fields.append(wtforms.RadioField(gf_field["label"]), choices=choices)
+                self.add_field(field_name, wtforms.RadioField(gf_field["label"], choices=choices))
 
             # Assume text field if no 'inputType' (a lot of the text fields seem to have an empty string in the inputType)
             else:
-                self.fields.append(wtforms.StringField())
+                self.add_field(field_name, wtforms.StringField())
 
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -228,7 +252,9 @@ def cart():
                     form_id = meta_datum["value"]["id"]
                     break
             if form_id is not None:
-                form = BookingInformationForm(shop_data.get_form(form_id))
+                builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
+                builder.build_booking_form()
+                form = BookingInformationForm(request.form)
         else:
             # TODO:WV:20170630:Validate booking information
 
