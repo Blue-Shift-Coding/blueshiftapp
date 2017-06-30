@@ -171,14 +171,20 @@ def log_to_stdout(log_message):
     app.logger.addHandler(ch)
     app.logger.info(log_message)
 
+def uniqid(prefix = ''):
+    return prefix + hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
+
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
     # Extract input from post-data
     product_id = None if "product_id" not in request.form else request.form["product_id"]
-    quantity = None if "quantity" not in request.form else request.form["quantity"]
 
     # Update basket if necessary
+    # TODO:WV:20170630:Allow removal of individual rows, and associated form data
+    # TODO:WV:20170630:Session size of ~4k might be too small.  Consider saving the form data to the server, perhaps via the GravityForms API,
+    # to keep session size down.
+    form = None
     if product_id is not None:
 
         product = shop_data.get_product(id=product_id)
@@ -187,39 +193,38 @@ def cart():
             # TODO:WV:20170626:User-friendly error here
             raise Exception("Product not found")
 
-        if quantity is None or not (quantity in ["+1", "-1", "0"]):
+        booking_information = None if "booking_information" not in request.form else request.form["booking_information"]
 
-            # TODO:WV:20170626:User-friendly error here
-            raise Exception("Invalid quantity")
-
-        # Upadte basket in the session
-        if "basket" not in session:
-            session["basket"] = {}
-        old_quantity = 0 if product_id not in session["basket"] else session["basket"][product_id]
-        operator = quantity[0:1]
-        if operator == "+":
-            new_quantity = old_quantity + int(quantity[1])
-        elif operator == "-":
-            new_quantity = old_quantity - int(quantity[1])
+        # If no booking info provided, get form for inclusion in the page
+        # TODO:WV:20170630:Add "attendee's name" field by default, for inclusion in the basket row
+        if booking_information is None:
+            form_id = None
+            for meta_datum in product["meta_data"]:
+                if key == "_gravity_form_data":
+                    form_id = meta_datum["id"]
+                    break
+            if form_id is not None:
+                form = shop_data.get_form(form_id)
         else:
-            new_quantity = int(quantity)
-        if new_quantity <= 0:
-            session["basket"].pop(product_id, None)
-        else:
-            session["basket"][product_id] = new_quantity
+            # TODO:WV:20170630:Validate booking information
 
-    # Generate full basket, with product data etc, and output to the user
-    full_basket = {}
-    if "basket" in session:
-        for product_id in session["basket"]:
-            full_basket[product_id] = {
-                "product": shop_data.get_product(id=product_id),
-                "quantity": session["basket"][product_id]
+            # Update basket in the session
+            if "basket" not in session:
+                session["basket"] = {}
+            session["basket"][uniqid()] = {
+                "product_id": product_id,
+                "booking_information": booking_information
             }
+
+    products = {}
+    for uniqid in session["basket"]:
+        products[session["basket"]["product_id"]] = shop_data.get_product(id=session["basket"]["product_id"])
 
     return render_template(
         "pages/basket.html",
-        basket=full_basket
+        basket=session["basket"],
+        products=products,
+        form=form
     )
 
 @app.route('/class/<slug>')

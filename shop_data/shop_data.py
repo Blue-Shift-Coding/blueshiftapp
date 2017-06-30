@@ -190,6 +190,10 @@ def get_product(id=None, slug=None):
 	storage_key = get_single_item_storage_key("products", item_id=id, item_slug=slug)
 	return storage.get(storage_key)
 
+def get_form(id):
+	storage_key = get_single_item_storage_key("forms", item_id=id)
+	return storage.get(storage_key)
+
 def get_products(categories=None, page_num=1, per_page=10):
 	product_ids = get_item_ids("products")
 
