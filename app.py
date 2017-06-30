@@ -254,6 +254,8 @@ def cart():
                 form_id = meta_datum["value"]["id"]
                 break
         if form_id is not None:
+
+            # TODO:WV:20170630:Handle form not found, here
             builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
