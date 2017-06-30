@@ -24,6 +24,7 @@
 			<div class="col-xs-12">
 
 				<form class="add-to-basket-form" action="/cart" method="POST">
+					<div><input type="hidden" name="product_id" value="{{ product.id }}" /></div>
 
 					<dl>
 					{% for field in form %}

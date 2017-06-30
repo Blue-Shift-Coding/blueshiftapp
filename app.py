@@ -205,6 +205,7 @@ class BookingInformationFormBuilder():
     def build_booking_form(self):
         for gf_field in self.gravity_forms_data["fields"]:
             field_name = "gravity_forms_field_"+str(gf_field["id"])
+            print field_name+": "+gf_field["label"]
             if gf_field["type"] == "section":
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
@@ -246,23 +247,22 @@ def cart():
         if product is None:
             return redirect(url_for('cart'))
 
-        booking_information = None if "booking_information" not in request.form else request.form["booking_information"]
-
         # If no booking info provided, show a form requesting it
         # TODO:WV:20170630:Add "attendee's name" field by default, for inclusion in the basket row
-        # TODO:WV:20170630:Also show this step if the booking information is present, but invalid
-        if booking_information is None:
-            form_id = None
-            for meta_datum in product["meta_data"]:
-                if meta_datum["key"] == "_gravity_form_data":
-                    form_id = meta_datum["value"]["id"]
-                    break
-            if form_id is None:
-                return redirect(url_for('cart'))
-            else:
-                builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
-                BookingInformationForm = builder.build_booking_form()
-                form = BookingInformationForm(request.form)
+        form_id = None
+        for meta_datum in product["meta_data"]:
+            if meta_datum["key"] == "_gravity_form_data":
+                form_id = meta_datum["value"]["id"]
+                break
+        if form_id is not None:
+            builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
+            BookingInformationForm = builder.build_booking_form()
+            form = BookingInformationForm(request.form)
+            if not request.form or not form.validate():
+
+                for fieldName, errorMessages in form.errors.iteritems():
+                    for err in errorMessages:
+                        print fieldName+": "+err
 
                 return render_template(
                     "pages/add-to-basket.html",
@@ -270,10 +270,12 @@ def cart():
                     form=form
                 )
 
+        # TODO:WV:20170630:Save the form to the server via the GravityForms API - get an ID back and put it into the session, below
+
         # Add product and booking information to the basket
-        session["basket"][uniqid()] = {
-            "product_id": product_id,
-            "booking_information": booking_information
+        unique_id = uniqid()
+        session["basket"][unique_id] = {
+            "product_id": product_id
         }
 
     # If removing an item, do so
@@ -287,8 +289,8 @@ def cart():
 
     # Get full data on all products in the basket
     products = {}
-    for uniqid in session["basket"]:
-        products[session["basket"]["product_id"]] = shop_data.get_product(id=session["basket"]["product_id"])
+    for item_id in session["basket"]:
+        products[session["basket"][item_id]["product_id"]] = shop_data.get_product(id=session["basket"][item_id]["product_id"])
 
     return render_template(
         "pages/basket.html",
