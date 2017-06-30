@@ -240,8 +240,6 @@ def cart():
     # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
     # TODO:WV:20170630:Session size of ~4k might be too small.  Consider saving the form data to the server, perhaps via the GravityForms API,
     # to keep session size down.
-    form = None
-    did_change_session = False
     if product_id is not None:
 
         product = shop_data.get_product(id=product_id)
@@ -250,36 +248,41 @@ def cart():
 
         booking_information = None if "booking_information" not in request.form else request.form["booking_information"]
 
-        # If no booking info provided, get form for inclusion in the page
+        # If no booking info provided, show a form requesting it
         # TODO:WV:20170630:Add "attendee's name" field by default, for inclusion in the basket row
+        # TODO:WV:20170630:Also show this step if the booking information is present, but invalid
         if booking_information is None:
             form_id = None
             for meta_datum in product["meta_data"]:
                 if meta_datum["key"] == "_gravity_form_data":
                     form_id = meta_datum["value"]["id"]
                     break
-            if form_id is not None:
+            if form_id is None:
+                return redirect(url_for('cart'))
+            else:
                 builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
                 BookingInformationForm = builder.build_booking_form()
                 form = BookingInformationForm(request.form)
-        else:
-            # TODO:WV:20170630:Validate booking information
 
-            # Update basket in the session
-            session["basket"][uniqid()] = {
-                "product_id": product_id,
-                "booking_information": booking_information
-            }
-            did_change_session = True
+                return render_template(
+                    "pages/add-to-basket.html",
+                    product=product,
+                    form=form
+                )
+
+        # Add product and booking information to the basket
+        session["basket"][uniqid()] = {
+            "product_id": product_id,
+            "booking_information": booking_information
+        }
 
     # If removing an item, do so
     if delete_item_id is not None:
         if delete_item_id in session["basket"]:
             del session["basket"][delete_item_id]
-        did_change_session = True
 
     # Prevent form re-submit issue
-    if did_change_session:
+    if product_id is not None or delete_item_id is not None:
         return redirect(url_for('cart'))
 
     # Get full data on all products in the basket
@@ -290,8 +293,7 @@ def cart():
     return render_template(
         "pages/basket.html",
         basket=session["basket"],
-        products=products,
-        form=form
+        products=products
     )
 
 @app.route('/class/<slug>')
