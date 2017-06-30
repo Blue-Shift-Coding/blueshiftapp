@@ -35,7 +35,6 @@ def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
 	# Get all forms from
-	# TODO:WV:20170629:The gravityforms add-on, if enabled, interferes with the site's URLs, meaning that the woo-commerce API doesn't work.  Solution: write a wordpress plugin that hooks into the hooks here: https://developer.wordpress.org/reference/functions/get_option/ and overrides the option 'gravityformsaddon_webapi_settings' (confirm the 'webapi' part - should be the 'plugin name') if the request is for the woocommerce API, to set 'enabled' to false for the current request only
 	# TODO:WV:20170629:Handle any error in 'get_forms'
 	forms = gf.get_forms().values()
 	update_set("forms", expiry_time=expiry_time, item_ids=map(lambda x: x["id"], forms), get_item_method=gf.get_form)
@@ -127,7 +126,7 @@ def download_paginated_set(item_name, base_query, expiry_time):
 			response = wcapi.get(url)
 			items = response.json()
 		except:
-			print "Invalid response downloading - leaving them as-is "+item_name
+			print "Invalid response downloading "+item_name+" - leaving them as-is "
 			return
 
 		items_data = save_items(item_name, items, expiry_time)
