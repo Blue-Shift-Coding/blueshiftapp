@@ -179,12 +179,17 @@ def cart():
 
     # Extract input from post-data
     product_id = None if "product_id" not in request.form else request.form["product_id"]
+    delete_item_id = None if "delete_item_id" not in request.form else request.form["delete_item_id"]
 
-    # Update basket if necessary
-    # TODO:WV:20170630:Allow removal of individual rows, and associated form data
+    # Initialise basket in session if necessary
+    if "basket" not in session:
+        session["basket"] = {}
+
+    # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
     # TODO:WV:20170630:Session size of ~4k might be too small.  Consider saving the form data to the server, perhaps via the GravityForms API,
     # to keep session size down.
     form = None
+    did_change_session = False
     if product_id is not None:
 
         product = shop_data.get_product(id=product_id)
@@ -209,13 +214,23 @@ def cart():
             # TODO:WV:20170630:Validate booking information
 
             # Update basket in the session
-            if "basket" not in session:
-                session["basket"] = {}
             session["basket"][uniqid()] = {
                 "product_id": product_id,
                 "booking_information": booking_information
             }
+            did_change_session = True
 
+    # If removing an item, do so
+    if delete_item_id is not None:
+        if delete_item_id in session["basket"]:
+            del session["basket"][delete_item_id]
+        did_change_session = True
+
+    # Prevent form re-submit issue
+    if did_change_session:
+        return redirect(url_for('cart'))
+
+    # Get full data on all products in the basket
     products = {}
     for uniqid in session["basket"]:
         products[session["basket"]["product_id"]] = shop_data.get_product(id=session["basket"]["product_id"])

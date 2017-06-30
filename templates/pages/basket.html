@@ -20,12 +20,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for item in basket %}
+					{% for item_id in basket %}
 					<tr>
 						<td>
 							<form action="/cart" method="POST">
-								<input type="hidden" name="product_id" value="{{ basket[item].product.id }}" />
-								<input type="hidden" name="quantity" value="0" />
+								<input type="hidden" name="delete_item_id" value="item_id" />
 								<button>X</button>
 							</form>
 						</td>
