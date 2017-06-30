@@ -34,13 +34,15 @@ gf = GravityFormsClient(
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
+	# Get all forms from
 	# TODO:WV:20170629:The gravityforms add-on, if enabled, interferes with the site's URLs, meaning that the woo-commerce API doesn't work.  Solution: write a wordpress plugin that hooks into the hooks here: https://developer.wordpress.org/reference/functions/get_option/ and overrides the option 'gravityformsaddon_webapi_settings' (confirm the 'webapi' part - should be the 'plugin name') if the request is for the woocommerce API, to set 'enabled' to false for the current request only
 	# TODO:WV:20170629:Handle any error in 'get_forms'
-	update_set("forms", expiry_time=expiry_time, items=gf.get_forms().values())
+	forms = gf.get_forms().values()
+	update_set("forms", expiry_time=expiry_time, item_ids=map(lambda x: x["id"], forms), get_item_method=gf.get_form)
 	update_set("categories", expiry_time=expiry_time, base_query="products/categories?")
 	update_set("products", expiry_time=expiry_time, base_query="products?")
 
-def update_set(item_name, expiry_time, base_query=None, items=None):
+def update_set(item_name, expiry_time, base_query=None, item_ids=None, get_item_method=None):
 
 	# Find item_type
 	if item_name in items_apis:
@@ -53,8 +55,10 @@ def update_set(item_name, expiry_time, base_query=None, items=None):
 		if base_query is None:
 			raise Exception("Please supply a base query")
 	elif api_to_use == "gravityforms":
-		if items is None:
-			raise Exception("Please supply all current items")
+		if item_ids is None:
+			raise Exception("Please supply all current item IDs")
+		if get_item_method is None:
+			raise Exception("Please supply a method that retrieves a single item based on its ID")
 	else:
 		raise Exception("Unknown API")
 
@@ -64,16 +68,7 @@ def update_set(item_name, expiry_time, base_query=None, items=None):
 	if api_to_use == "woocommerce":
 		download_paginated_set(item_name, base_query, expiry_time)
 	elif api_to_use == "gravityforms":
-		items_data = save_items(
-			item_name,
-			items,
-			expiry_time
-		)
-		storage.set(
-			item_name,
-			items_data["item_ids"],
-			expiry_time
-		)
+		download_items_from_ids(item_name, expiry_time, item_ids, get_item_method)
 	else:
 		raise Exception("Unknown API")
 	ids_after = get_item_ids(item_name)
@@ -102,6 +97,23 @@ def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
 
 def get_slugs_storage_key(item_name):
 	return item_name+"_slugs"
+
+def download_items_from_ids(item_name, expiry_time, item_ids, get_item_method):
+	for item_id in item_ids:
+
+		# TODO:WV:20170630:Handle failure here
+		item = get_item_method(item_id)
+		storage.set(
+			get_single_item_storage_key(item_name, item_id),
+			item,
+			expiry_time
+		)
+
+	storage.set(
+		item_name,
+		item_ids,
+		expiry_time
+	)
 
 def download_paginated_set(item_name, base_query, expiry_time):
 	page_num = 1
