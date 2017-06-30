@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------------#
 
 from flask import Flask, render_template, request, redirect, Response, url_for, session
-# from flask.ext.sqlalchemy import SQLAlchemy
+import wtforms
 import logging, pprint
 from logging import Formatter, FileHandler
 from forms import *
@@ -174,6 +174,27 @@ def log_to_stdout(log_message):
 def uniqid(prefix = ''):
     return prefix + hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
 
+# TODO:WV:20170630:Should be in a separate file?
+class BookingInformationForm(wtforms.Form):
+    def __init__(self, gravity_forms_data):
+        self.fields = []
+        for gf_field in gravity_forms_data["fields"]:
+            if not "inputType" in gf_field:
+
+                # TODO:WV:20170630:This could be a 'section' in which case a gravity-forms fieldList or other fieldEnclosure may be appropriaite
+                # TODO:WV:20170630:See http://wtforms.simplecodes.com/docs/0.6/fields.html.  Otherwise find (or create) a field type that simply outputs the label and description.
+                continue
+            if gf_field["inputType"] == "radio":
+                choices = []
+                for gf_choice in gf_field["choices"]:
+                    choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice else "")))
+                self.fields.append(wtforms.RadioField(gf_field["label"]), choices=choices)
+
+            # Assume text field if no 'inputType' (a lot of the text fields seem to have an empty string in the inputType)
+            else:
+                self.fields.append(wtforms.StringField())
+
+
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
@@ -207,7 +228,7 @@ def cart():
                     form_id = meta_datum["value"]["id"]
                     break
             if form_id is not None:
-                form = shop_data.get_form(form_id)
+                form = BookingInformationForm(shop_data.get_form(form_id))
         else:
             # TODO:WV:20170630:Validate booking information
 
