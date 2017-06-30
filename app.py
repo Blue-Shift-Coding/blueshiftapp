@@ -258,11 +258,6 @@ def cart():
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
             if not request.form or not form.validate():
-
-                for fieldName, errorMessages in form.errors.iteritems():
-                    for err in errorMessages:
-                        print fieldName+": "+err
-
                 return render_template(
                     "pages/add-to-basket.html",
                     product=product,
