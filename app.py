@@ -14,6 +14,8 @@ from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import shop_data
 from functools import wraps
+from pygfapi import Client as GravityFormsClient
+
 
 
 #----------------------------------------------------------------------------#
@@ -282,6 +284,22 @@ def cart():
             builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
+            if len(request.form.keys()) > 1 and form.validate():
+                gf_submission = []
+                for field in form:
+                    matches = rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
+                    if matches:
+                        field_id = matches.group(1)
+                        entry = {"form_id": form_id, field_id: request.form[field.name]}
+                        gf_submission.append(entry)
+
+                gf = GravityFormsClient(
+                    os.environ["BLUESHIFTAPP_GRAVITY_FORMS_BASE_URL"]+"/gravityformsapi/",
+                    os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PUBLIC_KEY"],
+                    os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PRIVATE_KEY"]
+                )
+                result = gf.post_entry(gf_submission)
+
             if len(request.form.keys()) == 1 or not form.validate():
                 return render_template(
                     "pages/add-to-basket.html",
@@ -399,7 +417,9 @@ def classes(url_category):
 
 def rgx_matches(rgx, string):
     matches = re.search(rgx, string)
-    return matches is not None
+    if matches is None:
+        return False
+    return matches
 
 @app.errorhandler(500)
 def internal_error(error):
