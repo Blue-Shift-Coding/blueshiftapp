@@ -262,6 +262,12 @@ def cart():
     if "basket" not in session:
         session["basket"] = {}
 
+    # Prepare data to go into the session after this process has finished (it may be added to later in this function)
+    data_for_session = {
+        "uniqud_id": uniqid(),
+        "product_id": product_id
+    }
+
     # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
     # TODO:WV:20170630:Session size of ~4k might be too small.  Consider saving the form data to the server, perhaps via the GravityForms API,
     # to keep session size down.
@@ -284,6 +290,9 @@ def cart():
             builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
+
+            # If valid form was submitted, save the data to the server
+            # TODO:WV:20170703:Handle 'invalid' response
             if len(request.form.keys()) > 1 and form.validate():
                 gf_submission = {}
                 for field in form:
@@ -301,20 +310,20 @@ def cart():
                 gf_submission.update({"form_id": form_id})
                 entry = [gf_submission]
                 result = gf.post_entry(entry)
+                if isinstance(result, list) and len(result) == 1 and isinstance(result[0], int):
+                    data_for_session["gravity_forms_entry"] = result[0]
 
-            if len(request.form.keys()) == 1 or not form.validate():
+            # If no valid form was submitted, display the form
+            else:
                 return render_template(
                     "pages/add-to-basket.html",
                     product=product,
                     form=form
                 )
 
-        # TODO:WV:20170630:Save the form to the server via the GravityForms API - get an ID back and put it into the session, below
-
         # Add product and booking information to the basket
-        unique_id = uniqid()
-        session["basket"][unique_id] = {
-            "product_id": product_id
+        session["basket"][data_for_session["unique_id"]] = {
+            data_for_session
         }
 
     # If removing an item, do so
