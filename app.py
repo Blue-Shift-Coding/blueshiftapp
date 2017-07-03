@@ -255,6 +255,17 @@ class BookingInformationFormBuilder():
         return self.form_class
 
 
+@app.route('/checkout', methods=['GET'])
+def checkout():
+    if "basket" not in session or len(session["basket"]) == 0:
+        return redirect(url_for("classes"))
+
+    return render_template(
+        "pages/checkout.html",
+        basket=session["basket"],
+        products=products
+    )
+
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
