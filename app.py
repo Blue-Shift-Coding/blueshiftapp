@@ -63,6 +63,10 @@ def inject_class_categories():
 
     return dict(class_categories=class_categories)
 
+@app.context_processor
+def inject_shopping_basket_item_count():
+    return dict(shopping_basket_item_count=0 if "basket" not in session else len(session["basket"]))
+
 
 #----------------------------------------------------------------------------#
 # Custom template filters.
