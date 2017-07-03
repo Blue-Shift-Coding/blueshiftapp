@@ -285,20 +285,22 @@ def cart():
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
             if len(request.form.keys()) > 1 and form.validate():
-                gf_submission = []
+                gf_submission = {}
                 for field in form:
                     matches = rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
                     if matches:
                         field_id = matches.group(1)
-                        entry = {"form_id": form_id, field_id: request.form[field.name]}
-                        gf_submission.append(entry)
+                        gf_submission.update({field_id: request.form[field.name]})
 
                 gf = GravityFormsClient(
                     os.environ["BLUESHIFTAPP_GRAVITY_FORMS_BASE_URL"]+"/gravityformsapi/",
                     os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PUBLIC_KEY"],
                     os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PRIVATE_KEY"]
                 )
-                result = gf.post_entry(gf_submission)
+
+                gf_submission.update({"form_id": form_id})
+                entry = [gf_submission]
+                result = gf.post_entry(entry)
 
             if len(request.form.keys()) == 1 or not form.validate():
                 return render_template(
