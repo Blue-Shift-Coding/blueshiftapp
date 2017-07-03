@@ -259,7 +259,7 @@ def cart():
             builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
-            if not request.form or not form.validate():
+            if len(request.form.keys()) == 1 or not form.validate():
                 return render_template(
                     "pages/add-to-basket.html",
                     product=product,
