@@ -254,6 +254,18 @@ class BookingInformationFormBuilder():
 
         return self.form_class
 
+def get_all_basket_data():
+    if "basket" not in session:
+        return {}
+
+    # Get full data on all products in the basket
+    products = {}
+    for item_id in session["basket"]:
+        products[session["basket"][item_id]["product_id"]] = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+
+    return {
+        "products": products
+    }
 
 @app.route('/checkout', methods=['GET'])
 def checkout():
@@ -263,7 +275,7 @@ def checkout():
     return render_template(
         "pages/checkout.html",
         basket=session["basket"],
-        products=products
+        **get_all_basket_data()
     )
 
 @app.route('/cart', methods=['GET', 'POST'])
@@ -350,15 +362,10 @@ def cart():
     if product_id is not None or delete_item_id is not None:
         return redirect(url_for('cart'))
 
-    # Get full data on all products in the basket
-    products = {}
-    for item_id in session["basket"]:
-        products[session["basket"][item_id]["product_id"]] = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-
     return render_template(
         "pages/basket.html",
         basket=session["basket"],
-        products=products
+        **get_all_basket_data()
     )
 
 @app.route('/class/<slug>')
