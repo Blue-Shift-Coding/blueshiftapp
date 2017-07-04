@@ -264,23 +264,35 @@ def paymentcomplete():
 
     # Build list of line items for Woocommerce order
     line_items = []
+    gf = shop_data.get_gravityforms_api()
     for item_id in session["basket"]:
+        gravity_forms_entry = gf.get_entry(session["basket"][item_id]["gravity_forms_entry"])
         line_items.append({
             "product_id": session["basket"][item_id]["product_id"],
-            "quantity": 1
+            "quantity": 1,
+            "meta_data": [
+                {
+                    "key": "_gravity_forms_history",
+                    "value": {
+                        "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
+                        "_gravity_form_lead": gravity_forms_entry
+                    },
+                }
+            ]
         })
 
     # Submit order to WooCommerce API
     # TODO:WV:20170704:Link to the appropriate gravity form
     # TODO:WV:20170704:Can include shipping data, etc. from stripe if available
+    # TODO:WV:20170704:Handle bad response
     wcapi = shop_data.get_woocommerce_api()
+
     response = wcapi.post("orders", {
         "payment_method": "stripe",
         "payment_method_title": "Stripe",
         "set_paid": True,
         "line_items": line_items
     })
-    print response.json()
 
     return "OK"
 
