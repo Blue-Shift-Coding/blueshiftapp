@@ -254,6 +254,36 @@ class BookingInformationFormBuilder():
 
         return self.form_class
 
+# TODO:WV:20170704:The following should happen after payment with Stripe
+# TODO:WV:20170704:Could set up an unpaid order before payment
+@app.route('/paymentcomplete', methods=['POST'])
+def paymentcomplete():
+
+    if not "basket" in session:
+        return redirect(url_for("classes"))
+
+    # Build list of line items for Woocommerce order
+    line_items = []
+    for item_id in session["basket"]:
+        line_items.append({
+            "product_id": session["basket"][item_id]["product_id"],
+            "quantity": 1
+        })
+
+    # Submit order to WooCommerce API
+    # TODO:WV:20170704:Link to the appropriate gravity form
+    # TODO:WV:20170704:Can include shipping data, etc. from stripe if available
+    wcapi = shop_data.get_woocommerce_api()
+    response = wcapi.post("orders", {
+        "payment_method": "stripe",
+        "payment_method_title": "Stripe",
+        "set_paid": True,
+        "line_items": line_items
+    })
+    print response.json()
+
+    return "OK"
+
 @app.route('/checkout', methods=['GET'])
 def checkout():
     if "basket" not in session or len(session["basket"]) == 0:
@@ -332,12 +362,7 @@ def cart():
                         field_id = matches.group(1)
                         gf_submission.update({field_id: request.form[field.name]})
 
-                gf = GravityFormsClient(
-                    os.environ["BLUESHIFTAPP_GRAVITY_FORMS_BASE_URL"]+"/gravityformsapi/",
-                    os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PUBLIC_KEY"],
-                    os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PRIVATE_KEY"]
-                )
-
+                gf = shop_data.get_gravityforms_api()
                 gf_submission.update({"form_id": form_id})
                 entry = [gf_submission]
                 result = gf.post_entry(entry)
