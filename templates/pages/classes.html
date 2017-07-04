@@ -9,7 +9,9 @@
 		<div class="row">
 			<div class="col-xs-12 filters">
 
+				{% if class_filters and class_filters|length >0  %}
 				<span class="filters-label">Filter</span>
+				{% endif %}
 
 				{% for filter in class_filters %}
 					<div class="dropdown classes-filter" data-filtername="{{ filter.category.name.lower() }}" data-defaultvalue="" data-defaultlabel="All {{ filter.category.name }}">
@@ -48,58 +50,31 @@
 						{% set color_number = 4 %}
 					{% endif %}
 
+					{% set product_url = '/class/'+product.slug %}
+
 					{# color number must be between 1 and 6 - map to maximum age #}
 					<div class="media courseList couresListPage">
-						<a class="media-left border-color-{{ color_number }}" href="course-single-left-sidebar.html">
+						<a class="media-left border-color-{{ color_number }}" href="{{ product_url }}">
 							<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
 							<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
 						</a>
 						<div class="media-body">
-							<h3 class="media-heading"><a href="course-single-left-sidebar.html" class="color-{{ color_number }}">{{product.name}}</a></h3>
+							<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ color_number }}">{{product.name}}</a></h3>
 
-							{{product.description|safe}}
+							{{product.short_description|safe}}
+
 							<ul class="list-inline btn-yellow btnPart">
 								<li>
-
-									<a target="_blank" data-toggle="modal" data-target="#add-product-{{ product.id }}" class="btn btn-primary ">
-										Book now
-									</a>
-
-									<div id="add-product-{{product.id}}" class="modal fade" role="dialog">
-									  <div class="modal-dialog">
-										<div class="modal-content">
-										  <div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h4 class="modal-title">{{ product.title }}</h4>
-										  </div>
-										  <div class="modal-body">
-											<form action="javascript:alert('todo'); return false;" class="product-options">
-												<input type="hidden" name="productId" value="{{ product.id }}" />
-												<input type="hidden" name="productOptionId" value="" />
-												<input type="hidden" name="productOption" value="" />
-
-													{% if product["product_options"] %}
-														{% for option in product["product_options"] %}
-															{% include 'pages/classes/option-field.html' %}
-														{% endfor %}
-													{% endif %}
-
-												<button type="submit" class="btn btn-primary"><i class="fa fa-shopping-basket " aria-hidden="true"></i>Add to Cart</button>
-											</form>
-										  </div>
-										  <div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-										  </div>
-										</div>
-									  </div>
-									</div>
+									<form action="/cart" method="POST">
+										<input type="hidden" name="product_id" value="{{ product.id }}" />
+										<button class="btn btn-primary ">Book now</button>
+									</form>
 								</li>
-
-								<!--
-								WV:20170511:Commented out because we don't actually have any more information for this to link to at the moment
-								<li><a href="course-single-left-sidebar.html" class="btn btn-link"><i class="fa fa-angle-double-right" aria-hidden="true"></i> More</a></li>
-								-->
+								<li>
+									<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
+								</li>
 							</ul>
+
 						</div>
 					</div>
 				{% endfor %}

@@ -46,3 +46,34 @@
 .courseList .form-group.order_id {
   display:none;
 }
+
+
+/* Add-to-basket form */
+
+.add-to-basket-form .errors {
+  color:red;
+  font-weight: bold;
+}
+
+/* Shopping basket */
+
+.shopping-basket {
+  width:100%;
+}
+
+.shopping-basket td {
+  padding:5px 10px;
+  text-align:center;
+}
+
+.shopping-basket img {
+  max-width:100px;
+}
+
+.shopping-basket .quantity-field {
+  width:50px;
+}
+
+.shopping-basket-proceed-to-checkout {
+  float:right;
+}

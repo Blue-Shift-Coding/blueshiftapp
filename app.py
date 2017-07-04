@@ -1,17 +1,21 @@
-1#----------------------------------------------------------------------------#
+# coding: utf-8
+
+#----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect, Response, url_for
-# from flask.ext.sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, Response, url_for, session
+import wtforms
 import logging, pprint
 from logging import Formatter, FileHandler
 from forms import *
-import os, time, copy, math, json
+import os, time, copy, math, json, re
 from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
-import shop_data, storage
+import shop_data
 from functools import wraps
+from pygfapi import Client as GravityFormsClient
+
 
 
 #----------------------------------------------------------------------------#
@@ -20,6 +24,8 @@ from functools import wraps
 
 app = Flask(__name__)
 app.config.from_object('config')
+app.secret_key = os.environ["BLUESHIFTAPP_SESSION_SIGNING_KEY"]
+
 #db = SQLAlchemy(app)
 
 # Automatically tear down SQLAlchemy.
@@ -48,11 +54,8 @@ def login_required(test):
 
 @app.context_processor
 def inject_class_categories():
-
-    # Add categories to the page, for the main nav menu
-    categories = shop_data.get_categories()
-
     class_categories = []
+    categories = shop_data.get_categories()
     for category in categories:
         if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
             class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
@@ -60,10 +63,23 @@ def inject_class_categories():
 
     return dict(class_categories=class_categories)
 
+@app.context_processor
+def inject_shopping_basket_item_count():
+    return dict(shopping_basket_item_count=0 if "basket" not in session else len(session["basket"]))
+
+
+#----------------------------------------------------------------------------#
+# Custom template filters.
+#----------------------------------------------------------------------------#
+
+@app.template_filter('currency')
+def format_currency(value):
+    return u"£{:,.2f}".format(value)
+
+
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-
 
 @app.route('/')
 def home():
@@ -161,38 +177,290 @@ def log_to_stdout(log_message):
     app.logger.addHandler(ch)
     app.logger.info(log_message)
 
-# TODO:WV:20170515:Refactorthe produts storage mechanism so that it could cope with a large database
-# TODO:WV:20170515:(Perhaps - in memcached, one document per product, and one document with all the searching data in, or one document with a list of product IDs for every possible search)
-@app.route('/classes/', defaults={"url_category": None, "dates": None, "ages": None, "page_num": 1})
-@app.route('/classes/<int:page_num>', defaults={"url_category": None, "dates": None, "ages": None})
-@app.route('/classes/<url_category>', defaults={"dates": None, "ages": None, "page_num": 1})
-@app.route('/classes/<url_category>/<page_num>', defaults={"dates": None, "ages": None})
-@app.route('/classes/<url_category>/<dates>', defaults={"ages": None, "page_num": 1})
-@app.route('/classes/<url_category>/<dates>/<page_num>', defaults={"ages": None})
-@app.route('/classes/<url_category>//<ages>', defaults={"dates": None, "page_num": 1})
-@app.route('/classes/<url_category>//<ages>/<page_num>', defaults={"dates": None})
-@app.route('/classes/<url_category>/<dates>/<ages>', defaults={"page_num": 1})
-@app.route('/classes/<url_category>/<dates>/<ages>/<page_num>', defaults={})
-@app.route('/classes//<dates>', defaults={"url_category": None, "ages": None, "page_num": 1})
-@app.route('/classes//<dates>/<page_num>', defaults={"url_category": None, "ages": None})
-@app.route('/classes///<ages>', defaults={"url_category": None, "dates": None, "page_num": 1})
-@app.route('/classes///<ages>/<page_num>', defaults={"url_category": None, "dates": None})
-@app.route('/classes//<dates>/<ages>', defaults={"url_category": None, "page_num": 1})
-@app.route('/classes//<dates>/<ages>/<page_num>', defaults={"url_category": None})
-def classes(url_category, dates, ages, page_num):
+def uniqid(prefix = ''):
+    current_time = time.time() * 1000
+    output = prefix + hex(int(current_time))[2:10] + hex(int(current_time*1000000) % 0x100000)[2:7]
+    return output
+
+
+class BookingInformationFormBuilder():
+
+    def __init__(self, gravity_forms_data):
+        self.gravity_forms_data = gravity_forms_data
+        class BookingInformationForm(wtforms.Form):
+            pass
+        self.form_class = BookingInformationForm
+
+    def add_field(self, name, field):
+        setattr(self.form_class, name, field)
+
+    def add_heading(self, text, heading_level="2"):
+        self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
+
+    def get_heading_widget(self, text, heading_level="2"):
+        def heading_widget(field, **kwargs):
+            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
+        return heading_widget
+
+    def get_option_field(self, field_type, gf_field, validators):
+        choices = []
+        for gf_choice in gf_field["choices"]:
+            choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice and gf_choice["price"] != "" else "")))
+
+        if field_type == "radio":
+            return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
+        else:
+            return wtforms.SelectField(gf_field["label"], choices=choices, validators=validators)
+
+    def get_radio_field(self, gf_field, validators=[]):
+        return self.get_option_field("radio", gf_field, validators)
+
+    def get_select_field(self, gf_field, validators=[]):
+        return self.get_option_field("select", gf_field, validators)
+
+    def build_booking_form(self):
+        for gf_field in self.gravity_forms_data["fields"]:
+            field_name = "gravity_forms_field_"+str(gf_field["id"])
+
+            validators = []
+            is_required = "isRequired" in gf_field and gf_field["isRequired"]
+            if is_required:
+                validators.append(wtforms.validators.Required())
+
+            if gf_field["type"] == "section":
+                if "label" in gf_field and gf_field["label"] != "":
+                    self.add_heading(gf_field["label"])
+                if "description" in gf_field and gf_field["description"] != "":
+                    self.add_heading(gf_field["description"], "3")
+
+            elif gf_field["type"] == "name":
+                self.add_heading(gf_field["label"], "4")
+                for sub_field in gf_field["inputs"]:
+                    sub_field_name = field_name+"_"+str(sub_field["id"])
+
+                    if "inputType"in sub_field and sub_field["inputType"] == "radio":
+                        self.add_field(sub_field_name, self.get_radio_field(sub_field))
+                    else:
+                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"]))
+
+            elif gf_field["type"] == "select":
+                self.add_field(field_name, self.get_select_field(gf_field, validators))
+
+            elif "inputType" in gf_field and gf_field["inputType"] == "radio":
+                self.add_field(field_name, self.get_radio_field(gf_field, validators))
+
+            else:
+                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
+
+        return self.form_class
+
+# TODO:WV:20170704:The following should happen after payment with Stripe
+# TODO:WV:20170704:Could set up an unpaid order before payment
+@app.route('/paymentcomplete', methods=['POST'])
+def paymentcomplete():
+
+    if not "basket" in session:
+        return redirect(url_for("classes"))
+
+    # Build list of line items for Woocommerce order
+    line_items = []
+    gf = shop_data.get_gravityforms_api()
+    for item_id in session["basket"]:
+
+        # TODO:WV:20170704:Handle bad response
+        gravity_forms_entry = gf.get_entry(session["basket"][item_id]["gravity_forms_entry"])
+
+        # TODO:WV:20170704:Handle form not found (for some reason), by downloading from the API, and handle any subsequent bad response
+        gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+
+        list_item_meta_data = []
+        gravity_forms_lead = {}
+        def add_field(field):
+            field_key = str(field["id"])
+            gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
+            list_item_meta_data.append({
+                "key": field["label"],
+                "value": gravity_forms_entry[field_key]
+            })
+        for field in gravity_forms_form["fields"]:
+            if field["type"] == "name":
+                for sub_field in field["inputs"]:
+                    add_field(sub_field)
+
+            if field["id"] in gravity_forms_entry:
+                add_field(field)
+
+        list_item_meta_data.append({
+            "key": "_gravity_forms_history",
+            "value": {
+                "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
+                "_gravity_form_lead": gravity_forms_lead
+            },
+        })
+
+        line_items.append({
+            "product_id": session["basket"][item_id]["product_id"],
+            "quantity": 1,
+            "meta_data": list_item_meta_data
+        })
+
+    # Submit order to WooCommerce API
+    # TODO:WV:20170704:Can include shipping data, etc. from stripe if available
+    # TODO:WV:20170704:Handle bad response
+    wcapi = shop_data.get_woocommerce_api()
+
+    response = wcapi.post("orders", {
+        "payment_method": "stripe",
+        "payment_method_title": "Stripe",
+        "set_paid": True,
+        "line_items": line_items
+    })
+
+    return "OK"
+
+@app.route('/checkout', methods=['GET'])
+def checkout():
+    if "basket" not in session or len(session["basket"]) == 0:
+        return redirect(url_for("classes"))
+
+    return render_template(
+        "pages/checkout.html",
+        basket=session["basket"],
+        **get_all_basket_data()
+    )
+
+def get_all_basket_data():
+    if "basket" not in session:
+        return {}
+
+    # Get full data on all products in the basket
+    products = {}
+    total_price = 0;
+    for item_id in session["basket"]:
+        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+        products[session["basket"][item_id]["product_id"]] = product
+        total_price += float(product["price"])
+
+    return {
+        "products": products,
+        "total_price": total_price
+    }
+
+@app.route('/cart', methods=['GET', 'POST'])
+def cart():
+
+    # Extract input from post-data
+    product_id = None if "product_id" not in request.form else request.form["product_id"]
+    delete_item_id = None if "delete_item_id" not in request.form else request.form["delete_item_id"]
+
+    # Initialise basket in session if necessary
+    if "basket" not in session:
+        session["basket"] = {}
+
+    # Prepare data to go into the session after this process has finished (it may be added to later in this function)
+    data_for_session = {
+        "unique_id": uniqid(),
+        "product_id": product_id
+    }
+
+    # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
+    # TODO:WV:20170630:Session size of ~4k might be too small.  Consider saving the form data to the server, perhaps via the GravityForms API,
+    # to keep session size down.
+    if product_id is not None:
+
+        product = shop_data.get_product(id=product_id)
+        if product is None:
+            return redirect(url_for('cart'))
+
+        # If no booking info provided, show a form requesting it
+        # TODO:WV:20170630:Add "attendee's name" field by default, for inclusion in the basket row
+        form_id = None
+        for meta_datum in product["meta_data"]:
+            if meta_datum["key"] == "_gravity_form_data":
+                form_id = meta_datum["value"]["id"]
+                break
+        if form_id is not None:
+
+            # TODO:WV:20170630:Handle form not found, here
+            builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
+            BookingInformationForm = builder.build_booking_form()
+            form = BookingInformationForm(request.form)
+
+            # If valid form was submitted, save the data to the server
+            # TODO:WV:20170703:Handle 'invalid' response
+            if len(request.form.keys()) > 1 and form.validate():
+                gf_submission = {}
+                for field in form:
+                    matches = rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
+                    if matches:
+                        field_id = matches.group(1)
+                        gf_submission.update({field_id: request.form[field.name]})
+
+                gf = shop_data.get_gravityforms_api()
+                gf_submission.update({"form_id": form_id})
+                entry = [gf_submission]
+                result = gf.post_entry(entry)
+                if isinstance(result, list) and len(result) == 1 and isinstance(result[0], int):
+                    data_for_session["gravity_forms_entry"] = result[0]
+
+            # If no valid form was submitted, display the form
+            else:
+                return render_template(
+                    "pages/add-to-basket.html",
+                    product=product,
+                    form=form
+                )
+
+        # Add product and booking information to the basket
+        session["basket"][data_for_session["unique_id"]] = data_for_session
+
+    # If removing an item, do so
+    if delete_item_id is not None:
+        if delete_item_id in session["basket"]:
+            del session["basket"][delete_item_id]
+
+    # Prevent form re-submit issue
+    if product_id is not None or delete_item_id is not None:
+        return redirect(url_for('cart'))
+
+    return render_template(
+        "pages/basket.html",
+        basket=session["basket"],
+        **get_all_basket_data()
+    )
+
+@app.route('/class/<slug>')
+def singleclass(slug):
+    product = shop_data.get_product(slug=slug)
+
+    return render_template(
+        'pages/single_class.html',
+        product=product
+    )
+
+    return product
+
+
+@app.route('/classes/', defaults={"url_category": None})
+@app.route('/classes/<url_category>')
+def classes(url_category):
 
     # Add filter drop-downs, with options
-    categories = shop_data.get_categories()
+    # TODO:WV:20170626:Add Wordpress plugin to prevent editing the FILTERS category name or adding any others called FILTERS at the same level in the category hierarchy
     filters_category = shop_data.get_category("FILTERS")
     filter_category_ids = {}
     if filters_category is None:
         filters = []
     else:
         filters = []
+
+        categories = shop_data.get_categories()
         for category in categories:
             if category["parent"] == filters_category["id"]:
                 filter_category_ids[category["name"].lower()] = category["id"]
                 filters.append({"category": category, "child_categories": []})
+
+        # Find filter options
         for class_filter in filters:
             for category in categories:
                 if category["parent"] == class_filter["category"]["id"]:
@@ -202,46 +470,37 @@ def classes(url_category, dates, ages, page_num):
     active_categories = []
     if url_category is not None:
         active_categories.append(shop_data.get_category(url_category))
-    if dates is not None:
-        if "dates" not in filter_category_ids:
-            raise Error("No dates filter ID found")
-        date_filter_category = shop_data.get_category(dates, parent_id=filter_category_ids["dates"])
-        active_categories.append(date_filter_category)
-    if ages is not None:
-        if "ages" not in filter_category_ids:
-            raise Error("No ages filter ID found")
-        ages_filter_category = shop_data.get_category(ages, parent_id=filter_category_ids["ages"])
-        print "Ages filter category"
-        print "Looking for name "+ages
-        pprint.pprint(ages_filter_category)
-        active_categories.append(ages_filter_category)
+    for arg in request.args:
+        if request.args[arg] and arg in filter_category_ids:
+            filter_category = shop_data.get_category(request.args[arg], parent_id=filter_category_ids[arg])
+            if filter_category is not None:
+                active_categories.append(filter_category)
 
-    products = shop_data.get_products(active_categories)
+    # Find page number from query string - default to 1
+    if "page_num" in request.args and rgx_matches("^[0-9]+$", request.args["page_num"]):
+        page_num = int(request.args["page_num"])
+    else:
+        page_num = 1
 
-    # Get pagination data for template
+    # Fetch list of products and generate page
     per_page = 10
-    total_pages = int(math.ceil(float(len(products)) / float(per_page)))
-
-    # Filter products to the current page
-    # NB has to happen AFTER working out total_pages, because it changes 'products', which is also used to calculate total_pages
-    offset = per_page * (page_num - 1)
-    products = products[offset:offset + per_page]
+    products = shop_data.get_products(active_categories, page_num, per_page)
 
     return render_template(
         'pages/classes.html',
-        products=products,
+        products=products["products"],
         class_filters=filters,
         dates=filters["Dates"] if "Dates" in filters else [],
         ages=filters["Age range"] if "Age range" in filters else [],
         pagination_data={
             "page_num":page_num,
-            "total_pages":total_pages,
+            "total_pages":int(math.ceil(products["num_total"] / float(per_page))),
             "route_function": {
                 "name": "classes",
                 "arguments": {
                     "url_category":url_category,
-                    "dates":dates,
-                    "ages":ages
+                    "dates":None if "dates" not in request.args else request.args["dates"],
+                    "ages":None if "ages" not in request.args else request.args["ages"]
                 }
             }
         },
@@ -250,6 +509,11 @@ def classes(url_category, dates, ages, page_num):
 
 # Error handlers.
 
+def rgx_matches(rgx, string):
+    matches = re.search(rgx, string)
+    if matches is None:
+        return False
+    return matches
 
 @app.errorhandler(500)
 def internal_error(error):

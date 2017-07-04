@@ -1,0 +1,28 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Checkout{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
+{% block content %}
+
+<section class="mainContent full-width clearfix">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-xs-12">
+
+				<ul class='checkout-items' data-total-price="{{total_price}}">
+					{% for item_id in basket %}
+						{% set product = products[basket[item_id]["product_id"]] %}
+						<li data-product-id="{{product.id}}" data-product-price="{{product.price}}">{{ product.name }} @ {{ product.price|float|currency }}</li>
+					{% endfor %}
+					<li><strong>Total: {{ total_price|currency }}</strong></li>
+				</ul>
+
+				<p><a class="btn btn-default btn-make-payment" href="javascript:void(0)">Pay now</a></p>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{% endblock %}
