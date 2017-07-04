@@ -254,19 +254,6 @@ class BookingInformationFormBuilder():
 
         return self.form_class
 
-def get_all_basket_data():
-    if "basket" not in session:
-        return {}
-
-    # Get full data on all products in the basket
-    products = {}
-    for item_id in session["basket"]:
-        products[session["basket"][item_id]["product_id"]] = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-
-    return {
-        "products": products
-    }
-
 @app.route('/checkout', methods=['GET'])
 def checkout():
     if "basket" not in session or len(session["basket"]) == 0:
@@ -277,6 +264,23 @@ def checkout():
         basket=session["basket"],
         **get_all_basket_data()
     )
+
+def get_all_basket_data():
+    if "basket" not in session:
+        return {}
+
+    # Get full data on all products in the basket
+    products = {}
+    total_price = 0;
+    for item_id in session["basket"]:
+        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+        products[session["basket"][item_id]["product_id"]] = product
+        total_price += float(product["price"])
+
+    return {
+        "products": products,
+        "total_price": total_price
+    }
 
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
@@ -291,7 +295,7 @@ def cart():
 
     # Prepare data to go into the session after this process has finished (it may be added to later in this function)
     data_for_session = {
-        "uniqud_id": uniqid(),
+        "unique_id": uniqid(),
         "product_id": product_id
     }
 
@@ -349,9 +353,7 @@ def cart():
                 )
 
         # Add product and booking information to the basket
-        session["basket"][data_for_session["unique_id"]] = {
-            data_for_session
-        }
+        session["basket"][data_for_session["unique_id"]] = data_for_session
 
     # If removing an item, do so
     if delete_item_id is not None:

@@ -40,6 +40,13 @@
 						{% endfor %}
 					</tbody>
 
+					<tfoot>
+						<tr>
+							<td colspan="3">Total</td>
+							<td>{{ total_price|currency }}</td>
+						</tr>
+					</tfoot>
+
 				</table>
 
 				<p class="shopping-basket-proceed-to-checkout"><a class="btn btn-default" href="/checkout">Checkout</a></p>
