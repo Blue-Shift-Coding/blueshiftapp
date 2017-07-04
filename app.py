@@ -267,18 +267,37 @@ def paymentcomplete():
     gf = shop_data.get_gravityforms_api()
     for item_id in session["basket"]:
         gravity_forms_entry = gf.get_entry(session["basket"][item_id]["gravity_forms_entry"])
+        gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+
+        list_item_meta_data = []
+        gravity_forms_lead = {}
+        def add_field(field):
+            field_key = str(field["id"])
+            gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
+            list_item_meta_data.append({
+                "key": field["label"],
+                "value": gravity_forms_entry[field_key]
+            })
+        for field in gravity_forms_form["fields"]:
+            if field["type"] == "name":
+                for sub_field in field["inputs"]:
+                    add_field(sub_field)
+
+            if field["id"] in gravity_forms_entry:
+                add_field(field)
+
+        list_item_meta_data.append({
+            "key": "_gravity_forms_history",
+            "value": {
+                "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
+                "_gravity_form_lead": gravity_forms_lead
+            },
+        })
+
         line_items.append({
             "product_id": session["basket"][item_id]["product_id"],
             "quantity": 1,
-            "meta_data": [
-                {
-                    "key": "_gravity_forms_history",
-                    "value": {
-                        "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
-                        "_gravity_form_lead": gravity_forms_entry
-                    },
-                }
-            ]
+            "meta_data": list_item_meta_data
         })
 
     # Submit order to WooCommerce API
