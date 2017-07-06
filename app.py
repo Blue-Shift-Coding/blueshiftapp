@@ -26,7 +26,11 @@ import stripe
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = os.environ["BLUESHIFTAPP_SESSION_SIGNING_KEY"]
-stripe.api_key = os.environ["BLUESHIFTAPP_STRIPE_SECRET_KEY"]
+stripe_keys = {
+    "secret": os.environ["BLUESHIFTAPP_STRIPE_SECRET_KEY"],
+    "public": os.environ["BLUESHIFTAPP_STRIPE_PUBLISHABLE_KEY"]
+}
+stripe.api_key = stripe_keys["secret"]
 
 #db = SQLAlchemy(app)
 
