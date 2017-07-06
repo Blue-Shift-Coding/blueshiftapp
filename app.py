@@ -347,17 +347,6 @@ def paymentcomplete():
     # TODO:WV:20170706:Set confirmation message
     return redirect(url_for("classes"))
 
-@app.route('/checkout', methods=['GET'])
-def checkout():
-    if "basket" not in session or len(session["basket"]) == 0:
-        return redirect(url_for("classes"))
-
-    return render_template(
-        "pages/checkout.html",
-        basket=session["basket"],
-        **get_all_basket_data()
-    )
-
 def get_all_basket_data():
     if "basket" not in session:
         return {}
