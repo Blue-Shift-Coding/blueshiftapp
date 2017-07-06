@@ -16,6 +16,7 @@ import shop_data
 from functools import wraps
 from woocommerceapi import wcapi
 from gravityformsapi import gf
+import stripe
 
 
 #----------------------------------------------------------------------------#
@@ -25,6 +26,7 @@ from gravityformsapi import gf
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = os.environ["BLUESHIFTAPP_SESSION_SIGNING_KEY"]
+stripe.api_key = "sk_test_OJeWwP0r265RCxi8mHFTpzR6"
 
 #db = SQLAlchemy(app)
 
@@ -302,6 +304,34 @@ def paymentcomplete():
             "quantity": 1,
             "meta_data": list_item_meta_data
         })
+
+
+    # Put charge through via Stripe
+    basket_data = get_all_basket_data()
+    amount = float(basket_data["total_price"]) * 100
+
+    stripe_charge_data = {
+        "source":request.form["token"],
+        "amount":amount,
+        "currency":"gbp",
+        "description":"Flask Charge"
+    }
+
+    # If customer email was provided, add a customer object to the order,
+    # and queue a receipt to go to their email address
+    stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
+    customer_email = stripe_info["email"]
+    if customer_email:
+        customer = stripe.Customer.create(
+            email=customer_email,
+            source=request.form["stripeToken"]
+        )
+        stripe_charge_data.update({
+            "customer":customer.id,
+            "receipt_email":customer_email
+        })
+
+    charge = stripe.Charge.create(**stripe_charge_data)
 
     # Submit order to WooCommerce API
     # TODO:WV:20170704:Can include shipping data, etc. from stripe if available
