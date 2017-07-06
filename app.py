@@ -316,6 +316,7 @@ def paymentcomplete():
     # Empty the basket
     del session["basket"]
 
+    # TODO:WV:20170706:Set confirmation message
     return redirect(url_for("classes"))
 
 @app.route('/checkout', methods=['GET'])
