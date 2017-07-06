@@ -289,8 +289,6 @@ def cart():
     }
 
     # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
-    # TODO:WV:20170630:Session size of ~4k might be too small.  Consider saving the form data to the server, perhaps via the GravityForms API,
-    # to keep session size down.
     if product_id is not None:
 
         product = shop_data.get_product(id=product_id)
@@ -307,17 +305,14 @@ def cart():
         if form_id is not None:
 
             # TODO:WV:20170630:Handle form not found, here
-            builder = BookingInformationFormBuilder(shop_data.get_form(form_id))
+            gravity_forms_form = shop_data.get_form(form_id)
+            builder = BookingInformationFormBuilder(gravity_forms_form)
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
 
             # If valid form was submitted, save the data to the server
             # TODO:WV:20170706:Could make this all faster by storing the form responses in memcached rather than gravityforms
             if len(request.form.keys()) > 1 and form.validate():
-
-                gravity_forms_form = shop_data.get_form(form_id)
-                if not gravity_forms_form:
-                    raise Exception("Form not found")
 
                 gravity_forms_submission = {}
                 price_adjustments = 0
