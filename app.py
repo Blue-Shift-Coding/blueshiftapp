@@ -21,7 +21,7 @@ from woocommerceapi import wcapi
 from gravityformsapi import gf
 
 # Third party libraries
-# TODO:WV:20170706:Confirm where lib.format came from
+# TODO:WV:20170706:Confirm where lib.format and functools came from
 import stripe
 from lib.format import post_format_date
 from functools import wraps
