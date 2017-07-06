@@ -139,22 +139,3 @@
 		});
 	});
 })(jQuery);
-
-
-/*
- * Checkout
- */
-(function($) {
-	$(function() {
-		$(".btn-make-payment").on("click", function(e) {
-			console.log("Click", e);
-
-			$.post("/paymentcomplete", function(response) {
-				console.log("Response from server", response);
-			});
-
-			e.preventDefault();
-			return false;
-		})
-	});
-})(jQuery);

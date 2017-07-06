@@ -17,7 +17,20 @@
 					<li><strong>Total: {{ total_price|currency }}</strong></li>
 				</ul>
 
-				<p><a class="btn btn-default btn-make-payment" href="javascript:void(0)">Pay now</a></p>
+				<div class="stripe-form">
+					<form action="/paymentcomplete" method="POST">
+					  <script
+					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+					    data-key="pk_test_HnEn2PmpAK2CcTIgouF9UOvj"
+					    data-amount="{{(total_price | float) * 100}}"
+					    data-name="blue{shift} Coding"
+					    data-description="Widget"
+					    data-image="https://s3.amazonaws.com/stripe-uploads/acct_17Qz37HP8IoqDW11merchant-icon-1452255057982-happy128.png"
+					    data-locale="auto"
+					    data-currency="gbp">
+					  </script>
+					</form>
+				</div>
 
 			</div>
 		</div>
