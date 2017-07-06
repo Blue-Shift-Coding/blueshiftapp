@@ -411,13 +411,36 @@ def cart():
             # TODO:WV:20170703:Handle 'invalid' response
             # TODO:WV:20170706:Could make this all faster by storing the form responses in memcached rather than gravityforms
             if len(request.form.keys()) > 1 and form.validate():
+
+                gravity_forms_form = shop_data.get_form(form_id)
+                if not gravity_forms_form:
+                    raise Exception("Form not found")
+
                 gf_submission = {}
+                price_adjustments = 0
                 for field in form:
                     matches = rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
                     if matches:
                         field_id = matches.group(1)
+
+                        # If there are any price adjustments associated with this field, add them in
+                        # TODO:WV:20170706:Some of the fields feature a 'base price'.  What is this?
+                        for gravity_forms_field in gravity_forms_form["fields"]:
+                            if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
+                                for choice in gravity_forms_field["choices"]:
+                                    if "price" in choice and (choice["value"] == request.form[field.name]):
+                                        price_parts = rgx_matches("^([^0-9\.]*)([0-9.]+)$", choice["price"])
+                                        choice_price = price_parts.group(2)
+                                        price_adjustments += float(choice_price)
+
+                        # Add this field into the submission for gravity forms
                         gf_submission.update({field_id: request.form[field.name]})
 
+                # Add any price adjustments into the session
+                if price_adjustments != 0:
+                    data_for_session["price_adjustments"] = price_adjustments
+
+                # Add the form ID into the submission for gravity forms
                 gf_submission.update({"form_id": form_id})
                 entry = [gf_submission]
                 result = gf.post_entry(entry)
