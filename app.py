@@ -15,9 +15,8 @@ import logging, pprint
 from logging import Formatter, FileHandler
 
 # Internal modules
+import shop_data, storage, shopping_basket, blueshiftutils
 from api.blog import fetch_posts, get_post
-import shop_data, storage
-from functools import wraps
 from woocommerceapi import wcapi
 from gravityformsapi import gf
 
@@ -25,6 +24,7 @@ from gravityformsapi import gf
 # TODO:WV:20170706:Confirm where lib.format came from
 import stripe
 from lib.format import post_format_date
+from functools import wraps
 
 
 #----------------------------------------------------------------------------#
@@ -180,7 +180,7 @@ def processpayment():
         # TODO:WV:20170704:If form, or entry, not found, could respond with 'service unavailable' rather than throwing a hard error
         # TODO:WV:20170704:If the entry is not found in storage and then added to storage after querying the server: test that.
         gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
-        gravity_forms_entry_storage_key = get_gravity_forms_entry_storage_key(gravity_forms_entry_id)
+        gravity_forms_entry_storage_key = shopping_basket.get_gravity_forms_entry_storage_key(gravity_forms_entry_id)
         gravity_forms_entry = storage.get(gravity_forms_entry_storage_key)
         if not gravity_forms_entry:
             gravity_forms_entry = gf.get_entry(gravity_forms_entry_id)
@@ -227,7 +227,7 @@ def processpayment():
     # - set up basic data for Stripe charge
     # - add receipt email if available
     # - charge the card
-    basket_data = get_all_basket_data()
+    basket_data = shopping_basket.get_all_basket_data()
     amount = int(float(basket_data["total_price"]) * 100)
     stripe_charge_data = {
         "source":request.form["stripeToken"],
@@ -274,7 +274,7 @@ def cart():
 
     # Prepare data to go into the session after this process has finished (it may be added to later in this function)
     data_for_session = {
-        "unique_id": uniqid(),
+        "unique_id": blueshiftutils.uniqid(),
         "product_id": product_id
     }
 
@@ -296,7 +296,7 @@ def cart():
 
             # TODO:WV:20170630:Handle form not found, here
             gravity_forms_form = shop_data.get_form(form_id)
-            builder = BookingInformationFormBuilder(gravity_forms_form)
+            builder = shopping_basket.BookingInformationFormBuilder(gravity_forms_form)
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
 
@@ -306,7 +306,7 @@ def cart():
                 gravity_forms_submission = {}
                 price_adjustments = 0
                 for field in form:
-                    matches = rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
+                    matches = blueshiftutils.rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
                     if matches:
                         field_id = matches.group(1)
 
@@ -316,7 +316,7 @@ def cart():
                             if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
                                 for choice in gravity_forms_field["choices"]:
                                     if "price" in choice and (choice["value"] == request.form[field.name]):
-                                        price_parts = rgx_matches("^([^0-9\.]*)([0-9.]+)$", choice["price"])
+                                        price_parts = blueshiftutils.rgx_matches("^([^0-9\.]*)([0-9.]+)$", choice["price"])
                                         choice_price = price_parts.group(2)
                                         price_adjustments += float(choice_price)
 
@@ -336,7 +336,7 @@ def cart():
                     one_day_in_seconds = 86400
                     expiry_time = time.time() + one_day_in_seconds
                     storage.set(
-                        get_gravity_forms_entry_storage_key(gravity_forms_entry_id),
+                        shopping_basket.get_gravity_forms_entry_storage_key(gravity_forms_entry_id),
                         gravity_forms_submission,
                         expiry_time
                     )
@@ -366,7 +366,7 @@ def cart():
         "pages/basket.html",
         stripe_publishable_key=stripe_keys["publishable"],
         basket=session["basket"],
-        **get_all_basket_data()
+        **shopping_basket.get_all_basket_data()
     )
 
 @app.route('/class/<slug>')
@@ -417,7 +417,7 @@ def classes(url_category):
                 active_categories.append(filter_category)
 
     # Find page number from query string - default to 1
-    if "page_num" in request.args and rgx_matches("^[0-9]+$", request.args["page_num"]):
+    if "page_num" in request.args and blueshiftutils.rgx_matches("^[0-9]+$", request.args["page_num"]):
         page_num = int(request.args["page_num"])
     else:
         page_num = 1
@@ -450,125 +450,15 @@ def classes(url_category):
 
 
 #----------------------------------------------------------------------------#
-# General utilities
+# Utilities
 #----------------------------------------------------------------------------#
 
-
-def rgx_matches(rgx, string):
-    matches = re.search(rgx, string)
-    if matches is None:
-        return False
-    return matches
 
 # This can be used for logging debug to Heroku logs (or to console, in dev)
 def log_to_stdout(log_message):
     ch = logging.StreamHandler()
     app.logger.addHandler(ch)
     app.logger.info(log_message)
-
-def uniqid(prefix = ''):
-    current_time = time.time() * 1000
-    output = prefix + hex(int(current_time))[2:10] + hex(int(current_time*1000000) % 0x100000)[2:7]
-    return output
-
-
-#----------------------------------------------------------------------------#
-# App-specific utilities
-#----------------------------------------------------------------------------#
-
-def get_all_basket_data():
-    if "basket" not in session:
-        return {}
-
-    # Get full data on all products in the basket
-    # TODO:WV:20170706:Add prices onto each item based on form options
-    products = {}
-    total_price = 0;
-    for item_id in session["basket"]:
-        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-        products[session["basket"][item_id]["product_id"]] = product
-        total_price += float(product["price"])
-        if "price_adjustments" in session["basket"][item_id]:
-            total_price += session["basket"][item_id]["price_adjustments"]
-
-    return {
-        "products": products,
-        "total_price": total_price
-    }
-
-def get_gravity_forms_entry_storage_key(entry_id):
-    return "gravity_forms_entry_"+entry_id
-
-class BookingInformationFormBuilder():
-
-    def __init__(self, gravity_forms_data):
-        self.gravity_forms_data = gravity_forms_data
-        class BookingInformationForm(wtforms.Form):
-            pass
-        self.form_class = BookingInformationForm
-
-    def add_field(self, name, field):
-        setattr(self.form_class, name, field)
-
-    def add_heading(self, text, heading_level="2"):
-        self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
-
-    def get_heading_widget(self, text, heading_level="2"):
-        def heading_widget(field, **kwargs):
-            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
-        return heading_widget
-
-    def get_option_field(self, field_type, gf_field, validators):
-        choices = []
-        for gf_choice in gf_field["choices"]:
-            choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice and gf_choice["price"] != "" else "")))
-
-        if field_type == "radio":
-            return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
-        else:
-            return wtforms.SelectField(gf_field["label"], choices=choices, validators=validators)
-
-    def get_radio_field(self, gf_field, validators=[]):
-        return self.get_option_field("radio", gf_field, validators)
-
-    def get_select_field(self, gf_field, validators=[]):
-        return self.get_option_field("select", gf_field, validators)
-
-    def build_booking_form(self):
-        for gf_field in self.gravity_forms_data["fields"]:
-            field_name = "gravity_forms_field_"+str(gf_field["id"])
-
-            validators = []
-            is_required = "isRequired" in gf_field and gf_field["isRequired"]
-            if is_required:
-                validators.append(wtforms.validators.Required())
-
-            if gf_field["type"] == "section":
-                if "label" in gf_field and gf_field["label"] != "":
-                    self.add_heading(gf_field["label"])
-                if "description" in gf_field and gf_field["description"] != "":
-                    self.add_heading(gf_field["description"], "3")
-
-            elif gf_field["type"] == "name":
-                self.add_heading(gf_field["label"], "4")
-                for sub_field in gf_field["inputs"]:
-                    sub_field_name = field_name+"_"+str(sub_field["id"])
-
-                    if "inputType"in sub_field and sub_field["inputType"] == "radio":
-                        self.add_field(sub_field_name, self.get_radio_field(sub_field))
-                    else:
-                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"]))
-
-            elif gf_field["type"] == "select":
-                self.add_field(field_name, self.get_select_field(gf_field, validators))
-
-            elif "inputType" in gf_field and gf_field["inputType"] == "radio":
-                self.add_field(field_name, self.get_radio_field(gf_field, validators))
-
-            else:
-                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
-
-        return self.form_class
 
 
 
