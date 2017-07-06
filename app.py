@@ -262,8 +262,8 @@ class BookingInformationFormBuilder():
 
 # TODO:WV:20170706:Validate stripe payment using Stripe's Python libraries
 # TODO:WV:20170704:Could set up an unpaid order before payment
-@app.route('/paymentcomplete', methods=['POST'])
-def paymentcomplete():
+@app.route('/processpayment', methods=['POST'])
+def processpayment():
 
     if not "basket" in session:
         return redirect(url_for("classes"))
