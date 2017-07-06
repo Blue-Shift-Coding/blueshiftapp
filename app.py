@@ -488,6 +488,8 @@ def get_all_basket_data():
         product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
         products[session["basket"][item_id]["product_id"]] = product
         total_price += float(product["price"])
+        if "price_adjustments" in session["basket"][item_id]:
+            total_price += session["basket"][item_id]["price_adjustments"]
 
     return {
         "products": products,
