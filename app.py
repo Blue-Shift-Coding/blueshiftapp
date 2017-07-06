@@ -386,6 +386,7 @@ def cart():
 
             # If valid form was submitted, save the data to the server
             # TODO:WV:20170703:Handle 'invalid' response
+            # TODO:WV:20170706:Could make this all faster by storing the form responses in memcached rather than gravityforms
             if len(request.form.keys()) > 1 and form.validate():
                 gf_submission = {}
                 for field in form:
