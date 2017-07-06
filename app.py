@@ -26,7 +26,7 @@ import stripe
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = os.environ["BLUESHIFTAPP_SESSION_SIGNING_KEY"]
-stripe.api_key = "sk_test_OJeWwP0r265RCxi8mHFTpzR6"
+stripe.api_key = os.environ["BLUESHIFTAPP_STRIPE_SECRET_KEY"]
 
 #db = SQLAlchemy(app)
 
@@ -305,29 +305,23 @@ def paymentcomplete():
             "meta_data": list_item_meta_data
         })
 
-
     # Put charge through via Stripe
     basket_data = get_all_basket_data()
-    amount = float(basket_data["total_price"]) * 100
+    amount = int(float(basket_data["total_price"]) * 100)
 
+    # Set up basic data for Stripe charge
     stripe_charge_data = {
-        "source":request.form["token"],
+        "source":request.form["stripeToken"],
         "amount":amount,
         "currency":"gbp",
         "description":"Flask Charge"
     }
 
-    # If customer email was provided, add a customer object to the order,
-    # and queue a receipt to go to their email address
+    # If customer email was provided, add a receipt email to the order
     stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
     customer_email = stripe_info["email"]
     if customer_email:
-        customer = stripe.Customer.create(
-            email=customer_email,
-            source=request.form["stripeToken"]
-        )
         stripe_charge_data.update({
-            "customer":customer.id,
             "receipt_email":customer_email
         })
 

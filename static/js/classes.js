@@ -125,17 +125,3 @@
 	}
 
 })(jQuery);
-
-
-/*
- * Shopping basket
- */
-(function($) {
-	$(function() {
-		$(".shopping-basket-proceed-to-checkout-form").on("submit", function(e) {
-			alert("To do");
-			e.preventDefault();
-			return false;
-		});
-	});
-})(jQuery);

@@ -49,7 +49,20 @@
 
 				</table>
 
-				<p class="shopping-basket-proceed-to-checkout"><a class="btn btn-default" href="/checkout">Checkout</a></p>
+				<div class="stripe-form">
+					<form action="/paymentcomplete" method="POST">
+					  <script
+					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+					    data-key="pk_test_HnEn2PmpAK2CcTIgouF9UOvj"
+					    data-amount="{{(total_price | float) * 100}}"
+					    data-name="blue{shift} Coding"
+					    data-description="Creating coding for creative kids"
+					    data-image="https://s3.amazonaws.com/stripe-uploads/acct_17Qz37HP8IoqDW11merchant-icon-1452255057982-happy128.png"
+					    data-locale="auto"
+					    data-currency="gbp">
+					  </script>
+					</form>
+				</div>
 
 			</div>
 		</div>
