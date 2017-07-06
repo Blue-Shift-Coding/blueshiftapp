@@ -347,7 +347,6 @@ def processpayment():
     # TODO:WV:20170706:Format this in the template
     flash("Order complete", "done")
 
-    # TODO:WV:20170706:Set confirmation message
     return redirect(url_for("classes"))
 
 def get_all_basket_data():
