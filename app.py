@@ -4,7 +4,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, redirect, Response, url_for, session
+from flask import Flask, render_template, request, redirect, Response, url_for, session, flash
 import wtforms
 import logging, pprint
 from logging import Formatter, FileHandler
@@ -343,6 +343,9 @@ def processpayment():
 
     # Empty the basket
     del session["basket"]
+
+    # TODO:WV:20170706:Format this in the template
+    flash("Order complete", "done")
 
     # TODO:WV:20170706:Set confirmation message
     return redirect(url_for("classes"))
