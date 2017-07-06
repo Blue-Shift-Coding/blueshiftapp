@@ -261,24 +261,6 @@ def processpayment():
 
     return redirect(url_for("classes"))
 
-def get_all_basket_data():
-    if "basket" not in session:
-        return {}
-
-    # Get full data on all products in the basket
-    # TODO:WV:20170706:Add prices onto each item based on form options
-    products = {}
-    total_price = 0;
-    for item_id in session["basket"]:
-        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-        products[session["basket"][item_id]["product_id"]] = product
-        total_price += float(product["price"])
-
-    return {
-        "products": products,
-        "total_price": total_price
-    }
-
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
@@ -493,6 +475,24 @@ def uniqid(prefix = ''):
 #----------------------------------------------------------------------------#
 # App-specific utilities
 #----------------------------------------------------------------------------#
+
+def get_all_basket_data():
+    if "basket" not in session:
+        return {}
+
+    # Get full data on all products in the basket
+    # TODO:WV:20170706:Add prices onto each item based on form options
+    products = {}
+    total_price = 0;
+    for item_id in session["basket"]:
+        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+        products[session["basket"][item_id]["product_id"]] = product
+        total_price += float(product["price"])
+
+    return {
+        "products": products,
+        "total_price": total_price
+    }
 
 def get_gravity_forms_entry_storage_key(entry_id):
     return "gravity_forms_entry_"+entry_id
