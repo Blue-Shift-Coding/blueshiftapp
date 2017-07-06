@@ -176,18 +176,28 @@ def processpayment():
     line_items = []
     for item_id in session["basket"]:
 
-        # TODO:WV:20170704:Handle bad response
-        gravity_forms_entry = gf.get_entry(session["basket"][item_id]["gravity_forms_entry"])
-
-        # TODO:WV:20170704:Handle form not found (for some reason), by downloading from the API, and handle any subsequent bad response
+        # Load gravity forms entry and form from storage
+        # TODO:WV:20170704:If form, or entry, not found, could respond with 'service unavailable' rather than throwing a hard error
+        # TODO:WV:20170704:If the entry is not found in storage and then added to storage after querying the server: test that.
+        gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
+        gravity_forms_entry_storage_key = get_gravity_forms_entry_storage_key(gravity_forms_entry_id)
+        gravity_forms_entry = storage.get(gravity_forms_entry_storage_key)
+        if not gravity_forms_entry:
+            gravity_forms_entry = gf.get_entry(gravity_forms_entry_id)
+            storage.set(gravity_forms_entry_storage_key, gravity_forms_entry)
+        if not gravity_forms_entry:
+            raise Exception("Form data could not be retrieved")
         gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+        if not gravity_forms_form:
+            raise Exception("Form not found")
 
-        list_item_meta_data = []
+        # Iterate through fields in the gravity form, add meta-data to the line-item for each one
+        line_item_meta_data = []
         gravity_forms_lead = {}
         def add_field(field):
             field_key = str(field["id"])
             gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
-            list_item_meta_data.append({
+            line_item_meta_data.append({
                 "key": field["label"],
                 "value": gravity_forms_entry[field_key]
             })
@@ -198,8 +208,7 @@ def processpayment():
 
             if str(field["id"]) in gravity_forms_entry:
                 add_field(field)
-
-        list_item_meta_data.append({
+        line_item_meta_data.append({
             "key": "_gravity_forms_history",
             "value": {
                 "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
@@ -207,36 +216,35 @@ def processpayment():
             },
         })
 
+        # Add the actual line item
         line_items.append({
             "product_id": session["basket"][item_id]["product_id"],
             "quantity": 1,
-            "meta_data": list_item_meta_data
+            "meta_data": line_item_meta_data
         })
 
     # Put charge through via Stripe
+    # - set up basic data for Stripe charge
+    # - add receipt email if available
+    # - charge the card
     basket_data = get_all_basket_data()
     amount = int(float(basket_data["total_price"]) * 100)
-
-    # Set up basic data for Stripe charge
     stripe_charge_data = {
         "source":request.form["stripeToken"],
         "amount":amount,
         "currency":"gbp",
         "description":"Flask Charge"
     }
-
-    # If customer email was provided, add a receipt email to the order
     stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
     customer_email = stripe_info["email"]
     if customer_email:
         stripe_charge_data.update({
             "receipt_email":customer_email
         })
-
     charge = stripe.Charge.create(**stripe_charge_data)
 
     # Submit order to WooCommerce API
-    # TODO:WV:20170704:Can include shipping data, etc. from stripe if available
+    # TODO:WV:20170704:Could include the customers name, for the WooCommerce orders index
     # TODO:WV:20170704:Handle bad response
     response = wcapi.post("orders", {
         "payment_method": "stripe",
@@ -311,7 +319,6 @@ def cart():
             form = BookingInformationForm(request.form)
 
             # If valid form was submitted, save the data to the server
-            # TODO:WV:20170706:Could make this all faster by storing the form responses in memcached rather than gravityforms
             if len(request.form.keys()) > 1 and form.validate():
 
                 gravity_forms_submission = {}
@@ -341,10 +348,17 @@ def cart():
                 # Add the form ID into the submission for gravity forms
                 # TODO:WV:20170706:Handle invalid response from gravity forms, and a response from gravity forms that says the data is invalid
                 gravity_forms_submission.update({"form_id": form_id})
-                entry = [gravity_forms_submission]
-                result = gf.post_entry(entry)
+                result = gf.post_entry([gravity_forms_submission])
                 if isinstance(result, list) and len(result) == 1 and isinstance(result[0], int):
-                    data_for_session["gravity_forms_entry"] = result[0]
+                    gravity_forms_entry_id = result[0]
+                    one_day_in_seconds = 86400
+                    expiry_time = time.time() + one_day_in_seconds
+                    storage.set(
+                        get_gravity_forms_entry_storage_key(gravity_forms_entry_id),
+                        gravity_forms_submission,
+                        expiry_time
+                    )
+                    data_for_session["gravity_forms_entry"] = gravity_forms_entry_id
 
             # If no valid form was submitted, display the form
             else:
@@ -479,6 +493,9 @@ def uniqid(prefix = ''):
 #----------------------------------------------------------------------------#
 # App-specific utilities
 #----------------------------------------------------------------------------#
+
+def get_gravity_forms_entry_storage_key(entry_id):
+    return "gravity_forms_entry_"+entry_id
 
 class BookingInformationFormBuilder():
 
