@@ -53,7 +53,7 @@
 					<form action="/paymentcomplete" method="POST">
 					  <script
 					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-					    data-key="pk_test_HnEn2PmpAK2CcTIgouF9UOvj"
+					    data-key="{{ stripe_publishable_key }}"
 					    data-amount="{{(total_price | float) * 100}}"
 					    data-name="blue{shift} Coding"
 					    data-description="Creating coding for creative kids"

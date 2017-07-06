@@ -28,7 +28,7 @@ app.config.from_object('config')
 app.secret_key = os.environ["BLUESHIFTAPP_SESSION_SIGNING_KEY"]
 stripe_keys = {
     "secret": os.environ["BLUESHIFTAPP_STRIPE_SECRET_KEY"],
-    "public": os.environ["BLUESHIFTAPP_STRIPE_PUBLISHABLE_KEY"]
+    "publishable": os.environ["BLUESHIFTAPP_STRIPE_PUBLISHABLE_KEY"]
 }
 stripe.api_key = stripe_keys["secret"]
 
@@ -455,6 +455,7 @@ def cart():
 
     return render_template(
         "pages/basket.html",
+        stripe_publishable_key=stripe_keys["publishable"],
         basket=session["basket"],
         **get_all_basket_data()
     )
