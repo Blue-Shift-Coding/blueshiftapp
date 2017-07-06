@@ -1,5 +1,5 @@
 from flask import session
-import shop_data, wtforms
+import shop_data, wtforms, blueshiftutils
 
 
 #----------------------------------------------------------------------------#
@@ -42,7 +42,7 @@ class BookingInformationFormBuilder():
         setattr(self.form_class, name, field)
 
     def add_heading(self, text, heading_level="2"):
-        self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
+        self.add_field("heading-"+blueshiftutils.uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
 
     def get_heading_widget(self, text, heading_level="2"):
         def heading_widget(field, **kwargs):
