@@ -1,4 +1,5 @@
-import session, shop_data, wtforms
+from flask import session
+import shop_data, wtforms
 
 
 #----------------------------------------------------------------------------#
