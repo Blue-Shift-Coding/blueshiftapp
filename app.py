@@ -316,9 +316,10 @@ def cart():
                             if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
                                 for choice in gravity_forms_field["choices"]:
                                     if "price" in choice and (choice["value"] == request.form[field.name]):
-                                        price_parts = blueshiftutils.rgx_matches("^([^0-9\.]*)([0-9.]+)$", choice["price"])
-                                        choice_price = price_parts.group(2)
-                                        price_adjustments += float(choice_price)
+                                        price_parts = blueshiftutils.rgx_matches("([0-9.]+)$", choice["price"])
+                                        if price_parts:
+                                            choice_price = price_parts.group(1)
+                                            price_adjustments += float(choice_price)
 
                         # Add this field into the submission for gravity forms
                         gravity_forms_submission.update({field_id: request.form[field.name]})
