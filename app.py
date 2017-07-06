@@ -4,19 +4,27 @@
 # Imports
 #----------------------------------------------------------------------------#
 
+# Flask modules
 from flask import Flask, render_template, request, redirect, Response, url_for, session, flash
 import wtforms
+from forms import *
+
+# Core modules
+import os, time, copy, math, json, re
 import logging, pprint
 from logging import Formatter, FileHandler
-from forms import *
-import os, time, copy, math, json, re
+
+# Internal modules
 from api.blog import fetch_posts, get_post
-from lib.format import post_format_date
-import shop_data
+import shop_data, storage
 from functools import wraps
 from woocommerceapi import wcapi
 from gravityformsapi import gf
+
+# Third party libraries
+# TODO:WV:20170706:Confirm where lib.format came from
 import stripe
+from lib.format import post_format_date
 
 
 #----------------------------------------------------------------------------#
@@ -177,90 +185,7 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
-# This can be used for logging debug to Heroku logs (or to console, in dev)
-def log_to_stdout(log_message):
-    ch = logging.StreamHandler()
-    app.logger.addHandler(ch)
-    app.logger.info(log_message)
 
-def uniqid(prefix = ''):
-    current_time = time.time() * 1000
-    output = prefix + hex(int(current_time))[2:10] + hex(int(current_time*1000000) % 0x100000)[2:7]
-    return output
-
-
-class BookingInformationFormBuilder():
-
-    def __init__(self, gravity_forms_data):
-        self.gravity_forms_data = gravity_forms_data
-        class BookingInformationForm(wtforms.Form):
-            pass
-        self.form_class = BookingInformationForm
-
-    def add_field(self, name, field):
-        setattr(self.form_class, name, field)
-
-    def add_heading(self, text, heading_level="2"):
-        self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
-
-    def get_heading_widget(self, text, heading_level="2"):
-        def heading_widget(field, **kwargs):
-            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
-        return heading_widget
-
-    def get_option_field(self, field_type, gf_field, validators):
-        choices = []
-        for gf_choice in gf_field["choices"]:
-            choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice and gf_choice["price"] != "" else "")))
-
-        if field_type == "radio":
-            return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
-        else:
-            return wtforms.SelectField(gf_field["label"], choices=choices, validators=validators)
-
-    def get_radio_field(self, gf_field, validators=[]):
-        return self.get_option_field("radio", gf_field, validators)
-
-    def get_select_field(self, gf_field, validators=[]):
-        return self.get_option_field("select", gf_field, validators)
-
-    def build_booking_form(self):
-        for gf_field in self.gravity_forms_data["fields"]:
-            field_name = "gravity_forms_field_"+str(gf_field["id"])
-
-            validators = []
-            is_required = "isRequired" in gf_field and gf_field["isRequired"]
-            if is_required:
-                validators.append(wtforms.validators.Required())
-
-            if gf_field["type"] == "section":
-                if "label" in gf_field and gf_field["label"] != "":
-                    self.add_heading(gf_field["label"])
-                if "description" in gf_field and gf_field["description"] != "":
-                    self.add_heading(gf_field["description"], "3")
-
-            elif gf_field["type"] == "name":
-                self.add_heading(gf_field["label"], "4")
-                for sub_field in gf_field["inputs"]:
-                    sub_field_name = field_name+"_"+str(sub_field["id"])
-
-                    if "inputType"in sub_field and sub_field["inputType"] == "radio":
-                        self.add_field(sub_field_name, self.get_radio_field(sub_field))
-                    else:
-                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"]))
-
-            elif gf_field["type"] == "select":
-                self.add_field(field_name, self.get_select_field(gf_field, validators))
-
-            elif "inputType" in gf_field and gf_field["inputType"] == "radio":
-                self.add_field(field_name, self.get_radio_field(gf_field, validators))
-
-            else:
-                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
-
-        return self.form_class
-
-# TODO:WV:20170706:Validate stripe payment using Stripe's Python libraries
 # TODO:WV:20170704:Could set up an unpaid order before payment
 @app.route('/processpayment', methods=['POST'])
 def processpayment():
@@ -408,7 +333,6 @@ def cart():
             form = BookingInformationForm(request.form)
 
             # If valid form was submitted, save the data to the server
-            # TODO:WV:20170703:Handle 'invalid' response
             # TODO:WV:20170706:Could make this all faster by storing the form responses in memcached rather than gravityforms
             if len(request.form.keys()) > 1 and form.validate():
 
@@ -416,7 +340,7 @@ def cart():
                 if not gravity_forms_form:
                     raise Exception("Form not found")
 
-                gf_submission = {}
+                gravity_forms_submission = {}
                 price_adjustments = 0
                 for field in form:
                     matches = rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
@@ -434,15 +358,16 @@ def cart():
                                         price_adjustments += float(choice_price)
 
                         # Add this field into the submission for gravity forms
-                        gf_submission.update({field_id: request.form[field.name]})
+                        gravity_forms_submission.update({field_id: request.form[field.name]})
 
                 # Add any price adjustments into the session
                 if price_adjustments != 0:
                     data_for_session["price_adjustments"] = price_adjustments
 
                 # Add the form ID into the submission for gravity forms
-                gf_submission.update({"form_id": form_id})
-                entry = [gf_submission]
+                # TODO:WV:20170706:Handle invalid response from gravity forms, and a response from gravity forms that says the data is invalid
+                gravity_forms_submission.update({"form_id": form_id})
+                entry = [gravity_forms_submission]
                 result = gf.post_entry(entry)
                 if isinstance(result, list) and len(result) == 1 and isinstance(result[0], int):
                     data_for_session["gravity_forms_entry"] = result[0]
@@ -552,7 +477,12 @@ def classes(url_category):
     )
 
 
-# Error handlers.
+
+
+#----------------------------------------------------------------------------#
+# General utilities
+#----------------------------------------------------------------------------#
+
 
 def rgx_matches(rgx, string):
     matches = re.search(rgx, string)
@@ -560,11 +490,104 @@ def rgx_matches(rgx, string):
         return False
     return matches
 
+# This can be used for logging debug to Heroku logs (or to console, in dev)
+def log_to_stdout(log_message):
+    ch = logging.StreamHandler()
+    app.logger.addHandler(ch)
+    app.logger.info(log_message)
+
+def uniqid(prefix = ''):
+    current_time = time.time() * 1000
+    output = prefix + hex(int(current_time))[2:10] + hex(int(current_time*1000000) % 0x100000)[2:7]
+    return output
+
+
+#----------------------------------------------------------------------------#
+# App-specific utilities
+#----------------------------------------------------------------------------#
+
+class BookingInformationFormBuilder():
+
+    def __init__(self, gravity_forms_data):
+        self.gravity_forms_data = gravity_forms_data
+        class BookingInformationForm(wtforms.Form):
+            pass
+        self.form_class = BookingInformationForm
+
+    def add_field(self, name, field):
+        setattr(self.form_class, name, field)
+
+    def add_heading(self, text, heading_level="2"):
+        self.add_field("heading-"+uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
+
+    def get_heading_widget(self, text, heading_level="2"):
+        def heading_widget(field, **kwargs):
+            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
+        return heading_widget
+
+    def get_option_field(self, field_type, gf_field, validators):
+        choices = []
+        for gf_choice in gf_field["choices"]:
+            choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice and gf_choice["price"] != "" else "")))
+
+        if field_type == "radio":
+            return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
+        else:
+            return wtforms.SelectField(gf_field["label"], choices=choices, validators=validators)
+
+    def get_radio_field(self, gf_field, validators=[]):
+        return self.get_option_field("radio", gf_field, validators)
+
+    def get_select_field(self, gf_field, validators=[]):
+        return self.get_option_field("select", gf_field, validators)
+
+    def build_booking_form(self):
+        for gf_field in self.gravity_forms_data["fields"]:
+            field_name = "gravity_forms_field_"+str(gf_field["id"])
+
+            validators = []
+            is_required = "isRequired" in gf_field and gf_field["isRequired"]
+            if is_required:
+                validators.append(wtforms.validators.Required())
+
+            if gf_field["type"] == "section":
+                if "label" in gf_field and gf_field["label"] != "":
+                    self.add_heading(gf_field["label"])
+                if "description" in gf_field and gf_field["description"] != "":
+                    self.add_heading(gf_field["description"], "3")
+
+            elif gf_field["type"] == "name":
+                self.add_heading(gf_field["label"], "4")
+                for sub_field in gf_field["inputs"]:
+                    sub_field_name = field_name+"_"+str(sub_field["id"])
+
+                    if "inputType"in sub_field and sub_field["inputType"] == "radio":
+                        self.add_field(sub_field_name, self.get_radio_field(sub_field))
+                    else:
+                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"]))
+
+            elif gf_field["type"] == "select":
+                self.add_field(field_name, self.get_select_field(gf_field, validators))
+
+            elif "inputType" in gf_field and gf_field["inputType"] == "radio":
+                self.add_field(field_name, self.get_radio_field(gf_field, validators))
+
+            else:
+                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
+
+        return self.form_class
+
+
+
+#----------------------------------------------------------------------------#
+# Error handlers
+#----------------------------------------------------------------------------#
+
+
 @app.errorhandler(500)
 def internal_error(error):
     #db_session.rollback()
     return render_template('errors/500.html'), 500
-
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -579,6 +602,7 @@ if not app.debug:
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('errors')
+
 
 #----------------------------------------------------------------------------#
 # Launch.
