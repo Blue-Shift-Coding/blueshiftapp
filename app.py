@@ -254,7 +254,7 @@ class BookingInformationFormBuilder():
 
         return self.form_class
 
-# TODO:WV:20170704:The following should happen after payment with Stripe
+# TODO:WV:20170706:Validate stripe payment using Stripe's Python libraries
 # TODO:WV:20170704:Could set up an unpaid order before payment
 @app.route('/paymentcomplete', methods=['POST'])
 def paymentcomplete():
