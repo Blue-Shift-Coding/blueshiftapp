@@ -313,7 +313,10 @@ def paymentcomplete():
         "line_items": line_items
     })
 
-    return "OK"
+    # Empty the basket
+    del session["basket"]
+
+    return redirect(url_for("classes"))
 
 @app.route('/checkout', methods=['GET'])
 def checkout():
