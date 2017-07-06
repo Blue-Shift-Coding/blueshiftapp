@@ -287,7 +287,7 @@ def paymentcomplete():
                 for sub_field in field["inputs"]:
                     add_field(sub_field)
 
-            if field["id"] in gravity_forms_entry:
+            if str(field["id"]) in gravity_forms_entry:
                 add_field(field)
 
         list_item_meta_data.append({
@@ -334,6 +334,7 @@ def get_all_basket_data():
         return {}
 
     # Get full data on all products in the basket
+    # TODO:WV:20170706:Add prices onto each item based on form options
     products = {}
     total_price = 0;
     for item_id in session["basket"]:
