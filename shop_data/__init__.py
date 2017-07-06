@@ -1,1 +1,1 @@
-from shop_data import download_data, get_categories, get_category, get_products, get_product, get_form, get_woocommerce_api, get_gravityforms_api
+from shop_data import download_data, get_categories, get_category, get_products, get_product, get_form

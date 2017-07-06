@@ -14,7 +14,8 @@ from api.blog import fetch_posts, get_post
 from lib.format import post_format_date
 import shop_data
 from functools import wraps
-from pygfapi import Client as GravityFormsClient
+from woocommerceapi import wcapi
+from gravityformsapi import gf
 
 
 
@@ -264,7 +265,6 @@ def paymentcomplete():
 
     # Build list of line items for Woocommerce order
     line_items = []
-    gf = shop_data.get_gravityforms_api()
     for item_id in session["basket"]:
 
         # TODO:WV:20170704:Handle bad response
@@ -307,8 +307,6 @@ def paymentcomplete():
     # Submit order to WooCommerce API
     # TODO:WV:20170704:Can include shipping data, etc. from stripe if available
     # TODO:WV:20170704:Handle bad response
-    wcapi = shop_data.get_woocommerce_api()
-
     response = wcapi.post("orders", {
         "payment_method": "stripe",
         "payment_method_title": "Stripe",
@@ -397,7 +395,6 @@ def cart():
                         field_id = matches.group(1)
                         gf_submission.update({field_id: request.form[field.name]})
 
-                gf = shop_data.get_gravityforms_api()
                 gf_submission.update({"form_id": form_id})
                 entry = [gf_submission]
                 result = gf.post_entry(entry)

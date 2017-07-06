@@ -1,7 +1,7 @@
 # To run this on the command line, use: 'python -m shop_data.download'
 import storage, pprint, os, time, sys
-from woocommerce import API
-from pygfapi import Client as GravityFormsClient
+from woocommerceapi import wcapi
+from gravityformsapi import gf
 
 #### Config
 data_lifetime_in_seconds = 14400
@@ -16,31 +16,9 @@ items_apis = {
 }
 #### /Not-config
 
+wcapi = woocommerceapi.wcapi
+gf = wooco
 
-# TODO:WV:20170704:The following could be in a separate module
-def get_woocommerce_api():
-	wcapi = API(
-	    url=os.environ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL"],
-	    consumer_key=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_KEY"],
-	    consumer_secret=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_SECRET"],
-	    wp_api=True,
-	    version="wc/v2"
-	)
-
-	return wcapi
-
-wcapi = get_woocommerce_api()
-
-# TODO:WV:20170704:The following could be in a separate module
-def get_gravityforms_api():
-	gf = GravityFormsClient(
-		os.environ["BLUESHIFTAPP_GRAVITY_FORMS_BASE_URL"]+"/gravityformsapi/",
-		os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PUBLIC_KEY"],
-		os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PRIVATE_KEY"]
-	)
-	return gf
-
-gf = get_gravityforms_api()
 
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
