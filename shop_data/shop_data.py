@@ -16,9 +16,6 @@ items_apis = {
 }
 #### /Not-config
 
-wcapi = woocommerceapi.wcapi
-gf = wooco
-
 
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
