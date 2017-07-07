@@ -32,7 +32,7 @@
 								{# TODO:WV:20170626:These images take ages to load.  Would be good to, at some point, generate some smaller ones for inclusion here #}
 								<td><img src="{{ product.images[0].src }}" alt="Image"></td>
 
-								<td>{{ product.name }} {% if names[item_id] %}<br /><span class='names-associated-with-basket-item'>{{ names[item_id] }}</span> {% endif %}</td>
+								<td>{{ product.name }} {% if names[item_id] %}<br /><span class='name-associated-with-basket-item'>{{ names[item_id] }}</span> {% endif %}</td>
 								<td>{{ (product.price|float + basket[item_id].price_adjustments|float)|currency }}</td>
 
 								{# TODO:WV:20170626:Add identifying information for this particlar row, e.g Child's name #}
