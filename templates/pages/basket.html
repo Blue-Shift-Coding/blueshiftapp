@@ -33,7 +33,7 @@
 								<td><img src="{{ product.images[0].src }}" alt="Image"></td>
 
 								<td>{{ product.name }} </td>
-								<td>{{ product.price|float|currency }}</td>
+								<td>{{ (product.price|float + basket[item_id].price_adjustments|float)|currency }}</td>
 
 								{# TODO:WV:20170626:Add identifying information for this particlar row, e.g Child's name #}
 							</tr>

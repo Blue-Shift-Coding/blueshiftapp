@@ -1,11 +1,22 @@
 from flask import session
-import shop_data, wtforms, blueshiftutils
+import shop_data, wtforms, blueshiftutils, time, storage
 
 
 #----------------------------------------------------------------------------#
 # Various shopping-basket related goodies
 #----------------------------------------------------------------------------#
 
+def uncache_gravity_forms_entry(gravity_forms_entry_id):
+    return storage.get(get_gravity_forms_entry_storage_key(gravity_forms_entry_id))
+
+def cache_gravity_forms_entry(gravity_forms_entry_id, gravity_forms_submission):
+    one_day_in_seconds = 86400
+    expiry_time = time.time() + one_day_in_seconds
+    storage.set(
+        get_gravity_forms_entry_storage_key(gravity_forms_entry_id),
+        gravity_forms_submission,
+        expiry_time
+    )
 
 def get_all_basket_data():
     if "basket" not in session:
@@ -15,6 +26,7 @@ def get_all_basket_data():
     # TODO:WV:20170706:Add prices onto each item based on form options
     products = {}
     total_price = 0;
+    price_adjustments = {}
     for item_id in session["basket"]:
         product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
         products[session["basket"][item_id]["product_id"]] = product
@@ -26,6 +38,18 @@ def get_all_basket_data():
         "products": products,
         "total_price": total_price
     }
+
+
+def get_price_adjustments(gravity_forms_form, field_id, field_value):
+    for gravity_forms_field in gravity_forms_form["fields"]:
+        if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
+            for choice in gravity_forms_field["choices"]:
+                if "price" in choice and (choice["value"] == field_value):
+                    price_parts = blueshiftutils.rgx_matches("([0-9.]+)$", choice["price"])
+                    if price_parts:
+                        choice_price = price_parts.group(1)
+                        return float(choice_price)
+    return 0
 
 def get_gravity_forms_entry_storage_key(entry_id):
     return "gravity_forms_entry_"+str(entry_id)

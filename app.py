@@ -15,7 +15,7 @@ import logging, pprint
 from logging import Formatter, FileHandler
 
 # Internal modules
-import shop_data, storage, shopping_basket, blueshiftutils
+import shop_data, shopping_basket, blueshiftutils
 from api.blog import fetch_posts, get_post
 from woocommerceapi import wcapi
 from gravityformsapi import gf
@@ -176,15 +176,15 @@ def processpayment():
     line_items = []
     for item_id in session["basket"]:
 
-        # Load gravity forms entry and form from storage
-        # TODO:WV:20170704:If form, or entry, not found, could respond with 'service unavailable' rather than throwing a hard error
-        # TODO:WV:20170704:If the entry is not found in storage and then added to storage after querying the server: test that.
+        # Load gravity forms entry and form
         gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
-        gravity_forms_entry_storage_key = shopping_basket.get_gravity_forms_entry_storage_key(gravity_forms_entry_id)
-        gravity_forms_entry = storage.get(gravity_forms_entry_storage_key)
+        gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
         if not gravity_forms_entry:
             gravity_forms_entry = gf.get_entry(gravity_forms_entry_id)
-            storage.set(gravity_forms_entry_storage_key, gravity_forms_entry)
+            shopping_basket.cache_gravity_forms_entry(
+                gravity_forms_entry_id,
+                gravity_forms_entry
+            )
         if not gravity_forms_entry:
             raise Exception("Form data could not be retrieved")
         gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
@@ -310,16 +310,11 @@ def cart():
                     if matches:
                         field_id = matches.group(1)
 
-                        # If there are any price adjustments associated with this field, add them in
-                        # TODO:WV:20170706:Some of the fields feature a 'base price'.  What is this?
-                        for gravity_forms_field in gravity_forms_form["fields"]:
-                            if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
-                                for choice in gravity_forms_field["choices"]:
-                                    if "price" in choice and (choice["value"] == request.form[field.name]):
-                                        price_parts = blueshiftutils.rgx_matches("([0-9.]+)$", choice["price"])
-                                        if price_parts:
-                                            choice_price = price_parts.group(1)
-                                            price_adjustments += float(choice_price)
+                        price_adjustments += shopping_basket.get_price_adjustments(
+                            gravity_forms_form,
+                            field_id,
+                            request.form[field.name]
+                        )
 
                         # Add this field into the submission for gravity forms
                         gravity_forms_submission.update({field_id: request.form[field.name]})
@@ -334,12 +329,9 @@ def cart():
                 result = gf.post_entry([gravity_forms_submission])
                 if isinstance(result, list) and len(result) == 1 and isinstance(result[0], int):
                     gravity_forms_entry_id = result[0]
-                    one_day_in_seconds = 86400
-                    expiry_time = time.time() + one_day_in_seconds
-                    storage.set(
-                        shopping_basket.get_gravity_forms_entry_storage_key(gravity_forms_entry_id),
-                        gravity_forms_submission,
-                        expiry_time
+                    shopping_basket.cache_gravity_forms_entry(
+                        gravity_forms_entry_id,
+                        gravity_forms_submission
                     )
                     data_for_session["gravity_forms_entry"] = gravity_forms_entry_id
 
