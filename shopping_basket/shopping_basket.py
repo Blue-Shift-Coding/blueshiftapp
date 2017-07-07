@@ -33,7 +33,6 @@ def get_all_basket_data():
         return {}
 
     # Get full data on all products in the basket
-    # TODO:WV:20170706:Add prices onto each item based on form options
     products = {}
     names = {}
     total_price = 0;
