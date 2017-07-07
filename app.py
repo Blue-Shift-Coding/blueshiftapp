@@ -180,12 +180,6 @@ def processpayment():
         gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
         gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
         if not gravity_forms_entry:
-            gravity_forms_entry = gf.get_entry(gravity_forms_entry_id)
-            shopping_basket.cache_gravity_forms_entry(
-                gravity_forms_entry_id,
-                gravity_forms_entry
-            )
-        if not gravity_forms_entry:
             raise Exception("Form data could not be retrieved")
         gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
         if not gravity_forms_form:
