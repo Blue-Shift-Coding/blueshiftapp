@@ -28,7 +28,7 @@ def get_all_basket_data():
     }
 
 def get_gravity_forms_entry_storage_key(entry_id):
-    return "gravity_forms_entry_"+entry_id
+    return "gravity_forms_entry_"+str(entry_id)
 
 class BookingInformationFormBuilder():
 
