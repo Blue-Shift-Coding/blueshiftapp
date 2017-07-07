@@ -280,7 +280,6 @@ def cart():
             return redirect(url_for('cart'))
 
         # If no booking info provided, show a form requesting it
-        # TODO:WV:20170630:Add "attendee's name" field by default, for inclusion in the basket row (or all the form data, serialized)
         form_id = None
         for meta_datum in product["meta_data"]:
             if meta_datum["key"] == "_gravity_form_data":
