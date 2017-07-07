@@ -136,13 +136,15 @@ class BookingInformationFormBuilder():
     def build_booking_form(self):
         for gf_field in self.gravity_forms_data["fields"]:
             field_name = "gravity_forms_field_"+str(gf_field["id"])
-
             validators = []
             is_required = "isRequired" in gf_field and gf_field["isRequired"]
             if is_required:
                 validators.append(wtforms.validators.Required())
 
-            if gf_field["type"] == "section":
+            if "isHidden" in gf_field and gf_field["ishidden"]:
+                continue
+
+            elif gf_field["type"] == "section":
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
                 if "description" in gf_field and gf_field["description"] != "":
@@ -153,8 +155,12 @@ class BookingInformationFormBuilder():
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
-                    if "inputType"in sub_field and sub_field["inputType"] == "radio":
+                    if "isHidden" in sub_field and sub_field["isHidden"]:
+                        continue
+
+                    elif "inputType"in sub_field and sub_field["inputType"] == "radio":
                         self.add_field(sub_field_name, self.get_radio_field(sub_field))
+
                     else:
                         self.add_field(sub_field_name, wtforms.StringField(sub_field["label"]))
 
