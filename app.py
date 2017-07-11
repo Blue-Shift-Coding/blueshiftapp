@@ -275,7 +275,7 @@ def checkout():
 
     form = shopping_basket.CheckoutForm(request.form)
     if request.method == 'POST' and form.validate():
-        session["basket"]["checkout-parent-info-ok"] = True
+        session["checkout-parent-info-ok"] = True
         return render_template(
             "pages/payment.html",
             form=form,
@@ -295,7 +295,7 @@ def checkout():
 @app.route('/processpayment', methods=['POST'])
 def processpayment():
 
-    if not "basket" in session or not "checkout-parent-info-ok" in session["basket"]:
+    if not "basket" in session or not "checkout-parent-info-ok" in session:
         return redirect(url_for("classes"))
 
     # Build list of line items for Woocommerce order
