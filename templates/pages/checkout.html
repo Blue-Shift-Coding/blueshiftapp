@@ -1,0 +1,40 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Shopping basket{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
+{% block content %}
+
+{% macro render_field(field) %}
+  <dt>{{ field.label }}</dt>
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}
+
+<section class="mainContent full-width clearfix">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-xs-12">
+
+				<form class="checkout-form" action="/checkout" method="POST">
+					<dl>
+					{% for field in form %}
+						{{ render_field(field) }}
+					{% endfor %}
+					</dl>
+					<p><button class="btn btn-default">Proceed to payment</button></p>
+				</form>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{% endblock %}

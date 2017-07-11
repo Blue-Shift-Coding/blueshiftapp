@@ -163,99 +163,6 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
-@app.route('/processpayment', methods=['POST'])
-def processpayment():
-
-    if not "basket" in session:
-        return redirect(url_for("classes"))
-
-    # Build list of line items for Woocommerce order
-    line_items = []
-    for item_id in session["basket"]:
-
-        # Load gravity forms entry and form
-        gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
-        gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
-        if not gravity_forms_entry:
-            raise Exception("Form data could not be retrieved")
-        gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
-        if not gravity_forms_form:
-            raise Exception("Form not found")
-
-        # Iterate through fields in the gravity form, add meta-data to the line-item for each one
-        line_item_meta_data = []
-        gravity_forms_lead = {}
-        def add_field(field):
-            field_key = str(field["id"])
-
-            if field_key in gravity_forms_entry:
-                gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
-                line_item_meta_data.append({
-                    "key": field["label"],
-                    "value": gravity_forms_entry[field_key]
-                })
-        for field in gravity_forms_form["fields"]:
-            if field["type"] == "name":
-                for sub_field in field["inputs"]:
-                    add_field(sub_field)
-
-            if str(field["id"]) in gravity_forms_entry:
-                add_field(field)
-        line_item_meta_data.append({
-            "key": "_gravity_forms_history",
-            "value": {
-                "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
-                "_gravity_form_lead": gravity_forms_lead
-            },
-        })
-
-        # Add the actual line item
-        line_items.append({
-            "product_id": session["basket"][item_id]["product_id"],
-            "quantity": 1,
-            "meta_data": line_item_meta_data
-        })
-
-    # Put charge through via Stripe
-    # - set up basic data for Stripe charge
-    # - add receipt email if available
-    # - charge the card
-    basket_data = shopping_basket.get_all_basket_data()
-    amount = int(float(basket_data["total_price"]) * 100)
-    stripe_charge_data = {
-        "source":request.form["stripeToken"],
-        "amount":amount,
-        "currency":"gbp",
-        "description":"Flask Charge"
-    }
-    stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
-    customer_email = stripe_info["email"]
-    if customer_email:
-        stripe_charge_data.update({
-            "receipt_email":customer_email
-        })
-    charge = stripe.Charge.create(**stripe_charge_data)
-
-    # Submit order to WooCommerce API
-    # TODO:WV:20170704:Could include the customers name (or other identifying data, e.g. attendee name), for the WooCommerce orders index
-    response = wcapi.post("orders", {
-        "payment_method": "stripe",
-        "payment_method_title": "Stripe",
-        "set_paid": True,
-        "line_items": line_items
-    })
-
-    if not response or (response.status_code != 201 and response.status_code != 200):
-        raise Exception("Invalid response from WooCommerce")
-
-    # Empty the basket
-    del session["basket"]
-
-    # TODO:WV:20170706:Format this in the template
-    flash("Order complete", "done")
-
-    return redirect(url_for("classes"))
-
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
@@ -356,10 +263,127 @@ def cart():
 
     return render_template(
         "pages/basket.html",
-        stripe_publishable_key=stripe_keys["publishable"],
         basket=session["basket"],
         **shopping_basket.get_all_basket_data()
     )
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+
+    if not "basket" in session:
+        return redirect(url_for("classes"))
+
+    form = shopping_basket.CheckoutForm(request.form)
+    if request.method == 'POST' and form.validate():
+        session["basket"]["checkout-parent-info-ok"] = True
+        return render_template(
+            "pages/payment.html",
+            form=form,
+            stripe_publishable_key=stripe_keys["publishable"],
+            basket=session["basket"],
+            **shopping_basket.get_all_basket_data()
+        )
+
+    return render_template(
+        "pages/checkout.html",
+        form=form,
+        basket=session["basket"],
+        **shopping_basket.get_all_basket_data()
+    )
+
+
+@app.route('/processpayment', methods=['POST'])
+def processpayment():
+
+    if not "basket" in session or not "checkout-parent-info-ok" in session["basket"]:
+        return redirect(url_for("classes"))
+
+    # Build list of line items for Woocommerce order
+    line_items = []
+    for item_id in session["basket"]:
+
+        # Load gravity forms entry and form
+        gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
+        gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
+        if not gravity_forms_entry:
+            raise Exception("Form data could not be retrieved")
+        gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+        if not gravity_forms_form:
+            raise Exception("Form not found")
+
+        # Iterate through fields in the gravity form, add meta-data to the line-item for each one
+        line_item_meta_data = []
+        gravity_forms_lead = {}
+        def add_field(field):
+            field_key = str(field["id"])
+
+            if field_key in gravity_forms_entry:
+                gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
+                line_item_meta_data.append({
+                    "key": field["label"],
+                    "value": gravity_forms_entry[field_key]
+                })
+        for field in gravity_forms_form["fields"]:
+            if field["type"] == "name":
+                for sub_field in field["inputs"]:
+                    add_field(sub_field)
+
+            if str(field["id"]) in gravity_forms_entry:
+                add_field(field)
+        line_item_meta_data.append({
+            "key": "_gravity_forms_history",
+            "value": {
+                "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
+                "_gravity_form_lead": gravity_forms_lead
+            },
+        })
+
+        # Add the actual line item
+        line_items.append({
+            "product_id": session["basket"][item_id]["product_id"],
+            "quantity": 1,
+            "meta_data": line_item_meta_data
+        })
+
+    # Put charge through via Stripe
+    # - set up basic data for Stripe charge
+    # - add receipt email if available
+    # - charge the card
+    basket_data = shopping_basket.get_all_basket_data()
+    amount = int(float(basket_data["total_price"]) * 100)
+    stripe_charge_data = {
+        "source":request.form["stripeToken"],
+        "amount":amount,
+        "currency":"gbp",
+        "description":"Flask Charge"
+    }
+    stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
+    customer_email = stripe_info["email"]
+    if customer_email:
+        stripe_charge_data.update({
+            "receipt_email":customer_email
+        })
+    charge = stripe.Charge.create(**stripe_charge_data)
+
+    # Submit order to WooCommerce API
+    # TODO:WV:20170704:Could include the customers name (or other identifying data, e.g. attendee name), for the WooCommerce orders index
+    response = wcapi.post("orders", {
+        "payment_method": "stripe",
+        "payment_method_title": "Stripe",
+        "set_paid": True,
+        "line_items": line_items
+    })
+
+    if not response or (response.status_code != 201 and response.status_code != 200):
+        raise Exception("Invalid response from WooCommerce")
+
+    # Empty the basket
+    del session["basket"]
+
+    # TODO:WV:20170706:Format this in the template
+    flash("Order complete", "done")
+
+    return redirect(url_for("classes"))
 
 @app.route('/class/<slug>')
 def singleclass(slug):

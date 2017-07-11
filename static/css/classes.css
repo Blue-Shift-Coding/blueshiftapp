@@ -48,9 +48,9 @@
 }
 
 
-/* Add-to-basket form */
+/* Checkout / basket forms */
 
-.add-to-basket-form .errors {
+.add-to-basket-form .errors, .checkout-form .errors {
   color:red;
   font-weight: bold;
 }

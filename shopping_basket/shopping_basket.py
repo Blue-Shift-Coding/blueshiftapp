@@ -37,7 +37,10 @@ def get_all_basket_data():
     names = {}
     total_price = 0;
     for item_id in session["basket"]:
-        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+        basket_item = session["basket"][item_id]
+        if not isinstance(basket_item, dict):
+            continue
+        product = shop_data.get_product(id=basket_item["product_id"])
         products[session["basket"][item_id]["product_id"]] = product
         total_price += float(product["price"])
         if "price_adjustments" in session["basket"][item_id]:
@@ -97,6 +100,21 @@ def get_price_adjustments(gravity_forms_form, field_id, field_value):
 
 def get_gravity_forms_entry_storage_key(entry_id):
     return "gravity_forms_entry_"+str(entry_id)
+
+class CheckoutForm(wtforms.Form):
+    parents_first_name = wtforms.StringField("Parent's First Name", [wtforms.validators.Length(min=3)])
+    parents_last_name = wtforms.StringField("Parent's Last Name", [wtforms.validators.Length(min=3)])
+    contact_number = wtforms.StringField("Contact Number", [wtforms.validators.Length(min=8)])
+    email = wtforms.StringField("Email", [wtforms.validators.Email()])
+    source = wtforms.SelectField("How did you find out about blue{shift}?", choices=[
+        ("", ""),
+        ("Web search", "Web search"),
+        ("My child's school", "My child's school"),
+        ("Friends", "Friends"),
+        ("Flyer", "Flyer"),
+        ("Angels and Urchins", "Angels and Urchins"),
+        ("Other", "Other")
+    ])
 
 class BookingInformationFormBuilder():
 
