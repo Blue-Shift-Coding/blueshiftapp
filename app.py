@@ -187,11 +187,13 @@ def processpayment():
         gravity_forms_lead = {}
         def add_field(field):
             field_key = str(field["id"])
-            gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
-            line_item_meta_data.append({
-                "key": field["label"],
-                "value": gravity_forms_entry[field_key]
-            })
+
+            if field_key in gravity_forms_entry:
+                gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
+                line_item_meta_data.append({
+                    "key": field["label"],
+                    "value": gravity_forms_entry[field_key]
+                })
         for field in gravity_forms_form["fields"]:
             if field["type"] == "name":
                 for sub_field in field["inputs"]:
