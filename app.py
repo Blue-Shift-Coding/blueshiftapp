@@ -367,11 +367,18 @@ def processpayment():
 
     # Submit order to WooCommerce API
     # TODO:WV:20170704:Could include the customers name (or other identifying data, e.g. attendee name), for the WooCommerce orders index
+    parent_data = {
+        "first_name": request.form["parents_first_name"],
+        "last_name": request.form["parents_last_name"],
+        "email": request.form["email"],
+        "phone": request.form["contact_number"]
+    }
     response = wcapi.post("orders", {
         "payment_method": "stripe",
         "payment_method_title": "Stripe",
         "set_paid": True,
-        "line_items": line_items
+        "line_items": line_items,
+        "billing": parent_data
     })
 
     if not response or (response.status_code != 201 and response.status_code != 200):
