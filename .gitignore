@@ -3,3 +3,5 @@
 env
 venv
 storage/data/*.json
+.phpintel
+
