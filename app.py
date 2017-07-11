@@ -366,7 +366,6 @@ def processpayment():
     charge = stripe.Charge.create(**stripe_charge_data)
 
     # Submit order to WooCommerce API
-    # TODO:WV:20170704:Could include the customers name (or other identifying data, e.g. attendee name), for the WooCommerce orders index
     parent_data = {
         "first_name": request.form["parents_first_name"],
         "last_name": request.form["parents_last_name"],
