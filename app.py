@@ -163,8 +163,6 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
-
-# TODO:WV:20170704:Could set up an unpaid order before payment
 @app.route('/processpayment', methods=['POST'])
 def processpayment():
 
