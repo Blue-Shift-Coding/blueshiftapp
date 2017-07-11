@@ -378,7 +378,6 @@ def singleclass(slug):
 def classes(url_category):
 
     # Add filter drop-downs, with options
-    # TODO:WV:20170707:Update Wordpress plugin to prevent editing the FILTERS category name or adding any others called FILTERS at the same level in the category hierarchy
     filters_category = shop_data.get_category("FILTERS")
     filter_category_ids = {}
     if filters_category is None:
