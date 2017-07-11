@@ -246,6 +246,9 @@ def processpayment():
         "line_items": line_items
     })
 
+    if not response or (response.status_code != 201 and response.status_code != 200):
+        raise Exception("Invalid response from WooCommerce")
+
     # Empty the basket
     del session["basket"]
 
