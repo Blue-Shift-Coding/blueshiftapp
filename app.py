@@ -69,6 +69,19 @@ def format_currency(value):
     return u"£{:,.2f}".format(value)
 
 
+@app.template_filter('strip')
+def template_strip(value):
+    if not isinstance(value, str):
+        return value
+    return value.strip()
+
+
+@app.template_filter('integers')
+def get_integers(value):
+    if not isinstance(value, basestring):
+        return value
+    return re.sub("[^0-9]", "", value)
+
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
