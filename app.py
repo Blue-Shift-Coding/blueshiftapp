@@ -237,8 +237,7 @@ def processpayment():
     charge = stripe.Charge.create(**stripe_charge_data)
 
     # Submit order to WooCommerce API
-    # TODO:WV:20170704:Could include the customers name, for the WooCommerce orders index
-    # TODO:WV:20170704:Handle bad response
+    # TODO:WV:20170704:Could include the customers name (or other identifying data, e.g. attendee name), for the WooCommerce orders index
     response = wcapi.post("orders", {
         "payment_method": "stripe",
         "payment_method_title": "Stripe",
