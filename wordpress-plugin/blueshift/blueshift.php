@@ -25,20 +25,22 @@ class BlueshiftPlugin {
 	}
 
 	public function preventAnyoneEditingTheFiltersCategory() {
-		add_action('edit_terms', function($termId) {
+		add_action('edit_terms', array($this, "exitIfProtectedTerm"));
+		add_action('pre_delete_term', array($this, "exitIfProtectedTerm"));
+	}
 
-			$term = get_term_by("id", $termId, $this->protectedCategoryTaxonomy);
-			if (empty($term)) {
-				return;
-			}
-			$termObj = (object)$term;
+	public function exitIfProtectedTerm($termId) {
+		$term = get_term_by("id", $termId, $this->protectedCategoryTaxonomy);
+		if (empty($term)) {
+			return;
+		}
+		$termObj = (object)$term;
 
-			// Crash out horribly if this is an attempt to edit the protected term
-			if ($termObj->taxonomy == $this->protectedCategoryTaxonomy and $termObj->name == $this->protectedTermName and empty($termObj->parent)) {
-				echo "ERR: '".$this->protectedTermName."' is a system category and cannot be edited <a href='javascript:history.back()'>Back</a>";
-				exit;
-			}
-		});
+		// Crash out horribly if this is an attempt to edit the protected term
+		if ($termObj->taxonomy == $this->protectedCategoryTaxonomy and $termObj->name == $this->protectedTermName and empty($termObj->parent)) {
+			echo "ERR: '".$this->protectedTermName."' is a system category and cannot be edited or removed <a href='javascript:history.back()'>Back</a>";
+			exit;
+		}
 	}
 
 	public function init() {
