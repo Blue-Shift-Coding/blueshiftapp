@@ -106,15 +106,6 @@ class CheckoutForm(wtforms.Form):
     parents_last_name = wtforms.StringField("Parent's Last Name", [wtforms.validators.Length(min=3)])
     contact_number = wtforms.StringField("Contact Number", [wtforms.validators.Length(min=8)])
     email = wtforms.StringField("Email", [wtforms.validators.Email()])
-    source = wtforms.SelectField("How did you find out about blue{shift}?", choices=[
-        ("", ""),
-        ("Web search", "Web search"),
-        ("My child's school", "My child's school"),
-        ("Friends", "Friends"),
-        ("Flyer", "Flyer"),
-        ("Angels and Urchins", "Angels and Urchins"),
-        ("Other", "Other")
-    ])
 
 class BookingInformationFormBuilder():
 
