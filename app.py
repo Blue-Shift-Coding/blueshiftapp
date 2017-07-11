@@ -288,7 +288,7 @@ def cart():
 
             # Load form from ID
             gravity_forms_form = shop_data.get_form(form_id)
-            if gravity_forms_form is nont:
+            if gravity_forms_form is None:
                 raise Exception("Form not found")
 
             # Build form in WTForms
