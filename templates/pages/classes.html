@@ -31,54 +31,12 @@
 
 			</div>
 		</div>
+
 		<div class="row">
 			<div class="col-xs-12 classes-results">
-
 				{% for product in products %}
-
-					{% set color_number = {'value': 4} %}
-					{% for meta_datum in product.meta_data %}
-						{% if meta_datum.key == 'age_group' %}
-							{% set ages = meta_datum.value|integers %}
-							{% if ages == '56' %}
-								{% set _dummy = color_number.update({'value': 1}) %}
-							{% elif ages == '78' %}
-								{% set _dummy = color_number.update({'value': 2}) %}
-							{% elif ages == '910' %}
-								{% set _dummy = color_number.update({'value': 3}) %}
-							{% else %}
-								{% set _dummy = color_number.update({'value': 4}) %}
-							{% endif %}
-						{% endif %}
-					{% endfor %}
-					{% set color_number = color_number.value %}
-
-					{% set product_url = '/class/'+product.slug %}
-
-					<div class="media courseList couresListPage">
-						<a class="media-left border-color-{{ color_number }}" href="{{ product_url }}">
-							<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
-							<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
-						</a>
-						<div class="media-body">
-							<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ color_number }}">{{product.name}}</a></h3>
-
-							{{product.short_description|safe}}
-
-							<ul class="list-inline btn-yellow btnPart">
-								<li>
-									<form action="/cart" method="POST">
-										<input type="hidden" name="product_id" value="{{ product.id }}" />
-										<button class="btn btn-primary ">Book now</button>
-									</form>
-								</li>
-								<li>
-									<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
-								</li>
-							</ul>
-
-						</div>
-					</div>
+					{% set description_type = 'short' %}
+					{% include 'pages/classes/class_details.html' %}
 				{% endfor %}
 			</div>
 		</div>
