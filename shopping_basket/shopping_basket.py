@@ -33,6 +33,8 @@ def get_all_basket_data():
         return {}
 
     # Get full data on all products in the basket
+    # Including total price
+    # TODO:WV:20170711:WooCommerce is not adding the options onto the 'price' it lists.  Not sure how it was working before as I haven't changed anything on that side.
     products = {}
     names = {}
     total_price = 0;
