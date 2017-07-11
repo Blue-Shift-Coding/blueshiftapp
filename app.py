@@ -320,7 +320,6 @@ def cart():
                     data_for_session["price_adjustments"] = price_adjustments
 
                 # Add the form ID into the submission for gravity forms
-                # TODO:WV:20170706:Handle invalid response from gravity forms, and a response from gravity forms that says the data is invalid
                 gravity_forms_submission.update({"form_id": form_id})
                 result = gf.post_entry([gravity_forms_submission])
                 if isinstance(result, list) and len(result) == 1 and isinstance(result[0], int):
@@ -330,6 +329,8 @@ def cart():
                         gravity_forms_submission
                     )
                     data_for_session["gravity_forms_entry"] = gravity_forms_entry_id
+                else:
+                    raise Exception("Invlid response from gravity forms")
 
             # If no valid form was submitted, display the form
             else:

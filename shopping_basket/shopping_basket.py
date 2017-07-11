@@ -155,14 +155,18 @@ class BookingInformationFormBuilder():
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
+                    sub_field_validators = []
+                    if is_required:
+                        sub_field_validators.append(wtforms.validators.Required())
+
                     if "isHidden" in sub_field and sub_field["isHidden"]:
                         continue
 
                     elif "inputType"in sub_field and sub_field["inputType"] == "radio":
-                        self.add_field(sub_field_name, self.get_radio_field(sub_field))
+                        self.add_field(sub_field_name, self.get_radio_field(sub_field, validators=sub_field_validators))
 
                     else:
-                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"]))
+                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"], validators=sub_field_validators))
 
             elif gf_field["type"] == "select":
                 self.add_field(field_name, self.get_select_field(gf_field, validators))
