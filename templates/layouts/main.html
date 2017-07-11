@@ -227,7 +227,6 @@
     {% set page_num = pagination_data.page_num  %}
     {% set prev_page = page_num - 1  %}
     {% set next_page = page_num + 1  %}
-    {# TODO:WV:20170622:Highlight current page #}
     <nav aria-label="Page navigation" class="blog-pagination">
       <ul class="pagination">
 
@@ -240,7 +239,7 @@
         {% endif %}
 
         {% for page in range(pagination_data.total_pages) %}
-        <li><a href="{{ url_for(pagination_data.route_function.name, page_num = page + 1, **pagination_data.route_function.arguments) }}">{{ page + 1 }}</a></li>
+        <li><a {% if page_num - 1 == page %} class="current-page" {% endif %} href="{{ url_for(pagination_data.route_function.name, page_num = page + 1, **pagination_data.route_function.arguments) }}">{{ page + 1 }}</a></li>
         {% endfor %}
 
         {% if next_page <= pagination_data.total_pages %}
