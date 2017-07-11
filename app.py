@@ -286,8 +286,12 @@ def cart():
                 break
         if form_id is not None:
 
-            # TODO:WV:20170630:Handle form not found, here
+            # Load form from ID
             gravity_forms_form = shop_data.get_form(form_id)
+            if gravity_forms_form is nont:
+                raise Exception("Form not found")
+
+            # Build form in WTForms
             builder = shopping_basket.BookingInformationFormBuilder(gravity_forms_form)
             BookingInformationForm = builder.build_booking_form()
             form = BookingInformationForm(request.form)
