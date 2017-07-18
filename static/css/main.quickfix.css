@@ -53,3 +53,21 @@
 .hiring:hover {
   background-color: #f5a9b0 !important;
 }
+
+.why-us h1, h4 {
+  text-align: center;
+  color: #66CCCC;
+  text-transform: lowercase;
+  letter-spacing: 0.7px;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.story {
+  width:100%;
+  background: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/07/BlueShift_Dec2016_HolidayWorkshops_LR-049.jpg);
+  height: 23em;
+  background-size:
+  cover;
+}

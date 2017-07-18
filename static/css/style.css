@@ -441,6 +441,10 @@ a:focus {
   background-color: rgba(102, 204, 204, 0.12);
 }
 
+.bg-color-8 {
+  background-color: #fceec7;
+}
+
 .full-width {
   padding-right: 15px;
   padding-left: 15px;
