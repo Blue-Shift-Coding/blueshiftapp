@@ -71,3 +71,43 @@
   background-size:
   cover;
 }
+
+.bio-text p {
+  color: #003366 !important;
+}
+
+.bio-name {
+  color: #003366;
+  margin: 0;
+  padding-bottom: 0.2em;
+  text-transform: capitalize;
+}
+
+.bio-title {
+  color: #66CCCC !important;
+  margin: 0;
+  padding-bottom: 0.5em;
+  text-transform: capitalize;
+}
+
+.bio-row {
+  padding-bottom: 0.5em;
+  padding-top: 1em;
+  border-bottom: #66cccc solid 1px;
+  margin: 0 6em;
+}
+
+.testimonialSection {
+  background-image: url("http://old.blueshiftcoding.com/wp-content/uploads/2017/05/quote-break-area.jpg");
+  background-size:100%;
+  background-repeat: repeat;
+  padding:0 !important;
+  width: cover;
+  height: 100%;
+  margin-top: 3em;
+}
+
+.testimonial {
+  padding: 5em 0;
+  color: white;
+}

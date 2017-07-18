@@ -3769,6 +3769,7 @@ footer .color-bar {
 .teamImage {
   width: 150px;
   height: 150px;
+  margin-right: 0.5em;
   display: block;
   -webkit-border-radius: 100%;
   -moz-border-radius: 100%;
@@ -4433,9 +4434,11 @@ footer .color-bar {
 
 /*=== 5.11 COMMENT SECTION ===*/
 .commentSection {
-  background-image: url("../img/home/pattern-light.png");
-  width: 100%;
-  background-repeat: repeat;
+  background-image: url("http://old.blueshiftcoding.com/wp-content/uploads/2017/05/quote-break-area.jpg");
+  background-size:100%;
+  background-repeat: no-repeat;
+  repeat
+  width: cover;
   height: auto;
 }
 

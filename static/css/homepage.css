@@ -56,6 +56,12 @@
   }
 }
 
+@media screen and (min-width: 992px) {
+  .left-border {
+    border-left: #66cccc solid 1px;
+  }
+}
+
 .footerInfoArea {
   position:relative;
 
@@ -76,4 +82,3 @@
   /* Centre logos */
   text-align: center;
 }
-
