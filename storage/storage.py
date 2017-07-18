@@ -21,7 +21,6 @@ def get_storage_dir():
 def get_filename(key):
 	return get_storage_dir()+"/"+key+".json"
 
-# TODO:WV:20170622:Also use the expiry time for the disk version (e.g. by wrapping the value in another layer of JSON containing the expiry time, and adding a 'remove expired' function that inspects each item and removes expired ones)
 def set(key, value, memcached_expiry_time):
 	if mc:
 		mc.set(key, value, memcached_expiry_time)

@@ -31,52 +31,12 @@
 
 			</div>
 		</div>
+
 		<div class="row">
 			<div class="col-xs-12 classes-results">
-
 				{% for product in products %}
-
-					{# color number must be between 1 and 6 #}
-
-					{# TODO:WV:20170622:This needs to be updated #}
-
-					{% if 'Ages 5 - 6' in product.categories %}
-						{% set color_number = 1 %}
-					{% elif 'Ages 7 - 8' in product.categories %}
-						{% set color_number = 2 %}
-					{% elif 'Ages 9 - 10' in product.categories %}
-						{% set color_number = 3 %}
-					{% else %}
-						{% set color_number = 4 %}
-					{% endif %}
-
-					{% set product_url = '/class/'+product.slug %}
-
-					{# color number must be between 1 and 6 - map to maximum age #}
-					<div class="media courseList couresListPage">
-						<a class="media-left border-color-{{ color_number }}" href="{{ product_url }}">
-							<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
-							<span class="sticker bg-color-{{ color_number }}">&pound;{{product.price}}</span>
-						</a>
-						<div class="media-body">
-							<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ color_number }}">{{product.name}}</a></h3>
-
-							{{product.short_description|safe}}
-
-							<ul class="list-inline btn-yellow btnPart">
-								<li>
-									<form action="/cart" method="POST">
-										<input type="hidden" name="product_id" value="{{ product.id }}" />
-										<button class="btn btn-primary ">Book now</button>
-									</form>
-								</li>
-								<li>
-									<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
-								</li>
-							</ul>
-
-						</div>
-					</div>
+					{% set description_type = 'short' %}
+					{% include 'pages/classes/class_details.html' %}
 				{% endfor %}
 			</div>
 		</div>

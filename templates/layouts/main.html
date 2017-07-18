@@ -200,7 +200,7 @@
 
     <!-- Begin page content -->
     {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
-    <div class="alert alert-block alert-error fade in">
+    <div class="alert alert-block fade in">
       <a class="close" data-dismiss="alert">&times;</a> {{ message }}
     </div>
     {% endfor %} {% endif %} {% endwith %}
@@ -227,7 +227,6 @@
     {% set page_num = pagination_data.page_num  %}
     {% set prev_page = page_num - 1  %}
     {% set next_page = page_num + 1  %}
-    {# TODO:WV:20170622:Highlight current page #}
     <nav aria-label="Page navigation" class="blog-pagination">
       <ul class="pagination">
 
@@ -240,7 +239,7 @@
         {% endif %}
 
         {% for page in range(pagination_data.total_pages) %}
-        <li><a href="{{ url_for(pagination_data.route_function.name, page_num = page + 1, **pagination_data.route_function.arguments) }}">{{ page + 1 }}</a></li>
+        <li><a {% if page_num - 1 == page %} class="current-page" {% endif %} href="{{ url_for(pagination_data.route_function.name, page_num = page + 1, **pagination_data.route_function.arguments) }}">{{ page + 1 }}</a></li>
         {% endfor %}
 
         {% if next_page <= pagination_data.total_pages %}
@@ -419,8 +418,6 @@
     </div>
   </footer>
 
-  <!-- TODO:WV:20170515:JS and CSS; either compile into one file, or only include relevant parts on relevant pages, or both. -->
-  <!-- TODO:WV:20170515:Also the site requires external resources to load - would be good to incoroprate fetching some or all of these into a build script, and host them locally -->
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script>
     window.jQuery || document.write('<script type="text/javascript" src="/static/js/libs/jquery-1.11.1.min.js"><\/script>')

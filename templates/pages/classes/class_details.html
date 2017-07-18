@@ -1,0 +1,57 @@
+
+<div class="row">
+	<div class="col-xs-12 classes-results">
+
+		{% set age_range_data = {'color': 4, 'text': ''} %}
+		{% for meta_datum in product.meta_data %}
+			{% if meta_datum.key == 'age_group' %}
+				{% set _dummy = age_range_data.update({'text': meta_datum.value|strip}) %}
+				{% set ages = meta_datum.value|integers %}
+				{% if ages == '56' %}
+					{% set _dummy = age_range_data.update({'color': 1}) %}
+				{% elif ages == '78' %}
+					{% set _dummy = age_range_data.update({'color': 2}) %}
+				{% elif ages == '910' %}
+					{% set _dummy = age_range_data.update({'color': 3}) %}
+				{% else %}
+					{% set _dummy = age_range_data.update({'color': 4}) %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+
+		{% set product_url = '/class/'+product.slug %}
+
+		<div class="media courseList couresListPage">
+			<a class="media-left border-color-{{ age_range_data.color }}" href="{{ product_url }}">
+				<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
+				{% if age_range_data.text %}
+					<span class="sticker bg-color-{{ age_range_data.color }}">{{ age_range_data.text }}</span>
+				{% endif %}
+			</a>
+			<div class="media-body">
+				<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ age_range_data.color }}">{{product.name}}</a></h3>
+
+				{% if description_type == 'short' %}
+					{{product.short_description|safe}}
+				{% else %}
+					{{product.description|safe}}
+				{% endif %}
+
+				<ul class="list-inline btn-yellow btnPart">
+					<li>
+						<form action="/cart" method="POST">
+							<input type="hidden" name="product_id" value="{{ product.id }}" />
+							<input type="hidden" name="quantity" value="+1" />
+							<button class="btn btn-primary ">Book now</button>
+						</form>
+					</li>
+					<li>
+						<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
+					</li>
+				</ul>
+
+			</div>
+		</div>
+
+	</div>
+</div>

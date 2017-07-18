@@ -1,7 +1,7 @@
 # To run this on the command line, use: 'python -m shop_data.download'
 import storage, pprint, os, time, sys
-from woocommerce import API
-from pygfapi import Client as GravityFormsClient
+from woocommerceapi import wcapi
+from gravityformsapi import gf
 
 #### Config
 data_lifetime_in_seconds = 14400
@@ -17,37 +17,13 @@ items_apis = {
 #### /Not-config
 
 
-# TODO:WV:20170704:The following could be in a separate module
-def get_woocommerce_api():
-	wcapi = API(
-	    url=os.environ["BLUESHIFTAPP_WOOCOMMERCE_BASE_URL"],
-	    consumer_key=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_KEY"],
-	    consumer_secret=os.environ["BLUESHIFTAPP_WOOCOMMERCE_CONSUMER_SECRET"],
-	    wp_api=True,
-	    version="wc/v2"
-	)
-
-	return wcapi
-
-wcapi = get_woocommerce_api()
-
-# TODO:WV:20170704:The following could be in a separate module
-def get_gravityforms_api():
-	gf = GravityFormsClient(
-		os.environ["BLUESHIFTAPP_GRAVITY_FORMS_BASE_URL"]+"/gravityformsapi/",
-		os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PUBLIC_KEY"],
-		os.environ["BLUESHIFTAPP_GRAVITY_FORMS_PRIVATE_KEY"]
-	)
-	return gf
-
-gf = get_gravityforms_api()
-
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
 	# Get all forms from
-	# TODO:WV:20170629:Handle any error in 'get_forms'
 	forms = gf.get_forms().values()
+	if not isinstance(forms, list):
+		raise Exception("Forms could not be retrieved from stored data")
 	update_set("forms", expiry_time=expiry_time, item_ids=map(lambda x: x["id"], forms), get_item_method=gf.get_form)
 	update_set("categories", expiry_time=expiry_time, base_query="products/categories?")
 	update_set("products", expiry_time=expiry_time, base_query="products?")
@@ -73,7 +49,6 @@ def update_set(item_name, expiry_time, base_query=None, item_ids=None, get_item_
 		raise Exception("Unknown API")
 
 	# Save new data and remove data that is no longer present
-	# TODO:WV:20170629:Re-test this, especially for gravityforms
 	ids_before = get_item_ids(item_name)
 	if api_to_use == "woocommerce":
 		download_paginated_set(item_name, base_query, expiry_time)
@@ -110,9 +85,9 @@ def get_slugs_storage_key(item_name):
 
 def download_items_from_ids(item_name, expiry_time, item_ids, get_item_method):
 	for item_id in item_ids:
-
-		# TODO:WV:20170630:Handle failure here
 		item = get_item_method(item_id)
+		if not item:
+			raise Exception("Item not found")
 		storage.set(
 			get_single_item_storage_key(item_name, item_id),
 			item,
