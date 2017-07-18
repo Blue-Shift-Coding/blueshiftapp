@@ -54,12 +54,12 @@
   background-color: #f5a9b0 !important;
 }
 
-.why-us h1, h4 {
+.why-us h4, .why-us h1 {
   text-align: center;
   color: #66CCCC;
   text-transform: lowercase;
   letter-spacing: 0.7px;
-  margin-top: 1em;
+  margin-top: 0.5em;
   margin-bottom: 0.5em;
   font-weight: bold;
 }
