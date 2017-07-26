@@ -3303,7 +3303,7 @@ footer .color-bar {
   color: #ffffff;
   font-family: 'Lato', sans-serif;
   font-weight: 700;
-  text-transform: capitalize;
+  text-transform: lowercase;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
