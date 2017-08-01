@@ -55,6 +55,22 @@
 }
 
 
+/* Class listings */
+
+.class-display-price {
+  float:right;
+  font-weight:bold;
+}
+
+.class-display-price:before {
+  content: "Price: ";
+}
+
+.class-metadata-key:after {
+  content:": ";
+}
+
+
 /* Checkout / basket forms */
 
 .add-to-basket-form .errors, .checkout-form .errors {

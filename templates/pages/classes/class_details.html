@@ -34,7 +34,41 @@
 				{% endif %}
 			</a>
 			<div class="media-body">
+
+				<div class="class-display-price color-{{ age_range_data.color }}">
+					{% if meta_data.price_for_display %}
+						{{ meta_data.price_for_display }}
+					{% elif product.price %}
+						{{ product.price }}
+					{% endif %}
+				</div>
+
 				<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ age_range_data.color }}">{{product.name}}</a></h3>
+
+				<div class="class-metadata">
+					<ul>
+					{% if meta_data.class_location %}
+						<li>
+							<strong class="class-metadata-key">Location</strong><span class="class-metadata-value">{{ meta_data.class_location }}</span>
+						</li>
+					{% endif %}
+					{% if meta_data.class_times %}
+						<li>
+							<strong class="class-metadata-key">Times</strong><span class="class-metadata-value">{{ meta_data.class_times }}</span>
+						</li>
+					{% endif %}
+					{% if meta_data.difficulty %}
+						<li>
+							<strong class="class-metadata-key">Difficulty</strong><span class="class-metadata-value">{{ meta_data.difficulty }}</span>
+						</li>
+					{% endif %}
+					{% if meta_data.class_date %}
+						<li>
+							<strong class="class-metadata-key">Dates</strong><span class="class-metadata-value">{{ meta_data.class_date }}</span>
+						</li>
+					{% endif %}
+					</ul>
+				</div>
 
 				{% if description_type == 'short' %}
 					{{product.short_description|safe}}
