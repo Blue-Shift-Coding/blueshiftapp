@@ -2,22 +2,27 @@
 <div class="row">
 	<div class="col-xs-12 classes-results">
 
-		{% set age_range_data = {'color': 4, 'text': ''} %}
+		{# Compile metadata into a hashtable #}
+		{% set meta_data = {} %}
 		{% for meta_datum in product.meta_data %}
-			{% if meta_datum.key == 'age_group' %}
-				{% set _dummy = age_range_data.update({'text': meta_datum.value|strip}) %}
-				{% set ages = meta_datum.value|integers %}
-				{% if ages == '56' %}
-					{% set _dummy = age_range_data.update({'color': 1}) %}
-				{% elif ages == '78' %}
-					{% set _dummy = age_range_data.update({'color': 2}) %}
-				{% elif ages == '910' %}
-					{% set _dummy = age_range_data.update({'color': 3}) %}
-				{% else %}
-					{% set _dummy = age_range_data.update({'color': 4}) %}
-				{% endif %}
-			{% endif %}
+			{% set _dummy = meta_data.update({meta_datum.key: meta_datum.value|strip}) %}
 		{% endfor %}
+
+		{# Get age-range colour and text, from the metadata #}
+		{% set age_range_data = {'color': 4, 'text': ''} %}
+		{% if meta_data.age_group %}
+			{% set _dummy = age_range_data.update({'text': meta_data.age_group}) %}
+			{% set ages = meta_data.age_group|integers %}
+			{% if ages == '56' %}
+				{% set _dummy = age_range_data.update({'color': 1}) %}
+			{% elif ages == '78' %}
+				{% set _dummy = age_range_data.update({'color': 2}) %}
+			{% elif ages == '910' %}
+				{% set _dummy = age_range_data.update({'color': 3}) %}
+			{% else %}
+				{% set _dummy = age_range_data.update({'color': 4}) %}
+			{% endif %}
+		{% endif %}
 
 		{% set product_url = '/class/'+product.slug %}
 
