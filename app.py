@@ -43,21 +43,21 @@ stripe.api_key = stripe_keys["secret"]
 #----------------------------------------------------------------------------#
 # Context Processors (for setting global template variables)
 #----------------------------------------------------------------------------#
-#
-# @app.context_processor
-# def inject_class_categories():
-#     class_categories = []
-#     categories = shop_data.get_categories()
-#     for category in categories:
-#         if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
-#             class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
-#     class_categories.append({"name": "Browse all", "url": "/classes"})
-#
-#     return dict(class_categories=class_categories)
-#
-# @app.context_processor
-# def inject_shopping_basket_item_count():
-#     return dict(shopping_basket_item_count=0 if "basket" not in session else len(session["basket"]))
+
+@app.context_processor
+def inject_class_categories():
+    class_categories = []
+    categories = shop_data.get_categories()
+    for category in categories:
+        if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
+            class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
+    class_categories.append({"name": "Browse all", "url": "/classes"})
+
+    return dict(class_categories=class_categories)
+
+@app.context_processor
+def inject_shopping_basket_item_count():
+    return dict(shopping_basket_item_count=0 if "basket" not in session else len(session["basket"]))
 
 
 #----------------------------------------------------------------------------#
