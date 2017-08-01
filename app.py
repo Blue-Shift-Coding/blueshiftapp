@@ -10,7 +10,7 @@ import wtforms
 from forms import *
 
 # Core modules
-import os, time, copy, math, json, re
+import os, time, copy, math, json, re, requests
 import logging, pprint
 from logging import Formatter, FileHandler
 
@@ -38,6 +38,7 @@ stripe_keys = {
     "publishable": os.environ["BLUESHIFTAPP_STRIPE_PUBLISHABLE_KEY"]
 }
 stripe.api_key = stripe_keys["secret"]
+mailgun_secret_key = environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
 
 
 #----------------------------------------------------------------------------#
@@ -304,6 +305,20 @@ def checkout():
         **shopping_basket.get_all_basket_data()
     )
 
+
+@app.route('/requestcourseinfo', methods=['POST'])
+def requestcourseinfo():
+    api_key = mailgun_secret_key
+    api_url = "https://api:#"+api_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
+
+    r = requests.post(api_url, data={
+        "from" : "test@mailgun.blueshiftcoding.com",
+        "to" : "wvoelcker@yahoo.co.uk",
+        "subject" : "TEST: This is subject",
+        "text" : "TEST: Text body",
+        "html" : "TEST: <b>HTML</b> version of the body!"
+    })
+    print r.status_code
 
 @app.route('/processpayment', methods=['POST'])
 def processpayment():

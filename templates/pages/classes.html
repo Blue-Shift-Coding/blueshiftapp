@@ -7,7 +7,8 @@
 <section class="mainContent full-width clearfix">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12 block">
+
+			<div class="col-md-8 block">
 		        <div class="thumbnail thumbnailContent alt">
 					<h3 class="color-1">Our Courses</h3>
 					<p>Our courses are a place for children (and their parents) to learn, experiment and explore with code.</p>
@@ -17,6 +18,23 @@
 		            School. Download a full list of schools.</p>
 		          	<p>We have assessment rubrics for all of our courses so that we can determine our students’ progress. Read more about the new National Curriculum in Computing.</p>
 		        </div>
+			</div>
+
+			<div class="col-md-4 block courses-more-info-form">
+		        <h3>Unsure which course to take?</h3>
+		        <p>I'd like more info on:</p>
+
+		        <form method="post" action="/requestcourseinfo">
+			        <select>
+						<option></option>
+						{% for product in products %}
+						<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
+						{% endfor %}
+			        </select>
+			        <input placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
+		        </form>
+
+		        <p>Or call 020 3176 4660</p>
 			</div>
 
 			<div class="col-xs-12 filters">
