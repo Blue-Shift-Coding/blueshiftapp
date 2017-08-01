@@ -311,6 +311,8 @@ def requestcourseinfo():
     api_key = mailgun_secret_key
     api_url = "https://api:#"+api_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
 
+    print "API URL: "+api_url
+
     r = requests.post(api_url, data={
         "from" : "test@mailgun.blueshiftcoding.com",
         "to" : "wvoelcker@yahoo.co.uk",
