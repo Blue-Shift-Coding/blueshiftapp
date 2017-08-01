@@ -38,7 +38,7 @@ stripe_keys = {
     "publishable": os.environ["BLUESHIFTAPP_STRIPE_PUBLISHABLE_KEY"]
 }
 stripe.api_key = stripe_keys["secret"]
-mailgun_secret_key = environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
+mailgun_secret_key = os.environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
 
 
 #----------------------------------------------------------------------------#
