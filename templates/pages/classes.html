@@ -25,13 +25,13 @@
 		        <p>I'd like more info on:</p>
 
 		        <form method="post" action="/requestcourseinfo">
-			        <select>
+			        <select name="course">
 						<option></option>
 						{% for product in products %}
 						<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
 						{% endfor %}
 			        </select>
-			        <input placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
+			        <input name="email" required placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
 		        </form>
 
 		        <p>Or call 020 3176 4660</p>

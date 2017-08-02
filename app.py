@@ -310,22 +310,17 @@ def checkout():
 def requestcourseinfo():
     api_key = mailgun_secret_key
 
+    if not request.form["email"]:
+        return Response("No email supplied")
+
     # TODO:WV:20170801:Finish this (it doesn't seem to be working at the moment)
     api_url = "https://api:"+api_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
         "from" : "hello@blueshiftcoding.com",
         "to" : "will@blueshiftcoding.com",
-        "subject" : "TEST: This is subject",
-        "text" : "TEST: Text body",
-        "html" : "TEST: <b>HTML</b> version of the body!"
+        "subject" : "Course info request",
+        "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
     })
-
-    log_to_stdout("Mailgun response code")
-    log_to_stdout(r.status_code)
-
-    log_to_stdout("Mailgun response body")
-    log_to_stdout(r.text)
-
     return Response("Email sent")
 
 @app.route('/processpayment', methods=['POST'])
