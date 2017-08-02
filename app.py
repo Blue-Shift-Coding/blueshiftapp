@@ -320,11 +320,11 @@ def requestcourseinfo():
         "html" : "TEST: <b>HTML</b> version of the body!"
     })
 
-    print "Mailgun response code"
-    print r.status_code
+    log_to_stdout("Mailgun response code")
+    log_to_stdout(r.status_code)
 
-    print "Mailgun response body"
-    print r.text
+    log_to_stdout("Mailgun response body")
+    log_to_stdout(r.text)
 
     return Response("Email sent")
 
