@@ -314,7 +314,7 @@ def requestcourseinfo():
     api_url = "https://api:"+api_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
         "from" : "test@mailgun.blueshiftcoding.com",
-        "to" : "wvoelcker@yahoo.co.uk",
+        "to" : "will@blueshiftcoding.com",
         "subject" : "TEST: This is subject",
         "text" : "TEST: Text body",
         "html" : "TEST: <b>HTML</b> version of the body!"
