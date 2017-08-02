@@ -320,7 +320,8 @@ def requestcourseinfo():
         "subject" : "Course info request",
         "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
     })
-    return Response("Email sent")
+
+    return Response("{'status': 'ok'}")
 
 @app.route('/processpayment', methods=['POST'])
 def processpayment():

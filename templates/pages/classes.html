@@ -24,14 +24,23 @@
 		        <h3>Unsure which course to take?</h3>
 		        <p>I'd like more info on:</p>
 
-		        <form method="post" action="/requestcourseinfo">
+		        <form method="post" class="requestcourseinfoform" action="/requestcourseinfo">
 			        <select name="course">
 						<option></option>
 						{% for product in products %}
 						<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
 						{% endfor %}
 			        </select>
-			        <input name="email" required placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
+			        <input name="email" type="email" required placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
+			        <div class="done-message modal">
+			        	<div class="modal-dialog">
+			        		<div class="modal-content">
+			        			<div class="modal-body">
+			        				<button type="button" class="close" data-dismiss="modal" style="float: right; position: absolute; top: 4px; right: 11px;">&times;</button>
+			        				Thanks for enquiring!  We will get back to you as soon as possible</div>
+			        		</div>
+			        	</div>
+			        </div>
 		        </form>
 
 		        <p>Or call 020 3176 4660</p>
