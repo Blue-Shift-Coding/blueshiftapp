@@ -87,6 +87,7 @@
 .courses-more-info-form h3 {
   color:white;
   margin:0;
+  white-space: normal;
 }
 
 .courses-more-info-form p {
@@ -96,6 +97,20 @@
 .course-more-info-field, .courses-more-info-form p  {
   margin:10px 0;
 }
+
+.courses-more-info-form select {
+  width:100%;
+}
+
+.course-more-info-text-field-with-inline-submit button {
+  float:right;
+}
+
+.course-more-info-text-field-with-inline-submit div {
+  overflow: hidden;
+  padding-right: .5em;
+}
+
 
 /* Shopping basket */
 
