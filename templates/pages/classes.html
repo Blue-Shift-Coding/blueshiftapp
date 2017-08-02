@@ -25,13 +25,19 @@
 		        <p>I'd like more info on:</p>
 
 		        <form method="post" class="requestcourseinfoform" action="/requestcourseinfo">
-			        <select name="course">
-						<option></option>
-						{% for product in products %}
-						<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
-						{% endfor %}
-			        </select>
-			        <input name="email" type="email" required placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
+					<div class="course-more-info-field">
+				        <select name="course">
+							<option></option>
+							{% for product in products %}
+							<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
+							{% endfor %}
+				        </select>
+					</div>
+
+					<div class="course-more-info-field">
+						<input name="email" type="email" required placeholder="youremail@whatever.com" /><button type="submit">Go!</button>
+					</div>
+
 			        <div class="done-message modal">
 						<div class="modal-dialog">
 							<div class="modal-content">
@@ -44,7 +50,7 @@
 					</div>
 		        </form>
 
-		        <p>Or call 020 3176 4660</p>
+		        <p><strong>Or call 020 3176 4660</strong></p>
 			</div>
 
 			<div class="col-xs-12 filters">

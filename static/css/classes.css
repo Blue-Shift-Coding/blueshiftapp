@@ -78,6 +78,25 @@
   font-weight: bold;
 }
 
+.courses-more-info-form {
+  text-align:center;
+  background-color:#c1aabe;
+  padding:20px;
+}
+
+.courses-more-info-form h3 {
+  color:white;
+  margin:0;
+}
+
+.courses-more-info-form p {
+  color:black;
+}
+
+.course-more-info-field, .courses-more-info-form p  {
+  margin:10px 0;
+}
+
 /* Shopping basket */
 
 .shopping-basket {
