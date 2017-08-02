@@ -312,7 +312,6 @@ def requestcourseinfo():
     if not request.form["email"]:
         return Response("No email supplied")
 
-    # TODO:WV:20170801:Finish this (it doesn't seem to be working at the moment)
     api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
         "from" : "hello@blueshiftcoding.com",
