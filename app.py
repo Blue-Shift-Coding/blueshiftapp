@@ -320,7 +320,12 @@ def requestcourseinfo():
         "html" : "TEST: <b>HTML</b> version of the body!"
     })
 
+    print "Mailgun response code"
     print r.status_code
+
+    print "Mailgun response body"
+    print r.text
+
     return Response("Email sent")
 
 @app.route('/processpayment', methods=['POST'])
