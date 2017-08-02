@@ -319,7 +319,9 @@ def requestcourseinfo():
         "text" : "TEST: Text body",
         "html" : "TEST: <b>HTML</b> version of the body!"
     })
+
     print r.status_code
+    return Response("Email sent")
 
 @app.route('/processpayment', methods=['POST'])
 def processpayment():
