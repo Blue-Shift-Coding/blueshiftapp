@@ -417,10 +417,13 @@ def processpayment():
     # Empty the basket
     del session["basket"]
 
-    # TODO:WV:20170706:Format this in the template
-    flash("Order complete", "done")
+    return redirect(url_for("ordercomplete"))
 
-    return redirect(url_for("classes"))
+@app.route('/ordercomplete')
+def ordercomplete():
+    return render_template(
+        'pages/ordercomplete.html'
+    )
 
 @app.route('/class/<slug>')
 def singleclass(slug):
