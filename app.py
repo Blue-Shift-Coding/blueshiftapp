@@ -313,7 +313,7 @@ def requestcourseinfo():
     # TODO:WV:20170801:Finish this (it doesn't seem to be working at the moment)
     api_url = "https://api:"+api_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
-        "from" : "test@mailgun.blueshiftcoding.com",
+        "from" : "hello@blueshiftcoding.com",
         "to" : "will@blueshiftcoding.com",
         "subject" : "TEST: This is subject",
         "text" : "TEST: Text body",
