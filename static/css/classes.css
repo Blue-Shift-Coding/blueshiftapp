@@ -145,6 +145,10 @@
   padding:10px;
 }
 
+.shopping-basket th, .shopping-basket td {
+  text-align: center;
+}
+
 .shopping-basket tbody td, .shopping-basket tfoot td {
   border:0px solid #dedede;
   border-bottom-width: 1px;
