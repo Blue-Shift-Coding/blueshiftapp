@@ -120,12 +120,12 @@ class BookingInformationFormBuilder():
     def add_field(self, name, field):
         setattr(self.form_class, name, field)
 
-    def add_heading(self, text, heading_level="2"):
+    def add_heading(self, text, heading_level="3", color_number = "1"):
         self.add_field("heading-"+blueshiftutils.uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
 
-    def get_heading_widget(self, text, heading_level="2"):
+    def get_heading_widget(self, text, heading_level="2", color_number = "1"):
         def heading_widget(field, **kwargs):
-            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
+            return u"<h"+heading_level+" class='color-"+color_number+"'>"+text+"</h"+heading_level+">";
         return heading_widget
 
     def get_option_field(self, field_type, gf_field, validators):
@@ -159,10 +159,10 @@ class BookingInformationFormBuilder():
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
                 if "description" in gf_field and gf_field["description"] != "":
-                    self.add_heading(gf_field["description"], "3")
+                    self.add_heading(gf_field["description"], "4")
 
             elif gf_field["type"] == "name":
-                self.add_heading(gf_field["label"], "4")
+                self.add_heading(gf_field["label"], "5")
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
