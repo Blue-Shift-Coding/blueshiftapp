@@ -78,6 +78,30 @@
   font-weight: bold;
 }
 
+.add-to-basket-form dt.heading {
+  display:none;
+}
+
+.add-to-basket-form dd.heading h3, .add-to-basket-form dd.heading h4 {
+  margin:0;
+}
+
+.add-to-basket-form dd.heading h3 {
+  margin-top:25px;
+}
+
+.add-to-basket-form dd.heading h4 {
+  margin-top:15px;
+}
+
+.add-to-basket-form dt {
+  margin-top:8px;
+}
+
+, .add-to-basket-form dd label {
+  margin-top:6px;
+}
+
 .courses-more-info-form {
   text-align:center;
   background-color:#c1aabe;
