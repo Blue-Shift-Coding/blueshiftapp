@@ -370,9 +370,15 @@ def processpayment():
         })
 
         # Add the actual line item
+        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+        line_item_total = float(product["price"])
+        if "price_adjustments" in session["basket"][item_id]:
+            line_item_total += session["basket"][item_id]["price_adjustments"]
+
         line_items.append({
             "product_id": session["basket"][item_id]["product_id"],
             "quantity": 1,
+            "total": line_item_total,
             "meta_data": line_item_meta_data
         })
 
