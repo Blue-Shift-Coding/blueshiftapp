@@ -139,10 +139,24 @@
   font-size:smaller;
 }
 
+.shopping-basket {
+
+  /* Ensures rounded borders happen at the bottom of the table, and do not shrink the header */
+  border-collapse:separate;
+}
+
 .shopping-basket thead th {
   background-color:#f5c644;
   color:white;
   padding:10px;
+}
+
+.shopping-basket thead th:first-child {
+  border-top-left-radius: 10px
+}
+
+.shopping-basket thead th:last-child {
+  border-top-right-radius: 10px
 }
 
 .shopping-basket th, .shopping-basket td {
@@ -172,6 +186,14 @@
   padding:10px 15px;
   border:none;
   line-height:20px;
+}
+
+.shopping-basket tfoot td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.shopping-basket tfoot td:last-child {
+  border-bottom-right-radius: 10px;
 }
 
 .checkout-button-container {
