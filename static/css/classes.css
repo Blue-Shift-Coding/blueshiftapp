@@ -138,3 +138,44 @@
 .name-associated-with-basket-item {
   font-size:smaller;
 }
+
+.shopping-basket thead th {
+  background-color:#f5c644;
+  color:white;
+  padding:10px;
+}
+
+.shopping-basket tbody td, .shopping-basket tfoot td {
+  border:0px solid #dedede;
+  border-bottom-width: 1px;
+  padding:25px 0;
+}
+
+.shopping-basket tfoot td {
+  font-weight:bold;
+}
+
+.shopping-basket tbody td:first-child, .shopping-basket tfoot td:first-child {
+  border-left-width:1px;
+}
+
+.shopping-basket tbody td:last-child, .shopping-basket tfoot td:last-child {
+  border-right-width:1px;
+}
+
+.shopping-basket button.delete-item {
+  border-radius:20px;
+  padding:10px 15px;
+  border:none;
+  line-height:20px;
+}
+
+.checkout-button-container {
+  text-align:right;
+  margin:25px 0;
+}
+
+.checkout-button-container a.btn {
+  padding:12px;
+}
+

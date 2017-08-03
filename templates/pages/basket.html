@@ -25,7 +25,7 @@
 								<td>
 									<form action="/cart" method="POST">
 										<input type="hidden" name="delete_item_id" value="{{ item_id }}" />
-										<button>X</button>
+										<button class="delete-item">X</button>
 									</form>
 								</td>
 
@@ -47,7 +47,9 @@
 
 				</table>
 
-				<p><a href="/checkout" class="btn btn-default">Checkout</a></p>
+				<p class="checkout-button-container">
+					<a href="/checkout" class="btn btn-default">Checkout</a>
+				</p>
 
 			</div>
 		</div>
