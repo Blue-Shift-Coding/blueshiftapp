@@ -131,7 +131,7 @@ class BookingInformationFormBuilder():
     def get_option_field(self, field_type, gf_field, validators):
         choices = []
         for gf_choice in gf_field["choices"]:
-            choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice and gf_choice["price"] != "" else "")))
+            choices.append((gf_choice["value"], gf_choice["text"]))
 
         if field_type == "radio":
             return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
