@@ -162,7 +162,8 @@ class BookingInformationFormBuilder():
                     self.add_heading(gf_field["description"], "4")
 
             elif gf_field["type"] == "name":
-                self.add_heading(gf_field["label"], "5")
+
+                # Don't output the main field label - instead just output the sub-fields and require their labels to be adequately clear on their own
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
@@ -177,7 +178,10 @@ class BookingInformationFormBuilder():
                         self.add_field(sub_field_name, self.get_radio_field(sub_field, validators=sub_field_validators))
 
                     else:
-                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"], validators=sub_field_validators))
+                        self.add_field(sub_field_name, wtforms.StringField(
+                            sub_field["label"] if "customLabel" not in sub_field else sub_field["customLabel"],
+                            validators=sub_field_validators
+                        ))
 
             elif gf_field["type"] == "select":
                 self.add_field(field_name, self.get_select_field(gf_field, validators))
