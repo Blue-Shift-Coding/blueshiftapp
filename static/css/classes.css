@@ -25,6 +25,13 @@
   }
 }
 
+.courseList {
+  background-color:white;
+  box-shadow: none;
+  border-top:1px solid #ceecee;
+  padding:24px;
+}
+
 .courseList .media-left .sticker {
   width:100px;
   height:100px;
@@ -78,6 +85,7 @@
 
 .courseList .media-body .media-heading a {
   line-height: 1.2em;
+  margin-top:0;
 }
 
 
@@ -88,7 +96,7 @@
 .class-display-price {
   float:right;
   font-weight:bold;
-  margin:15px 0 0 0;
+  margin:0;
   line-height: 1em;
   max-width: 25%;
 }
