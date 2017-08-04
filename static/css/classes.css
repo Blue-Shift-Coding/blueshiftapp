@@ -105,6 +105,11 @@
   content:": ";
 }
 
+/* Allow the footers to extend beyond the bottom of the main content area (the region above the footer) */
+.main-wrapper {
+  overflow:visible;
+}
+
 
 /* Checkout / basket forms */
 
