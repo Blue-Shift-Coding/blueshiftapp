@@ -155,6 +155,10 @@
   color:#231f20;
 }
 
+.add-to-basket-form h1, .add-to-basket-form h2, .add-to-basket-form h3, .add-to-basket-form h4, .add-to-basket-form h5 {
+  text-transform: none;
+}
+
 
 .courses-more-info-form {
   text-align:center;
