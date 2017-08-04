@@ -37,15 +37,22 @@
 
 @media (min-width: 1024px) {
   .courseList .media-left img {
-    max-width:470px;
+    max-width:320px;
   }
 }
 
-@media (min-width: 1440px) {
-  .courseList .media-left img {
-    max-width:300px;
+@media (min-width: 320px) {
+  .courseList.couresListPage .media-left {
+    margin:0;
+    border-right:none;
+    width:auto;
   }
 }
+
+.courseList.couresListPage .media-left {
+  margin-bottom:25px;
+}
+
 
 .courseList {
   background-color:white;
