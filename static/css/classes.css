@@ -1,6 +1,8 @@
 .filters {
   text-align:center;
-  margin-bottom:50px;
+  margin:0;
+  padding:25px 0;
+  border-top:2px solid #ceecee;
 }
 .dropdown.classes-filter, .filters-label {
   display:inline;
@@ -28,8 +30,12 @@
 .courseList {
   background-color:white;
   box-shadow: none;
-  border-top:1px solid #ceecee;
   padding:24px;
+  border-bottom:2px solid #ceecee;
+}
+
+.classes-results-all {
+  border-top:2px solid #ceecee;
 }
 
 .courseList .media-left .sticker {
