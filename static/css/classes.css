@@ -285,5 +285,9 @@
 
 .checkout-button-container a.btn {
   padding:12px;
-}
 
+  border-radius: 0;
+  box-shadow: none;
+  background-color:#f0f2ea;
+  color:#231f20;
+}
