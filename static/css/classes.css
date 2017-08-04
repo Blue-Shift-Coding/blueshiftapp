@@ -141,9 +141,15 @@
   margin-top:6px;
 }
 
-.add-to-basket-button-container button {
+.add-to-basket-button-container button, .add-to-basket-button-container button:hover {
   padding:12px;
+
+  border-radius: 0;
+  box-shadow: none;
+  background-color:#f0f2ea;
+  color:#231f20;
 }
+
 
 .courses-more-info-form {
   text-align:center;
