@@ -62,15 +62,21 @@
   margin-top:15px;
 }
 
-.courseList .media-body .list-inline.btnPart.class-listing-buttons .book-now-button {
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .btn {
   border-radius: 0;
   box-shadow: none;
+}
+
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .book-now-button {
   color:white;
 }
 
-.class-listing-buttons .color-1 .book-now-button {
-  background-color:#84557e;
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button, .courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button:hover {
+  background-color:#f0f2ea;
+  color:#231f20;
 }
+
+
 
 
 /* Class listings */
