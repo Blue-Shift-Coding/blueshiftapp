@@ -291,3 +291,14 @@
   background-color:#f0f2ea;
   color:#231f20;
 }
+
+
+/* Proceed-to-payment page */
+.proceed-to-payment-button-container button {
+  padding:12px;
+
+  border-radius: 0;
+  box-shadow: none;
+  background-color:#f0f2ea;
+  color:#231f20;
+}
