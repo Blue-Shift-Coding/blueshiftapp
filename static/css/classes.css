@@ -77,7 +77,9 @@
 
 .courseList .media-body a, .courseList .media-body a:hover, .courseList .media-body a:visited, .courseList .media-body a:active {
   color:#003366;
-  text-decoration: underline;
+
+  /* !important in the following line necessary to override the !important in style.css */
+  text-decoration: underline !important;
 }
 
 .class-listing-buttons {
