@@ -54,18 +54,40 @@
   display:none;
 }
 
+.courseList .media-body {
+  padding: 0 20px 15px 20px
+}
+
+.class-listing-buttons {
+  margin-top:15px;
+}
+
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .book-now-button {
+  border-radius: 0;
+  box-shadow: none;
+  color:white;
+}
+
+.class-listing-buttons .color-1 .book-now-button {
+  background-color:#84557e;
+}
+
 
 /* Class listings */
 
 .class-display-price {
   float:right;
   font-weight:bold;
-  margin:15px 15px 0 0;
+  margin:15px 0 0 0;
   line-height: 1em;
 }
 
 .class-display-price:before {
   content: "Price: ";
+}
+
+.class-metadata {
+  margin-bottom:15px;
 }
 
 .class-metadata-key:after {

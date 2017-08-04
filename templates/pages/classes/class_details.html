@@ -76,11 +76,11 @@
 					{{product.description|safe}}
 				{% endif %}
 
-				<ul class="list-inline btn-yellow btnPart">
+				<ul class="list-inline btn-yellow btnPart class-listing-buttons">
 					<li>
 						<form action="/cart" method="POST">
 							<input type="hidden" name="product_id" value="{{ product.id }}" />
-							<button class="btn btn-primary ">Book now</button>
+							<button class="btn btn-primary book-now-button bg-color-{{ age_range_data.color }}">Book now</button>
 						</form>
 					</li>
 					<li>
