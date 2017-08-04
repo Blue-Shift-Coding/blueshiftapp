@@ -13,7 +13,27 @@
 }
 .dropdown .btn {
   padding:6px 12px;
+
+  border-radius:0;
+  background-color:#c1aabe;
+  color:white;
+  border:none;
 }
+.btn.btn-default.active, .btn.btn-default:active, .open > .btn.dropdown-toggle.btn-default {
+  background-color:#f5c644;
+}
+
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
+  background-color:#f5c644;
+}
+
+.dropdown .caret {
+  margin-left:5px;
+  border-width: 8px;
+  position:relative;
+  top:-4px;
+}
+
 
 @media (min-width: 1024px) {
   .courseList .media-left img {
