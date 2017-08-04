@@ -60,6 +60,8 @@
 .class-display-price {
   float:right;
   font-weight:bold;
+  margin:15px 15px 0 0;
+  line-height: 1em;
 }
 
 .class-display-price:before {
