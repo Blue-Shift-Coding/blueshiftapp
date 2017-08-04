@@ -102,8 +102,12 @@
   margin-top:8px;
 }
 
-, .add-to-basket-form dd label {
+.add-to-basket-form dd label {
   margin-top:6px;
+}
+
+.add-to-basket-button-container button {
+  padding:12px;
 }
 
 .courses-more-info-form {

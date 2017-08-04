@@ -276,6 +276,8 @@ def cart():
     if product_id is not None or delete_item_id is not None:
         return redirect(url_for('cart'))
 
+    # TODO:WV:20170804:Output a 'cart is empty' message, instead of an empty table, if the cart is empty
+
     return render_template(
         "pages/basket.html",
         basket=session["basket"],
