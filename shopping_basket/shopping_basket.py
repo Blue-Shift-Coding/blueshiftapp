@@ -137,6 +137,9 @@ class BookingInformationFormBuilder():
             return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
         else:
             choices.insert(0, ('', ''))
+            is_required = "isRequired" in gf_field and gf_field["isRequired"]
+            if is_required:
+                validators.append(wtforms.validators.NoneOf([''], message=u"Please select an option in the list"))
             return wtforms.SelectField(gf_field["label"], choices=choices, validators=validators)
 
     def get_radio_field(self, gf_field, validators=[]):
