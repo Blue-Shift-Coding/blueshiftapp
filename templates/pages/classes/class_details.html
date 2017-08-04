@@ -13,14 +13,18 @@
 		{% if meta_data.age_group %}
 			{% set _dummy = age_range_data.update({'text': meta_data.age_group}) %}
 			{% set ages = meta_data.age_group|integers %}
-			{% if ages == '56' %}
+			{% if ages[0] == '5' %}
 				{% set _dummy = age_range_data.update({'color': 1}) %}
-			{% elif ages == '78' %}
+			{% elif ages[0] == '6' %}
 				{% set _dummy = age_range_data.update({'color': 2}) %}
-			{% elif ages == '910' %}
+			{% elif ages[0] == '7' %}
 				{% set _dummy = age_range_data.update({'color': 3}) %}
-			{% else %}
+			{% elif ages[0] == '8' %}
 				{% set _dummy = age_range_data.update({'color': 4}) %}
+			{% elif ages[0] == '9' %}
+				{% set _dummy = age_range_data.update({'color': 5}) %}
+			{% else %}
+				{% set _dummy = age_range_data.update({'color': 6}) %}
 			{% endif %}
 		{% endif %}
 
