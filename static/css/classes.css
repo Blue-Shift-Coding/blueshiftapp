@@ -90,6 +90,7 @@
   font-weight:bold;
   margin:15px 0 0 0;
   line-height: 1em;
+  max-width: 25%;
 }
 
 .class-display-price:before {
