@@ -321,7 +321,7 @@ def requestcourseinfo():
     api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
         "from" : course_info_request["sender"],
-        "to" : course_info_request["receipient"],
+        "to" : course_info_request["recipient"],
         "subject" : "Course info request",
         "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
     })
