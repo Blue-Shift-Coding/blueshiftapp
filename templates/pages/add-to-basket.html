@@ -5,8 +5,8 @@
 
 
 {% macro render_field(field) %}
-  <dt>{{ field.label }}</dt>
-  <dd>{{ field(**kwargs)|safe }}
+  <dt {% if field.name[0:8] == "heading-" %}class="heading" {% endif %}>{{ field.label }}</dt>
+  <dd {% if field.name[0:8] == "heading-" %}class="heading" {% endif %}>{{ field(**kwargs)|safe }}
   {% if field.errors %}
     <ul class=errors>
     {% for error in field.errors %}
@@ -32,7 +32,7 @@
 					{% endfor %}
 					</dl>
 
-					<p>
+					<p class="add-to-basket-button-container">
 						<button class="btn btn-default">Add to basket</button>
 					</p>
 				</form>

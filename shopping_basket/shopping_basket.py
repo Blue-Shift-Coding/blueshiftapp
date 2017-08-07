@@ -120,22 +120,26 @@ class BookingInformationFormBuilder():
     def add_field(self, name, field):
         setattr(self.form_class, name, field)
 
-    def add_heading(self, text, heading_level="2"):
+    def add_heading(self, text, heading_level="3", color_number = "1"):
         self.add_field("heading-"+blueshiftutils.uniqid(), wtforms.StringField("", widget=self.get_heading_widget(text, heading_level)))
 
-    def get_heading_widget(self, text, heading_level="2"):
+    def get_heading_widget(self, text, heading_level="2", color_number = "1"):
         def heading_widget(field, **kwargs):
-            return u"<h"+heading_level+">"+text+"</h"+heading_level+">";
+            return u"<h"+heading_level+" class='color-"+color_number+"'>"+text+"</h"+heading_level+">";
         return heading_widget
 
     def get_option_field(self, field_type, gf_field, validators):
         choices = []
         for gf_choice in gf_field["choices"]:
-            choices.append((gf_choice["value"], gf_choice["text"]+(" ("+gf_choice["price"]+")" if "price" in gf_choice and gf_choice["price"] != "" else "")))
+            choices.append((gf_choice["value"], gf_choice["text"]))
 
         if field_type == "radio":
             return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
         else:
+            choices.insert(0, ('', ''))
+            is_required = "isRequired" in gf_field and gf_field["isRequired"]
+            if is_required:
+                validators.append(wtforms.validators.NoneOf([''], message=u"This field is required"))
             return wtforms.SelectField(gf_field["label"], choices=choices, validators=validators)
 
     def get_radio_field(self, gf_field, validators=[]):
@@ -159,10 +163,11 @@ class BookingInformationFormBuilder():
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
                 if "description" in gf_field and gf_field["description"] != "":
-                    self.add_heading(gf_field["description"], "3")
+                    self.add_heading(gf_field["description"], "4")
 
             elif gf_field["type"] == "name":
-                self.add_heading(gf_field["label"], "4")
+
+                # Don't output the main field label - instead just output the sub-fields and require their labels to be adequately clear on their own
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
@@ -177,7 +182,10 @@ class BookingInformationFormBuilder():
                         self.add_field(sub_field_name, self.get_radio_field(sub_field, validators=sub_field_validators))
 
                     else:
-                        self.add_field(sub_field_name, wtforms.StringField(sub_field["label"], validators=sub_field_validators))
+                        self.add_field(sub_field_name, wtforms.StringField(
+                            sub_field["label"] if "customLabel" not in sub_field else sub_field["customLabel"],
+                            validators=sub_field_validators
+                        ))
 
             elif gf_field["type"] == "select":
                 self.add_field(field_name, self.get_select_field(gf_field, validators))

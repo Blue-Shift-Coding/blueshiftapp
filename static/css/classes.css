@@ -1,6 +1,8 @@
 .filters {
-  text-align:center;
-  margin-bottom:50px;
+  text-align:right;
+  margin:0;
+  padding:25px 0;
+  border-top:2px solid #ceecee;
 }
 .dropdown.classes-filter, .filters-label {
   display:inline;
@@ -11,18 +13,56 @@
 }
 .dropdown .btn {
   padding:6px 12px;
+
+  border-radius:0;
+  background-color:#c1aabe;
+  color:white;
+  border:none;
 }
+.btn.btn-default.active, .btn.btn-default:active, .open > .btn.dropdown-toggle.btn-default {
+  background-color:#f5c644;
+}
+
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
+  background-color:#f5c644;
+}
+
+.dropdown .caret {
+  margin-left:5px;
+  border-width: 8px;
+  position:relative;
+  top:-4px;
+}
+
 
 @media (min-width: 1024px) {
   .courseList .media-left img {
-    max-width:470px;
+    max-width:320px;
   }
 }
 
-@media (min-width: 1440px) {
-  .courseList .media-left img {
-    max-width:300px;
+@media (min-width: 320px) {
+  .courseList.couresListPage .media-left {
+    margin:0;
+    border-right:none;
+    width:auto;
   }
+}
+
+.courseList.couresListPage .media-left {
+  margin-bottom:25px;
+}
+
+
+.courseList {
+  background-color:white;
+  box-shadow: none;
+  padding:24px;
+  border-bottom:2px solid #ceecee;
+}
+
+.classes-results-all {
+  border-top:2px solid #ceecee;
 }
 
 .courseList .media-left .sticker {
@@ -54,6 +94,74 @@
   display:none;
 }
 
+.courseList .media-body {
+  padding: 0 20px 15px 20px;
+}
+
+.courseList .media-body p {
+  color:#003366;
+}
+
+.courseList .media-body a, .courseList .media-body a:hover, .courseList .media-body a:visited, .courseList .media-body a:active {
+  color:#003366;
+
+  /* !important in the following line necessary to override the !important in style.css */
+  text-decoration: underline !important;
+}
+
+.class-listing-buttons {
+  margin-top:15px;
+}
+
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .btn {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .book-now-button {
+  color:white;
+}
+
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button, .courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button:hover {
+  background-color:#f0f2ea;
+  color:#231f20;
+}
+
+.courseList .media-body .media-heading a {
+  line-height: 1.2em;
+  margin-top:0;
+}
+
+
+
+
+/* Class listings */
+
+.class-display-price {
+  float:right;
+  font-weight:bold;
+  margin:0;
+  line-height: 1em;
+  max-width: 25%;
+}
+
+.class-display-price:before {
+  content: "Price: ";
+}
+
+.class-metadata {
+  margin-bottom:15px;
+}
+
+.class-metadata-key:after {
+  content:": ";
+}
+
+/* Allow the footers to extend beyond the bottom of the main content area (the region above the footer) */
+.main-wrapper {
+  overflow:visible;
+}
+
 
 /* Checkout / basket forms */
 
@@ -61,6 +169,82 @@
   color:red;
   font-weight: bold;
 }
+
+.add-to-basket-form dt.heading {
+  display:none;
+}
+
+.add-to-basket-form dd.heading h3, .add-to-basket-form dd.heading h4 {
+  margin:0;
+}
+
+.add-to-basket-form dd.heading h3 {
+  margin-top:25px;
+}
+
+.add-to-basket-form dd.heading h4 {
+  margin-top:15px;
+}
+
+.add-to-basket-form dd.heading h5 {
+  margin-top:15px;
+}
+
+.add-to-basket-form dt {
+  margin-top:8px;
+}
+
+.add-to-basket-form dd label {
+  margin-top:6px;
+}
+
+.add-to-basket-button-container button, .add-to-basket-button-container button:hover {
+  padding:12px;
+
+  border-radius: 0;
+  box-shadow: none;
+  background-color:#f0f2ea;
+  color:#231f20;
+}
+
+.add-to-basket-form h1, .add-to-basket-form h2, .add-to-basket-form h3, .add-to-basket-form h4, .add-to-basket-form h5 {
+  text-transform: none;
+}
+
+
+.courses-more-info-form {
+  text-align:center;
+  background-color:#c1aabe;
+  padding:20px;
+}
+
+.courses-more-info-form h3 {
+  color:white;
+  margin:0;
+  white-space: normal;
+}
+
+.courses-more-info-form p {
+  color:black;
+}
+
+.course-more-info-field, .courses-more-info-form p  {
+  margin:10px 0;
+}
+
+.courses-more-info-form select {
+  width:100%;
+}
+
+.course-more-info-text-field-with-inline-submit button {
+  float:right;
+}
+
+.course-more-info-text-field-with-inline-submit div {
+  overflow: hidden;
+  padding-right: .5em;
+}
+
 
 /* Shopping basket */
 
@@ -87,4 +271,86 @@
 
 .name-associated-with-basket-item {
   font-size:smaller;
+}
+
+.shopping-basket {
+
+  /* Ensures rounded borders happen at the bottom of the table, and do not shrink the header */
+  border-collapse:separate;
+}
+
+.shopping-basket thead th {
+  background-color:#f5c644;
+  color:white;
+  padding:10px;
+}
+
+.shopping-basket thead th:first-child {
+  border-top-left-radius: 10px
+}
+
+.shopping-basket thead th:last-child {
+  border-top-right-radius: 10px
+}
+
+.shopping-basket th, .shopping-basket td {
+  text-align: center;
+}
+
+.shopping-basket tbody td, .shopping-basket tfoot td {
+  border:0px solid #dedede;
+  border-bottom-width: 1px;
+  padding:25px 0;
+}
+
+.shopping-basket tfoot td {
+  font-weight:bold;
+}
+
+.shopping-basket tbody td:first-child, .shopping-basket tfoot td:first-child {
+  border-left-width:1px;
+}
+
+.shopping-basket tbody td:last-child, .shopping-basket tfoot td:last-child {
+  border-right-width:1px;
+}
+
+.shopping-basket button.delete-item {
+  border-radius:20px;
+  padding:10px 15px;
+  border:none;
+  line-height:20px;
+}
+
+.shopping-basket tfoot td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.shopping-basket tfoot td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+.checkout-button-container {
+  text-align:right;
+  margin:25px 0;
+}
+
+.checkout-button-container a.btn {
+  padding:12px;
+
+  border-radius: 0;
+  box-shadow: none;
+  background-color:#f0f2ea;
+  color:#231f20;
+}
+
+
+/* Proceed-to-payment page */
+.proceed-to-payment-button-container button {
+  padding:12px;
+
+  border-radius: 0;
+  box-shadow: none;
+  background-color:#f0f2ea;
+  color:#231f20;
 }

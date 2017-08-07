@@ -10,7 +10,7 @@ import wtforms
 from forms import *
 
 # Core modules
-import os, time, copy, math, json, re
+import os, time, copy, math, json, re, requests
 import logging, pprint
 from logging import Formatter, FileHandler
 
@@ -38,26 +38,31 @@ stripe_keys = {
     "publishable": os.environ["BLUESHIFTAPP_STRIPE_PUBLISHABLE_KEY"]
 }
 stripe.api_key = stripe_keys["secret"]
+mailgun_secret_key = os.environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
+course_info_request = {
+    "sender": "hello@blueshiftcoding.com",
+    "recipient": "will@blueshiftcoding.com"
+}
 
 
 #----------------------------------------------------------------------------#
 # Context Processors (for setting global template variables)
 #----------------------------------------------------------------------------#
-#
-# @app.context_processor
-# def inject_class_categories():
-#     class_categories = []
-#     categories = shop_data.get_categories()
-#     for category in categories:
-#         if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
-#             class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
-#     class_categories.append({"name": "Browse all", "url": "/classes"})
-#
-#     return dict(class_categories=class_categories)
-#
-# @app.context_processor
-# def inject_shopping_basket_item_count():
-#     return dict(shopping_basket_item_count=0 if "basket" not in session else len(session["basket"]))
+
+@app.context_processor
+def inject_class_categories():
+    class_categories = []
+    categories = shop_data.get_categories()
+    for category in categories:
+        if (category["parent"] == 0 or category["parent"] is None) and (category["name"].lower() != "filters"):
+            class_categories.append({"name": category["name"], "url": "/classes/"+category["name"]})
+    class_categories.append({"name": "Browse all", "url": "/classes"})
+
+    return dict(class_categories=class_categories)
+
+@app.context_processor
+def inject_shopping_basket_item_count():
+    return dict(shopping_basket_item_count=0 if "basket" not in session else len(session["basket"]))
 
 
 #----------------------------------------------------------------------------#
@@ -274,6 +279,8 @@ def cart():
     if product_id is not None or delete_item_id is not None:
         return redirect(url_for('cart'))
 
+    # TODO:WV:20170804:Output a 'cart is empty' message, instead of an empty table, if the cart is empty
+
     return render_template(
         "pages/basket.html",
         basket=session["basket"],
@@ -304,6 +311,22 @@ def checkout():
         **shopping_basket.get_all_basket_data()
     )
 
+
+@app.route('/requestcourseinfo', methods=['POST'])
+def requestcourseinfo():
+
+    if not request.form["email"]:
+        return Response("No email supplied")
+
+    api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
+    r = requests.post(api_url+"/messages", data={
+        "from" : course_info_request["sender"],
+        "to" : course_info_request["receipient"],
+        "subject" : "Course info request",
+        "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
+    })
+
+    return Response("{'status': 'ok'}")
 
 @app.route('/processpayment', methods=['POST'])
 def processpayment():
@@ -352,9 +375,15 @@ def processpayment():
         })
 
         # Add the actual line item
+        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+        line_item_total = float(product["price"])
+        if "price_adjustments" in session["basket"][item_id]:
+            line_item_total += session["basket"][item_id]["price_adjustments"]
+
         line_items.append({
             "product_id": session["basket"][item_id]["product_id"],
             "quantity": 1,
+            "total": line_item_total,
             "meta_data": line_item_meta_data
         })
 
@@ -399,10 +428,13 @@ def processpayment():
     # Empty the basket
     del session["basket"]
 
-    # TODO:WV:20170706:Format this in the template
-    flash("Order complete", "done")
+    return redirect(url_for("ordercomplete"))
 
-    return redirect(url_for("classes"))
+@app.route('/ordercomplete')
+def ordercomplete():
+    return render_template(
+        'pages/ordercomplete.html'
+    )
 
 @app.route('/class/<slug>')
 def singleclass(slug):

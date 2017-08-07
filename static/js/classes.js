@@ -6,6 +6,18 @@
 	$(function() {
 		var filters, queryStringParts, i, queryStringData, urlParts, category;
 
+		// Enable the 'more info' form
+		$(".requestcourseinfoform").on("submit", function(e) {
+			var form = $(this);
+
+			$.post(form.attr("action"), form.serialize(), function() {
+				form.find(".done-message").modal();
+			});
+
+			e.preventDefault();
+			return false;
+		});
+
 		// Set up default options in filters on page load
 		filters = $(".classes-filter");
 		filters.each(function() {

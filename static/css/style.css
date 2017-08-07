@@ -316,6 +316,7 @@ body.static #menuBar.bb-fixed-header {
   font-size: 14px;
   padding: 9px 0;
 }
+
 @media (min-width: 480px) {
   .btn {
     font-size: 15px;

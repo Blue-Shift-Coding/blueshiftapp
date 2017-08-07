@@ -7,26 +7,53 @@
 <section class="mainContent full-width clearfix">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12 block">
-        <div class="thumbnail thumbnailContent alt">
-          <h3 class="color-1">Our Courses</h3>
-          <p>
-						Our courses are a place for children (and their parents) to learn, experiment and explore with code.
-          </p>
-					<p>
-						Our students create their own games, animations, films, music, art and robots. We help our students bring the products of their imagination to life.
-					</p>
-					<p>
-						We believe that understanding how coding and electronics work can transform your child’s future and empower them to be an innovator of tomorrow.
-					</p>
 
-            We work with a range of schools and have taught children as young as 5, all the way up to A-level. Some of the schools and educational bodies we have worked with include Wandsworth Council, Ealing Council, Sussex House, Wetherby School and Knightsbridge
-            School. Download a full list of schools.
-          </p>
-          <p>
-            We have assessment rubrics for all of our courses so that we can determine our students’ progress. Read more about the new National Curriculum in Computing.
-          </p>
-        </div>
+			<div class="col-md-9 block">
+		        <div class="thumbnail thumbnailContent alt">
+					<h3 class="color-1">Our Courses</h3>
+					<p>Our courses are a place for children (and their parents) to learn, experiment and explore with code.</p>
+					<p>Our students create their own games, animations, films, music, art and robots. We help our students bring the products of their imagination to life.</p>
+					<p>We believe that understanding how coding and electronics work can transform your child’s future and empower them to be an innovator of tomorrow.</p>
+					<p>We work with a range of schools and have taught children as young as 5, all the way up to A-level. Some of the schools and educational bodies we have worked with include Wandsworth Council, Ealing Council, Sussex House, Wetherby School and Knightsbridge
+		            School. Download a full list of schools.</p>
+		          	<p>We have assessment rubrics for all of our courses so that we can determine our students’ progress. Read more about the new National Curriculum in Computing.</p>
+		        </div>
+			</div>
+
+			<div class="col-md-3 block courses-more-info-form">
+		        <h3>Unsure which course to take?</h3>
+		        <p>I'd like more info on:</p>
+
+		        <form method="post" class="requestcourseinfoform" action="/requestcourseinfo">
+					<div class="course-more-info-field">
+				        <select name="course">
+							<option></option>
+							{% for product in products %}
+							<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
+							{% endfor %}
+				        </select>
+					</div>
+
+					<div class="course-more-info-field course-more-info-text-field-with-inline-submit">
+						<button type="submit">Go!</button>
+						<div style="overflow: hidden; padding-right: .5em;">
+						   <input name="email" type="email" style="width:100%" required placeholder="youremail@whatever.com" />
+						</div>
+					</div>
+
+			        <div class="done-message modal">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-body">
+									<button type="button" class="close" data-dismiss="modal" style="float: right; position: absolute; top: 4px; right: 11px;">&times;</button>
+									Thanks for enquiring!  We will get back to you as soon as possible
+								</div>
+							</div>
+						</div>
+					</div>
+		        </form>
+
+		        <p><strong>Or call 020 3176 4660</strong></p>
 			</div>
 
 			<div class="col-xs-12 filters">
@@ -55,7 +82,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xs-12 classes-results">
+			<div class="col-xs-12 classes-results-all">
 				{% for product in products %}
 					{% set description_type = 'short' %}
 					{% include 'pages/classes/class_details.html' %}
