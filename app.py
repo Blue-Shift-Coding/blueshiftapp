@@ -39,7 +39,10 @@ stripe_keys = {
 }
 stripe.api_key = stripe_keys["secret"]
 mailgun_secret_key = os.environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
-course_info_request_receipient = "will@blueshiftcoding.com"
+course_info_request = {
+    "sender": "hello@blueshiftcoding.com",
+    "recipient": "will@blueshiftcoding.com"
+}
 
 
 #----------------------------------------------------------------------------#
@@ -317,8 +320,8 @@ def requestcourseinfo():
 
     api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
-        "from" : "hello@blueshiftcoding.com",
-        "to" : course_info_request_receipient,
+        "from" : course_info_request["sender"],
+        "to" : course_info_request["receipient"],
         "subject" : "Course info request",
         "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
     })
