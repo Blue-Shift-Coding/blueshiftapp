@@ -68,7 +68,19 @@
 .courseList .media-left .sticker {
   width:100px;
   height:100px;
-  line-height:100px;
+  display: table;
+}
+
+.courseList .media-left .sticker span {
+  display:table-row;
+}
+
+.courseList .media-left .sticker span span {
+  display:table-cell;
+  vertical-align: middle;
+  text-align: center;
+
+  line-height:22px;
   font-size:15px;
 }
 

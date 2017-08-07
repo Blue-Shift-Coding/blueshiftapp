@@ -34,7 +34,7 @@
 			<a class="media-left border-color-{{ age_range_data.color }}" href="{{ product_url }}">
 				<img class="media-object" src="{{ product.images[0].src }}" alt="Image">
 				{% if age_range_data.text %}
-					<span class="sticker bg-color-{{ age_range_data.color }}">{{ age_range_data.text }}</span>
+					<span class="sticker bg-color-{{ age_range_data.color }}"><span><span>Ages<br />{{ age_range_data.text }}</span></span></span>
 				{% endif %}
 			</a>
 			<div class="media-body">
