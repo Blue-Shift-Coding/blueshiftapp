@@ -231,7 +231,6 @@
 }
 
 .courses-more-info-form h3 {
-  color:white;
   margin:0;
   white-space: normal;
 }
@@ -247,6 +246,7 @@
 
 .courses-more-info-form select {
   width:100%;
+  color:white;
 
 }
 .course-more-info-text-field-with-inline-submit email-container {

@@ -21,12 +21,12 @@
 			</div>
 
 			<div class="col-md-3 block courses-more-info-form">
-		        <h3>Unsure which course to take?</h3>
+		        <h3 class="color-1">Unsure which course to take?</h3>
 		        <p>I'd like more info on:</p>
 
 		        <form method="post" class="requestcourseinfoform" action="/requestcourseinfo">
 					<div class="course-more-info-field">
-				        <select name="course">
+				        <select name="course" class="bg-color-1">
 							<option></option>
 							{% for product in products %}
 							<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
