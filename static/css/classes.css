@@ -227,7 +227,7 @@
   text-transform: none;
 }
 
-.add-to-basket-form input[type=text] {
+.add-to-basket-form input[type=text], .checkout-form input[type=text] {
   height:2em;
 }
 
