@@ -218,7 +218,9 @@
   padding:12px;
   border:none;
   box-shadow: none;
-  background-color:#f0f2ea;
+
+  /* !important to override mysterious :active state when the button is being clicked */;
+  background-color:#f0f2ea !important;
   color:#231f20;
   font-weight:bold;
 }
