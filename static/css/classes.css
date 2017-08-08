@@ -238,6 +238,7 @@
 
 .courses-more-info-form p {
   color:black;
+  font-size:16px;
 }
 
 .course-more-info-field, .courses-more-info-form p  {
@@ -248,7 +249,6 @@
   width:100%;
 
 }
-
 .course-more-info-text-field-with-inline-submit email-container {
   overflow: hidden;
   padding-right: .5em;
@@ -260,7 +260,7 @@
   color:white;
 }
 
-.course-more-info-text-field-with-inline-submit button, .course-more-info-text-field-with-inline-submit input {
+.course-more-info-text-field-with-inline-submit button, .course-more-info-text-field-with-inline-submit input, .course-more-info-field select {
   padding:4px;
 }
 
