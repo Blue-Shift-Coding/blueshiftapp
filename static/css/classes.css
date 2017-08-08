@@ -138,6 +138,9 @@
 .courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button:hover {
   background-color:#f0f2ea;
   color:#231f20;
+
+  /* !important in the following line necessary to override the !important in style.css, and above in the .courseList .media-body a rule */
+  text-decoration: none !important;
 }
 
 .courseList .media-body .media-heading a {
