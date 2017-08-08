@@ -266,6 +266,7 @@
   float:right;
   background-color:black;
   color:white;
+  border:none;
 }
 
 .course-more-info-text-field-with-inline-submit button, .course-more-info-text-field-with-inline-submit input, .course-more-info-field select {
