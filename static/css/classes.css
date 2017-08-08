@@ -227,7 +227,7 @@
   text-transform: none;
 }
 
-.add-to-basket-form input {
+.add-to-basket-form input[type=text] {
   height:2em;
 }
 
