@@ -214,7 +214,7 @@
   margin-top:6px;
 }
 
-.add-to-basket-button-container button, .add-to-basket-button-container button:hover, , .add-to-basket-button-container button:active {
+.add-to-basket-button-container button, .add-to-basket-button-container button:hover, .add-to-basket-button-container button:active {
   padding:12px;
   border:none;
   box-shadow: none;
