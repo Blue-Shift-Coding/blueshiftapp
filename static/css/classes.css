@@ -246,10 +246,22 @@
 
 .courses-more-info-form select {
   width:100%;
+
+}
+
+.course-more-info-text-field-with-inline-submit email-container {
+  overflow: hidden;
+  padding-right: .5em;
 }
 
 .course-more-info-text-field-with-inline-submit button {
   float:right;
+  background-color:black;
+  color:white;
+}
+
+.course-more-info-text-field-with-inline-submit button, .course-more-info-text-field-with-inline-submit input {
+  padding:4px;
 }
 
 .course-more-info-text-field-with-inline-submit div {
