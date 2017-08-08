@@ -262,7 +262,13 @@
 }
 
 .course-more-info-text-field-with-inline-submit button, .course-more-info-text-field-with-inline-submit input, .course-more-info-field select {
-  padding:4px;
+  font-size:14px;
+  line-height:32px;
+  height:32px;
+}
+
+.course-more-info-text-field-with-inline-submit button {
+  padding:0 4px;
 }
 
 .course-more-info-text-field-with-inline-submit div {
