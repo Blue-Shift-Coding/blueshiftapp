@@ -224,6 +224,10 @@
   text-transform: none;
 }
 
+.add-to-basket-form input {
+  height:2em;
+}
+
 
 .courses-more-info-form {
   text-align:center;
