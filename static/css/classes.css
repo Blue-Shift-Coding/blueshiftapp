@@ -214,7 +214,7 @@
   margin-top:6px;
 }
 
-.add-to-basket-button-container button, .add-to-basket-button-container button:hover {
+.add-to-basket-button-container button, .add-to-basket-button-container button:hover, , .add-to-basket-button-container button:active {
   padding:12px;
   border:none;
   box-shadow: none;
@@ -387,8 +387,9 @@
 .proceed-to-payment-button-container button {
   padding:12px;
 
-  border-radius: 0;
+  border: none;
   box-shadow: none;
   background-color:#f0f2ea;
   color:#231f20;
+  font-weight:bold;
 }
