@@ -387,12 +387,12 @@
 
 
 /* Proceed-to-payment page */
-.proceed-to-payment-button-container button {
+.proceed-to-payment-button-container button, .proceed-to-payment-button-container button:active, .proceed-to-payment-button-container button:hover {
   padding:12px;
 
   border: none;
   box-shadow: none;
-  background-color:#f0f2ea;
+  background-color:#f0f2ea !important;
   color:#231f20;
   font-weight:bold;
 }
