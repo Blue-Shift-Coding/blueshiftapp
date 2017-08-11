@@ -243,8 +243,7 @@ def cart():
                         gravity_forms_submission.update({field_id: request.form[field.name]})
 
                 # Add any price adjustments into the session
-                if price_adjustments != 0:
-                    data_for_session["price_adjustments"] = price_adjustments
+                data_for_session["price_adjustments"] = price_adjustments
 
                 # Add the form ID into the submission for gravity forms
                 gravity_forms_submission.update({"form_id": form_id})
