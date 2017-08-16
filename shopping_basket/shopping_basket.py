@@ -132,19 +132,23 @@ class BookingInformationFormBuilder():
     def listToOptions(self, list_of_options):
         output = ""
         for option_in_list in list_of_options:
-            output += "<option>"+cgi.escape(str(option_in_list).zfill(2))+"</option>"
+            option_value = cgi.escape(str(option_in_list).zfill(2))
+            output += "<option value='"+option_value+"'>"+option_value+"</option>"
         return output
 
     def get_date_widget(self):
         def date_widget(field, **kwargs):
             days = range(1, 31)
             months = range(1, 12)
-            years = range(2000, datetime.datetime.now().year)
+            years = range(2000, datetime.datetime.now().year + 10)
 
             return """
-                <select><option>day</option>"""+self.listToOptions(days)+"""</select>
-                <select><option>month</option>"""+self.listToOptions(months)+"""</select>
-                <select><option>year</option>"""+self.listToOptions(years)+"""</select>
+                <div class='blueshift-date-dropdowns'>
+                    <input type='hidden' name='"""+cgi.escape(field.name)+"""' value='' />
+                    <select class='blueshift-date-day'><option>day</option>"""+self.listToOptions(days)+"""</select>
+                    <select class='blueshift-date-month'><option>month</option>"""+self.listToOptions(months)+"""</select>
+                    <select class='blueshift-date-year'><option>year</option>"""+self.listToOptions(years)+"""</select>
+                </div>
             """
         return date_widget
 
