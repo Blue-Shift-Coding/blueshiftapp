@@ -25,6 +25,7 @@ def download_data():
 	update_set("products", expiry_time=expiry_time, base_query="products?")
 
 	# Update forms
+	# NB get form IDs from the products, rather from get_forms as the latter only returns forms marked as 'active' in gravityforms
 	products = get_products()
 	form_ids = set()
 	for product in products["products"]:
