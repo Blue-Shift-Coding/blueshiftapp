@@ -1,0 +1,22 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Shopping basket{% endblock %}
+{% block page_header %}{{ super() }}{% endblock %}
+{% block content %}
+
+<section class="mainContent full-width clearfix">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-xs-12">
+
+				<h3>Basket empty</h3>
+				<p>There is nothing in your basket at the moment</p>
+				<p><a href="/classes">Browse courses</a></p>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{% endblock %}

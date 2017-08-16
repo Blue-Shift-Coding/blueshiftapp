@@ -279,7 +279,11 @@ def cart():
     if product_id is not None or delete_item_id is not None:
         return redirect(url_for('cart'))
 
-    # TODO:WV:20170804:Output a 'cart is empty' message, instead of an empty table, if the cart is empty
+    # Show an 'empty cart' message if the cart is empty
+    if not "basket" in session or not session["basket"]:
+        return render_template(
+            "pages/empty-basket.html",
+        )
 
     return render_template(
         "pages/basket.html",
@@ -290,7 +294,7 @@ def cart():
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
 
-    if not "basket" in session:
+    if not "basket" in session or not session["basket"]:
         return redirect(url_for("classes"))
 
     form = shopping_basket.CheckoutForm(request.form)
