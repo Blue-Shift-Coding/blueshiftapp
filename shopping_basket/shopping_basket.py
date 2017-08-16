@@ -142,9 +142,12 @@ class BookingInformationFormBuilder():
             months = range(1, 12)
             years = range(2000, datetime.datetime.now().year + 10)
 
+            if 'value' not in kwargs:
+                kwargs['value'] = field._value()
+
             return """
                 <div class='blueshift-date-dropdowns'>
-                    <input type='hidden' name='"""+cgi.escape(field.name)+"""' value='' />
+                    <input type='hidden' name='"""+cgi.escape(field.name)+"""' value='"""+cgi.escape(kwargs['value'])+"""' />
                     <select class='blueshift-date-day'><option>day</option>"""+self.listToOptions(days)+"""</select>
                     <select class='blueshift-date-month'><option>month</option>"""+self.listToOptions(months)+"""</select>
                     <select class='blueshift-date-year'><option>year</option>"""+self.listToOptions(years)+"""</select>
