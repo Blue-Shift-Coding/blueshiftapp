@@ -41,7 +41,7 @@ stripe.api_key = stripe_keys["secret"]
 mailgun_secret_key = os.environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
 course_info_request = {
     "sender": "hello@blueshiftcoding.com",
-    "recipient": "will@blueshiftcoding.com"
+    "recipient": "hello@blueshiftcoding.com"
 }
 
 
