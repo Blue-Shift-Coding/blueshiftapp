@@ -221,7 +221,7 @@ class BookingInformationFormBuilder():
                 self.add_field(field_name, self.get_radio_field(gf_field, validators))
 
             elif gf_field["type"] == "date":
-                self.add_field(field_name, wtforms.DateField(gf_field["label"], widget=self.get_date_widget()))
+                self.add_field(field_name, wtforms.DateField(gf_field["label"], validators=validators, widget=self.get_date_widget(), format="%d/%m/%Y"))
 
             else:
                 self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
