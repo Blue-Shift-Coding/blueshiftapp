@@ -1,5 +1,5 @@
 from flask import session
-import shop_data, wtforms, blueshiftutils, time, storage, re
+import shop_data, wtforms, blueshiftutils, time, datetime, storage, re, cgi
 from gravityformsapi import gf
 
 
@@ -109,6 +109,7 @@ class CheckoutForm(wtforms.Form):
     contact_number = wtforms.StringField("Contact Number", [wtforms.validators.Length(min=8)])
     email = wtforms.StringField("Email", [wtforms.validators.Email()])
 
+
 class BookingInformationFormBuilder():
 
     def __init__(self, gravity_forms_data):
@@ -127,6 +128,25 @@ class BookingInformationFormBuilder():
         def heading_widget(field, **kwargs):
             return u"<h"+heading_level+" class='color-"+color_number+"'>"+text+"</h"+heading_level+">";
         return heading_widget
+
+    def listToOptions(self, list_of_options):
+        output = ""
+        for option_in_list in list_of_options:
+            output += "<option>"+cgi.escape(str(option_in_list).zfill(2))+"</option>"
+        return output
+
+    def get_date_widget(self):
+        def date_widget(field, **kwargs):
+            days = range(1, 31)
+            months = range(1, 12)
+            years = range(2000, datetime.datetime.now().year)
+
+            return """
+                <select><option>day</option>"""+self.listToOptions(days)+"""</select>
+                <select><option>month</option>"""+self.listToOptions(months)+"""</select>
+                <select><option>year</option>"""+self.listToOptions(years)+"""</select>
+            """
+        return date_widget
 
     def get_option_field(self, field_type, gf_field, validators):
         choices = []
@@ -192,6 +212,9 @@ class BookingInformationFormBuilder():
 
             elif "inputType" in gf_field and gf_field["inputType"] == "radio":
                 self.add_field(field_name, self.get_radio_field(gf_field, validators))
+
+            elif gf_field["type"] == "date":
+                self.add_field(field_name, wtforms.DateField(gf_field["label"], widget=self.get_date_widget()))
 
             else:
                 self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
