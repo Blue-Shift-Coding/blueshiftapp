@@ -1,5 +1,5 @@
 {% extends 'layouts/main.html' %}
-{% block title %}Payment{% endblock %}
+{% block title %}Checkout 2{% endblock %}
 {% block page_header %}{{ super() }}{% endblock %}
 {% block content %}
 
@@ -13,6 +13,10 @@
 
 		<div class="row">
 			<div class="col-xs-12">
+
+				<h3>Checkout stage 2 - Payment</h3>
+
+				<p>Please check the total below, and then hit 'pay with card' if you are happy.</p>
 
 				<p>Total to pay: {{ total_price|currency }} </p>
 				<form class="checkout-form" action="/processpayment" method="POST">
