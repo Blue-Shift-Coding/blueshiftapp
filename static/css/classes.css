@@ -385,6 +385,11 @@
   font-weight:bold;
 }
 
+.continue-shopping-button-container {
+  text-align: right;
+  text-decoration: underline;
+}
+
 
 /* Proceed-to-payment page */
 .proceed-to-payment-button-container button, .proceed-to-payment-button-container button:active, .proceed-to-payment-button-container button:hover {
