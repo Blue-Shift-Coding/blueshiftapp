@@ -22,7 +22,7 @@ def download_data():
 
 	# Update categories products
 	update_set("categories", expiry_time=expiry_time, base_query="products/categories?")
-	update_set("products", expiry_time=expiry_time, base_query="products?")
+	update_set("products", expiry_time=expiry_time, base_query="products?status=publish&")
 
 	# Update forms
 	# NB get form IDs from the products, rather from get_forms as the latter only returns forms marked as 'active' in gravityforms
