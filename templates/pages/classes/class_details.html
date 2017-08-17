@@ -87,9 +87,14 @@
 							<button class="btn btn-primary book-now-button bg-color-{{ age_range_data.color }}">Book now</button>
 						</form>
 					</li>
-					<li>
-						<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
-					</li>
+
+					{% if show_read_more %}
+						<li>
+							<a href="{{ product_url }}" class="btn btn-primary read-more-button">Read more</a>
+						</li>
+					{% endif %}
+
+
 				</ul>
 
 			</div>
