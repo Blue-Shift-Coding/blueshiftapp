@@ -396,3 +396,15 @@
   color:#231f20;
   font-weight:bold;
 }
+
+
+
+/* Top menu */
+
+.topList li:last-child i {
+  width:100px;
+}
+
+.topList li:last-child i span {
+  font-family:'Lato', sans-serif;
+}
