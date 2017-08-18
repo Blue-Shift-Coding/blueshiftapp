@@ -41,7 +41,7 @@ stripe.api_key = stripe_keys["secret"]
 mailgun_secret_key = os.environ["BLUESHIFTAPP_MAILGUN_SECRET_KEY"]
 course_info_request = {
     "sender": "hello@blueshiftcoding.com",
-    "recipient": "will@blueshiftcoding.com"
+    "recipient": "hello@blueshiftcoding.com"
 }
 
 
@@ -279,7 +279,11 @@ def cart():
     if product_id is not None or delete_item_id is not None:
         return redirect(url_for('cart'))
 
-    # TODO:WV:20170804:Output a 'cart is empty' message, instead of an empty table, if the cart is empty
+    # Show an 'empty cart' message if the cart is empty
+    if not "basket" in session or not session["basket"]:
+        return render_template(
+            "pages/empty-basket.html",
+        )
 
     return render_template(
         "pages/basket.html",
@@ -290,7 +294,7 @@ def cart():
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
 
-    if not "basket" in session:
+    if not "basket" in session or not session["basket"]:
         return redirect(url_for("classes"))
 
     form = shopping_basket.CheckoutForm(request.form)
@@ -321,7 +325,7 @@ def requestcourseinfo():
     api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
     r = requests.post(api_url+"/messages", data={
         "from" : course_info_request["sender"],
-        "to" : course_info_request["receipient"],
+        "to" : course_info_request["recipient"],
         "subject" : "Course info request",
         "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
     })

@@ -21,12 +21,12 @@
 			</div>
 
 			<div class="col-md-3 block courses-more-info-form">
-		        <h3>Unsure which course to take?</h3>
+		        <h3 class="color-1">Unsure which course to take?</h3>
 		        <p>I'd like more info on:</p>
 
 		        <form method="post" class="requestcourseinfoform" action="/requestcourseinfo">
 					<div class="course-more-info-field">
-				        <select name="course">
+				        <select name="course" class="bg-color-1">
 							<option></option>
 							{% for product in products %}
 							<option value="{{ product.name }} (product #{{product.id}})">{{ product.name }}</option>
@@ -36,7 +36,7 @@
 
 					<div class="course-more-info-field course-more-info-text-field-with-inline-submit">
 						<button type="submit">Go!</button>
-						<div style="overflow: hidden; padding-right: .5em;">
+						<div class="email-container">
 						   <input name="email" type="email" style="width:100%" required placeholder="youremail@whatever.com" />
 						</div>
 					</div>
@@ -53,7 +53,7 @@
 					</div>
 		        </form>
 
-		        <p><strong>Or call 020 3176 4660</strong></p>
+		        <p>Or call <strong>020 3176 4660</strong></p>
 			</div>
 
 			<div class="col-xs-12 filters">
@@ -85,6 +85,7 @@
 			<div class="col-xs-12 classes-results-all">
 				{% for product in products %}
 					{% set description_type = 'short' %}
+					{% set show_read_more = True %}
 					{% include 'pages/classes/class_details.html' %}
 				{% endfor %}
 			</div>

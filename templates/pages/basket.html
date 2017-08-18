@@ -21,6 +21,7 @@
 					<tbody>
 						{% for item_id in basket %}
 							{% set product = products[basket[item_id]["product_id"]] %}
+							{% set price_adjustments = 0 if "price_adjustments" not in basket[item_id] else basket[item_id].price_adjustments %}
 							<tr>
 								<td>
 									<form action="/cart" method="POST">
@@ -33,7 +34,7 @@
 								<td><img src="{{ product.images[0].src }}" alt="Image"></td>
 
 								<td>{{ product.name }} {% if names[item_id] %}<br /><span class='name-associated-with-basket-item'>{{ names[item_id] }}</span> {% endif %}</td>
-								<td>{{ (product.price|float + basket[item_id].price_adjustments|float)|currency }}</td>
+								<td>{{ (product.price|float + price_adjustments|float)|currency }}</td>
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -50,6 +51,10 @@
 
 				<p class="checkout-button-container">
 					<a href="/checkout" class="btn btn-default">Checkout</a>
+				</p>
+
+				<p class="continue-shopping-button-container">
+					<a href="/cart">Continue shopping</a>
 				</p>
 
 			</div>

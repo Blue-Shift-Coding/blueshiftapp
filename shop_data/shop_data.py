@@ -20,13 +20,20 @@ items_apis = {
 def download_data():
 	expiry_time = time.time() + data_lifetime_in_seconds
 
-	# Get all forms from
-	forms = gf.get_forms().values()
-	if not isinstance(forms, list):
-		raise Exception("Forms could not be retrieved from stored data")
-	update_set("forms", expiry_time=expiry_time, item_ids=map(lambda x: x["id"], forms), get_item_method=gf.get_form)
+	# Update categories products
 	update_set("categories", expiry_time=expiry_time, base_query="products/categories?")
-	update_set("products", expiry_time=expiry_time, base_query="products?")
+	update_set("products", expiry_time=expiry_time, base_query="products?status=publish&")
+
+	# Update forms
+	# NB get form IDs from the products, rather from get_forms as the latter only returns forms marked as 'active' in gravityforms
+	products = get_products()
+	form_ids = set()
+	for product in products["products"]:
+		for meta_datum in product["meta_data"]:
+			if meta_datum["key"] == "_gravity_form_data":
+				form_ids.add(meta_datum["value"]["id"])
+				break
+	update_set("forms", expiry_time=expiry_time, item_ids=list(form_ids), get_item_method=gf.get_form)
 
 def update_set(item_name, expiry_time, base_query=None, item_ids=None, get_item_method=None):
 

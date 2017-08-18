@@ -367,6 +367,8 @@ a:focus {
 }
 
 .color-1 {
+
+  /* Purple */
   color: #84557e !important;
 }
 
@@ -379,6 +381,8 @@ a:focus {
 }
 
 .color-2 {
+
+  /* Green */
   color: #7ec2a2 !important;
 }
 
@@ -391,6 +395,8 @@ a:focus {
 }
 
 .color-3 {
+
+  /* Mustard */
   color: #f5c644 !important;
 }
 
@@ -403,6 +409,8 @@ a:focus {
 }
 
 .color-4 {
+
+  /* Turqouise */
   color: #66CCCC !important;
 }
 
@@ -415,6 +423,8 @@ a:focus {
 }
 
 .color-5 {
+
+  /* Pastel red */
   color: #ea5461 !important;
 }
 
@@ -427,6 +437,8 @@ a:focus {
 }
 
 .color-6 {
+
+  /* Pink */
   color: #ea77ad !important;
 }
 
@@ -439,10 +451,14 @@ a:focus {
 }
 
 .bg-color-7 {
+
+  /* Semi-opaque turqouise */
   background-color: rgba(102, 204, 204, 0.12);
 }
 
 .bg-color-8 {
+
+  /* Light Khaki */
   background-color: #fceec7;
 }
 

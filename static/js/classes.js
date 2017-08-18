@@ -98,6 +98,35 @@
 			e.preventDefault();
 			return false;
 		});
+
+		// When date fields are changed, compile the value into the associated hidden field
+
+		// Translate between date drop-downs and the associated hidden fields
+		var dateDropDowns = $(".blueshift-date-dropdowns");
+		dateDropDowns.each(function() {
+			var fieldContainer = $(this)
+			var initialValue = fieldContainer.find("input[type=hidden]").val();
+			if (initialValue == "") {
+				return;
+			}
+			var dateParts = initialValue.split("/");
+			var day = dateParts[0];
+			var month = dateParts[1];
+			var year = dateParts[2];
+
+			fieldContainer.find(".blueshift-date-day").val(day);
+			fieldContainer.find(".blueshift-date-month").val(month);
+			fieldContainer.find(".blueshift-date-year").val(year);
+		});
+		dateDropDowns.find("select").on("change", function(e) {
+			var changedOption = $(this);
+			var fieldContainer = changedOption.closest("div.blueshift-date-dropdowns");
+			fieldContainer.find("input[type=hidden]").val(
+				fieldContainer.find(".blueshift-date-day").val()+"/"+
+				fieldContainer.find(".blueshift-date-month").val()+"/"+
+				fieldContainer.find(".blueshift-date-year").val()
+			);
+		});
 	});
 
 	function getFilterValue(filter) {

@@ -68,7 +68,19 @@
 .courseList .media-left .sticker {
   width:100px;
   height:100px;
-  line-height:100px;
+  display: table;
+}
+
+.courseList .media-left .sticker span {
+  display:table-row;
+}
+
+.courseList .media-left .sticker span span {
+  display:table-cell;
+  vertical-align: middle;
+  text-align: center;
+
+  line-height:22px;
   font-size:15px;
 }
 
@@ -122,9 +134,13 @@
   color:white;
 }
 
-.courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button, .courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button:hover {
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button,
+.courseList .media-body .list-inline.btnPart.class-listing-buttons .read-more-button:hover {
   background-color:#f0f2ea;
   color:#231f20;
+
+  /* !important in the following line necessary to override the !important in style.css, and above in the .courseList .media-body a rule */
+  text-decoration: none !important;
 }
 
 .courseList .media-body .media-heading a {
@@ -198,17 +214,23 @@
   margin-top:6px;
 }
 
-.add-to-basket-button-container button, .add-to-basket-button-container button:hover {
+.add-to-basket-button-container button, .add-to-basket-button-container button:hover, .add-to-basket-button-container button:active {
   padding:12px;
-
-  border-radius: 0;
+  border:none;
   box-shadow: none;
-  background-color:#f0f2ea;
+
+  /* !important to override mysterious :active state when the button is being clicked */;
+  background-color:#f0f2ea !important;
   color:#231f20;
+  font-weight:bold;
 }
 
 .add-to-basket-form h1, .add-to-basket-form h2, .add-to-basket-form h3, .add-to-basket-form h4, .add-to-basket-form h5 {
   text-transform: none;
+}
+
+.add-to-basket-form input[type=text], .checkout-form input[type=text] {
+  height:2em;
 }
 
 
@@ -219,13 +241,13 @@
 }
 
 .courses-more-info-form h3 {
-  color:white;
   margin:0;
   white-space: normal;
 }
 
 .courses-more-info-form p {
   color:black;
+  font-size:16px;
 }
 
 .course-more-info-field, .courses-more-info-form p  {
@@ -234,10 +256,28 @@
 
 .courses-more-info-form select {
   width:100%;
+  color:white;
+
+}
+.course-more-info-text-field-with-inline-submit email-container {
+  overflow: hidden;
+  padding-right: .5em;
 }
 
 .course-more-info-text-field-with-inline-submit button {
   float:right;
+  background-color:black;
+  color:white;
+  border:none;
+}
+
+.course-more-info-text-field-with-inline-submit button, .course-more-info-text-field-with-inline-submit input, .course-more-info-field select {
+  font-size:14px;
+  height:32px;
+}
+
+.course-more-info-text-field-with-inline-submit button {
+  padding:0 4px;
 }
 
 .course-more-info-text-field-with-inline-submit div {
@@ -338,19 +378,38 @@
 .checkout-button-container a.btn {
   padding:12px;
 
-  border-radius: 0;
+  border: none;
   box-shadow: none;
   background-color:#f0f2ea;
   color:#231f20;
+  font-weight:bold;
+}
+
+.continue-shopping-button-container {
+  text-align: right;
+  text-decoration: underline;
 }
 
 
 /* Proceed-to-payment page */
-.proceed-to-payment-button-container button {
+.proceed-to-payment-button-container button, .proceed-to-payment-button-container button:active, .proceed-to-payment-button-container button:hover {
   padding:12px;
 
-  border-radius: 0;
+  border: none;
   box-shadow: none;
-  background-color:#f0f2ea;
+  background-color:#f0f2ea !important;
   color:#231f20;
+  font-weight:bold;
+}
+
+
+
+/* Top menu */
+
+.topList li:last-child i {
+  width:100px;
+}
+
+.topList li:last-child i span {
+  font-family:'Lato', sans-serif;
 }
