@@ -1905,7 +1905,7 @@ aside {
   }
 }
 @media (min-width: 768px) {
-  .navbar-nav > li.dropdown.open > a:after {
+  /*.navbar-nav > li.dropdown.open > a:after {
     border-left: 9px solid transparent;
     border-right: 9px solid transparent;
     margin-left: -10px;
@@ -1914,7 +1914,7 @@ aside {
     left: 50%;
     position: absolute;
     top: 102px;
-  }
+  }*/
 }
 
 .navbar-nav > li.color-1.dropdown a:after {
