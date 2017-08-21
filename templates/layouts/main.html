@@ -129,7 +129,7 @@
               </li>
 
 
-              <li class="dropdown singleDrop color-3">
+              <li {% if request.endpoint=='schools' %} class="active dropdown singleDrop color-3" {% else %} class="dropdown singleDrop color-3" {% endif %}>
                 <a href="{{ url_for('schools')}}" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i></i> <span>Schools</span></a>
                 <!-- TODO use these dropdowns for v2 -->
                 <!-- <ul class="dropdown-menu dropdown-menu-left">
@@ -151,7 +151,7 @@
               </li>
 
 
-              <li class="dropdown singleDrop color-5">
+              <li {% if request.endpoint=='testimonials' %} class="active dropdown singleDrop color-5" {% else %} class="dropdown singleDrop color-5" {% endif %}>
                 <a href="{{ url_for('testimonials')}}" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   <i></i>
                   <span>Who we are</span>
@@ -178,7 +178,7 @@
                 </a>
               </li>
 
-              <li class="dropdown singleDrop color-2">
+              <li {% if request.endpoint=='faq' %} class="active dropdown singleDrop color-2" {% else %} class="dropdown singleDrop color-2" {% endif %}>
                 <a href="{{ url_for('faq') }}" class="dropdown-toggle">
                   <i></i>
                   <span>FAQs</span>
