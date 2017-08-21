@@ -111,3 +111,41 @@
   padding: 5em 0;
   color: white;
 }
+
+/*Rocket*/
+
+
+
+svg {
+  width:100%;
+  height:100%;
+  visibility: hidden;
+}
+
+.heroRocketText {
+ font-family:'Lato', sans-serif;
+ font-weight:900;
+ fill:#5cc0c7;
+ font-size:80px;
+ text-anchor:middle;
+}
+
+.readoutText{
+ font-family:'Roboto Mono', sans-serif;
+ font-weight:400;
+  font-size:30px;
+ fill:#5cc0c7;
+
+}
+
+text{
+ user-select:none;
+}
+
+.rocketGroup{
+ cursor:pointer;
+}
+
+.attractContainer{
+ pointer-events:none;
+}
