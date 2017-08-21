@@ -36,6 +36,7 @@
 
 .mainContent.homepage-color-blocks .eventContent {
   border-radius: 2px;
+  margin-bottom: 0;
 }
 
 .summer-camps:hover {
@@ -113,8 +114,6 @@
 }
 
 /*Rocket*/
-
-
 
 svg {
   width:100%;
