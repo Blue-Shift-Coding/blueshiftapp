@@ -536,7 +536,7 @@ aside {
   background-color: #f5c644;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
-  border-radius: 6px;
+  border-radius: 3px;
   font-size: 16px;
   text-transform: uppercase;
   color: #ffffff;
