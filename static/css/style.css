@@ -100,7 +100,6 @@ p {
 
 h1, h2, h3, h4, h5 {
   font-family: 'Lato', sans-serif;
-  text-transform: uppercase;
   color: #202020;
   margin-top: 0;
   font-weight: 700;
@@ -3314,7 +3313,7 @@ footer .color-bar {
 
 .media-body h3.media-heading {
   font-size: 24px;
-  line-height: 30px;
+  line-height: 35px;
   color: #ffffff;
   font-family: 'Lato', sans-serif;
   font-weight: 700;
