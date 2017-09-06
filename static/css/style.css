@@ -530,9 +530,6 @@ aside {
   padding: 0 20px;
   border: none;
   line-height: 45px;
-  -webkit-box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
   background-color: #f5c644;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
