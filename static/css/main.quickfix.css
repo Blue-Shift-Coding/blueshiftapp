@@ -148,3 +148,11 @@ text{
 .attractContainer{
  pointer-events:none;
 }
+
+.schools-contact {
+  background-color: #26CAD3 !important
+}
+
+.schools-contact-border {
+  border-color: #1489B2 !important 
+}

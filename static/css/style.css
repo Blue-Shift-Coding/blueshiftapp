@@ -4574,9 +4574,9 @@ footer .color-bar {
   padding-right: 50px;
   height: 50px;
   border-width: 3px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #222222;
   background-color: transparent;
 }
@@ -5558,9 +5558,9 @@ footer .color-bar {
   margin-bottom: 30px;
 }
 .eventSidebar.panel .panel-heading {
-  -webkit-border-radius: 7px 7px 0 0;
-  -moz-border-radius: 7px 7px 0 0;
-  border-radius: 7px 7px 0 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 .eventSidebar.panel .panel-heading .panel-title {
   font-size: 24px;
@@ -5574,7 +5574,7 @@ footer .color-bar {
   border-top: 0;
   -webkit-border-radius: 0 0 7px 7px;
   -moz-border-radius: 0 0 7px 7px;
-  border-radius: 0 0 7px 7px;
+  border-radius: 3px;
 }
 .eventSidebar.panel .panel-body .media-list li {
   padding: 10px 0;
