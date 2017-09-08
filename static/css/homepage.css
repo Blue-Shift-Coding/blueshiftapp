@@ -5,6 +5,19 @@
   padding-bottom:2em !important;
 }
 
+.story {
+  width:100%;
+  background: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/09/21197423-995B-4ED1-8294-075428CBEC4C.jpg);
+  height: 25em;
+  background-size:
+  cover;
+}
+
+.keep-up-to-date {
+  width:100% !important;
+  height: 25em !important;
+}
+
 .whats-code {
   width:100%;
   background: url(http://blueshiftcoding.com/wp-content/uploads/2017/05/whats-code.jpg);
@@ -22,11 +35,6 @@
   font-size: 36px !important;
   line-height: 1.4;
   text-align: center;
-}
-
-.keep-up-to-date {
-  width:100% !important;
-  height: 23em !important;
 }
 
 .keep-up-to-date p {
