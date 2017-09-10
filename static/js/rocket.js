@@ -10,7 +10,6 @@ var xmlns = "http://www.w3.org/2000/svg",
     heroLine0 = select('.heroLine0'),
     heroLine1 = select('.heroLine1'),
     display = select('.display'),
-    display = select('.display'),
     rocketSVG = select('.rocketSVG'),
     smokeTail = select('.smokeTail'),
     rocketGroup = select('.rocketGroup'),
@@ -18,7 +17,7 @@ var xmlns = "http://www.w3.org/2000/svg",
     rocketFlameContainer = select('.rocketFlameContainer'),
     rocketFlame = select('.rocketFlame'),
     stageWidth = 1280,
-    stageHeight = 630,
+    stageHeight = 450,
     numStars = 100,
     star = select('.star'),
     cloudGroup = select('.cloudGroup'),
@@ -32,15 +31,11 @@ var xmlns = "http://www.w3.org/2000/svg",
     message2Str = "launchRocket();",
     heroMessageCount = 0,
     numHeroMessages = heroMessageArr.length,
-    displayInitPos = {x:720, y:445},
-    rocketGroupInitPos = {x:580, y:415},
-    cloudGroupInitPos = {x:190, y:645},
+    displayInitPos = {x:720, y:445-170},
+    rocketGroupInitPos = {x:580, y:415-170},
+    cloudGroupInitPos = {x:190, y:645-170},
      mainTl = new TimelineMax({repeat:0, paused:true}),
-    attractContainer = select('.attractContainer'),
-    allAttractCircles = selectAll('.attractContainer circle'),
-    readoutTl = new TimelineMax({paused:true}),
-    attractDelay = 2,
-    attractTl = new TimelineMax({paused:true, repeat:-1})
+    readoutTl = new TimelineMax({paused:true});
 
 
 TweenMax.set('svg', {
@@ -64,9 +59,7 @@ TweenMax.set('circle', {
 })
 
 TweenMax.set(display, {
- transformOrigin:'0% 85%',
- scale:0,
- rotation:-23
+
 })
 
 TweenMax.set([rocketFlame, rocketFlameContainer, smokeTail], {
@@ -76,22 +69,6 @@ TweenMax.set([rocketFlameContainer, smokeTail], {
  scale:0
 })
 
-attractTl.staggerFromTo(allAttractCircles, 1.6, {
- scale:0,
- alpha:1,
- cycle:{
-
- strokeWidth:[30,20, 15,5],
- }
-},{
- scale:1.2,
- alpha:0,
- strokeWidth:0,
- repeat:-1,
- repeatDelay:attractDelay,
- ease:Sine.easeOut
-},0.25)
-
 function initMessage(){
  TweenMax.staggerTo([heroLine0, heroLine1], 1, {
   cycle:{
@@ -99,10 +76,8 @@ function initMessage(){
     return heroMessageArr[heroMessageCount].split('^')[i]
    }
   },
-  ease:Linear.easeNone,
- },1, function(){
-   attractTl.play();
-     })
+  ease:Linear.easeNone
+ },1)
  //heroLine0.textContent = ()
  //heroLine1.textContent = (heroMessageArr[heroMessageCount].split('^')[1])
 
@@ -149,8 +124,13 @@ function createClouds(){
    fill:'#C1E7E9'
   })
 
- TweenMax.set(allClouds[i%4], {
-   fill:'#B2E0E3'
+ cx = Number(allClouds[i].getAttribute('x'));
+ cy = Number(allClouds[i].getAttribute('y'));
+ origin = (cx+13) + " " + (cy+13);
+  //console.log(origin)
+ TweenMax.set(allClouds[i], {
+   //svgOrigin:origin
+   //transformOrigin:'50% 50%'
   })
 
   tl = new TimelineMax();
@@ -210,8 +190,6 @@ function resetAll(){
 //cloudsTl.progress(0)
  cloudsTl.restart(true, false);
 
- cloudsTl.pause();
-
 }
 
 function createReadoutText(){
@@ -265,20 +243,7 @@ function createReadoutText(){
 
 function createMainTl(){
 
-
-  mainTl.to(attractContainer, 0.6, {
-   alpha:0
-  })
- .to(display, 1, {
-   scaleX:1,
-   ease:Elastic.easeOut.config(0.7, 0.5)
-  },'-=0')
-.to(display, 0.8, {
-   scaleY:1,
-   rotation:0,
-   ease:Elastic.easeOut.config(0.9, 0.85)
-  },'-=1')
-   .fromTo(readoutTl, readoutTl.duration(),{
+  mainTl.fromTo(readoutTl, readoutTl.duration(),{
    time:0
   },{
    time:readoutTl.duration(),
@@ -298,7 +263,7 @@ function createMainTl(){
    .staggerTo([cloudGroup, rocketGroup], 10, {
    cycle:{
 
-   y:['-=1350','-=1200'],
+   y:['-=1350','-=1100'],
    },
    ease:Sine.easeIn
   },'+=2')
@@ -323,52 +288,8 @@ function createMainTl(){
    scale:0
   })
  .addCallback(function(){readoutTl.timeScale(6); readoutTl.reverse(); }, '-=5')
- .to(display, 0.4, {
-   alpha:0,
-   rotation:23,
-   ease:Back.easeIn.config(0.3)
-  },'-=2')
-.to(attractContainer,1, {
-   alpha:1
-  })
- /* .to(readoutTl, readoutTl.duration(),{
-   time:0,
-   ease:Linear.easeNone
-  }) */
 
-
-/*.to('.line2',2, {
-   text:"             ",
-   ease:Linear.easeNone,
-   onUpdate:function(){
-     this.target[0].textContent += '_'
-   },
-   onComplete:function(){
-     this.target[0].textContent = ""
-   }
-  },'-=5')
-.to('.line1',2, {
-   text:"             ",
-   ease:Linear.easeNone,
-   onUpdate:function(){
-     this.target[0].textContent += '_'
-   },
-   onComplete:function(){
-     this.target[0].textContent = ""
-   }
-  })
-.to('.line0',1, {
-   text:"        ",
-   ease:Linear.easeNone,
-   onUpdate:function(){
-     this.target[0].textContent += '_'
-   },
-   onComplete:function(){
-     this.target[0].textContent = ""
-   }
-  })
-  */
-mainTl.timeScale(2)
+mainTl.timeScale(1)
 
 
 }
