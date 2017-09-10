@@ -28,9 +28,9 @@
 {% block content %}
 
 
-<div class="page-header">
+<!-- <div class="page-header">
   <h1>News</h1>
-</div>
+</div> -->
 
 <div class="info">
   <div class="container">
@@ -40,13 +40,31 @@
           <div class="entry-content">
             <a href="{{ url_for('post', post_id = post.id, slug = post.slug )}}"><h2>{{ post.title.rendered | safe }}</h2></a>
             <p>{{ format_date(post.date) }}</p>
-            {{ post.content.rendered | safe }}
+            {{ post.excerpt.rendered | safe }}
           </div>
         </div>
      </div>
       {% endfor %}
   </div>
 </div>
+
+<div class="media courseList">
+              <a class="media-left" href="single-blog-left-sidebar.html">
+                <img class="media-object" src="img/home/courses/course-1.jpg" alt="Image">
+                <span class="sticker-round bg-color-1">10 <br>July</span>
+              </a>
+              <div class="media-body">
+                <h3 class="media-heading"><a href="single-blog-left-sidebar.html" class="color-1">Phasellus convallis eros.</a></h3>
+                <ul class="list-inline">
+                  <li><i class="fa fa-user" aria-hidden="true"></i>Jone Doe</li>
+                  <li><i class="fa fa-comments-o" aria-hidden="true"></i>4 Comments </li>
+                </ul>
+                <p>They must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer.</p>
+                <ul class="list-inline btn-yellow btnPart">
+                  <li><a href="single-blog-left-sidebar.html" class="btn btn-link"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Read More</a></li>
+                </ul>
+              </div>
+            </div>
 
 
 {% endblock %}

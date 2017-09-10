@@ -2,7 +2,7 @@ import requests
 from cachetools.func import ttl_cache
 
 # Wordpress
-WORDPRESS_URL = 'https://blueshiftcoding.com'
+WORDPRESS_URL = 'https://old.blueshiftcoding.com/'
 
 # Minutes in seconds
 MINS = 60

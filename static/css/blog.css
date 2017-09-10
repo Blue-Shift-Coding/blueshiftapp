@@ -26,4 +26,5 @@
 
 .entry-content {
     border-top: 1px solid #e7e7e7;
+    white-space: pre-line;
 }

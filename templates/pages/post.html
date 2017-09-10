@@ -1,5 +1,5 @@
 {% extends 'layouts/main.html' %}
-{% block title %}Post{% endblock %}
+{% block title %}{{ post.title.rendered | safe }}{% endblock %}
 {% block content %}
 
 <div class="info">
