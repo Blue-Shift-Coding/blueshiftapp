@@ -4202,7 +4202,7 @@ footer .color-bar {
 }
 
 .sticker-round {
-  width: 70px;
+  width: 100px;
   padding: 10px 0;
   -webkit-border-radius: 13px;
   -moz-border-radius: 13px;
@@ -5313,7 +5313,7 @@ footer .color-bar {
   .courseList .media-left {
     margin: 0 25px 0 0;
     display: inline-block;
-    width: 50%;
+    width: 40%;
   }
 }
 .courseList .media-left img {
