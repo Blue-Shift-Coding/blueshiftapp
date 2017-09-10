@@ -44,10 +44,10 @@
           </div>
         </div>
      </div> -->
-
+     <!-- post.featured_image_src or -->
      <div class="media courseList">
          <a class="media-left" href="single-blog-left-sidebar.html">
-           <img class="media-object" src={{ post.featured_image_src or "http://old.blueshiftcoding.com/wp-content/uploads/2017/09/21197423-995B-4ED1-8294-075428CBEC4C.jpg" }} alt="Image">
+           <img class="media-object" src="{{post.featured_image_src}}" alt="Image">
            <span class="sticker-round bg-color-1">{{ format_date(post.date) }}</span>
          </a>
          <div class="media-body">
