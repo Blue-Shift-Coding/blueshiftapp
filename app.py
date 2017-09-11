@@ -146,13 +146,8 @@ def news(page_num=1):
     return render_template(
         'pages/news.html',
         data=posts,
-        pagination_data={
-            "page_num":page_num,
-            "total_pages":total_pages,
-            "route_function":{
-                "name":"news"
-            }
-        },
+        page_num=page_num,
+        total_pages=total_pages,
         format_date=post_format_date
     )
 

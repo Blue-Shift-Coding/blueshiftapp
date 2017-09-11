@@ -28,23 +28,9 @@
 {% block content %}
 
 
-<!-- <div class="page-header">
-  <h1>News</h1>
-</div> -->
-
 <div class="info">
   <div class="container">
       {% for post in data %}
-      <!-- <div class="row text-left smaller-copy">
-        <div class="col-md-8 col-md-offset-2">
-          <div class="entry-content">
-            <a href="{{ url_for('post', post_id = post.id, slug = post.slug )}}"><h2>{{ post.title.rendered | safe }}</h2></a>
-            <p>{{ format_date(post.date) }}</p>
-            {{ post.excerpt.rendered | safe }}
-          </div>
-        </div>
-     </div> -->
-     <!-- post.featured_image_src or -->
      <div class="media courseList">
          <a class="media-left" href="single-blog-left-sidebar.html">
            <img class="media-object" src="{{post.featured_image_src}}" alt="Image">
@@ -63,6 +49,24 @@
   </div>
 </div>
 
+
+<nav aria-label="Page navigation" class="blog-pagination">
+  <ul class="pagination">
+    <li>
+      <a href="{{ url_for('news', page_num = page_num - 1) }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% for page in range(total_pages) %}
+    <li><a href="{{ url_for('news', page_num = page + 1) }}">{{ page + 1 }}</a></li>
+    {% endfor %}
+    <li>
+      <a href="{{ url_for('news', page_num = page_num + 1) }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 
 
 

@@ -22,7 +22,7 @@ def fetch_posts(page_num=1):
 
 @ttl_cache(ttl=60*MINS)
 def get_post(post_id):
-    r = requests.get('{}/wp-json/wp/v2/posts/{}?_embed'.format(WORDPRESS_URL, post_id))
+    r = requests.get('{}/wp-json/wp/v2/posts/{}'.format(WORDPRESS_URL, post_id))
 
     # Raise HTTPError if not 2xx
     r.raise_for_status()
