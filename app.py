@@ -304,21 +304,26 @@ def checkout():
         return redirect(url_for("classes"))
 
     form = shopping_basket.CheckoutForm(request.form)
+    all_basket_data = shopping_basket.get_all_basket_data()
     if request.method == 'POST' and form.validate():
         session["checkout-parent-info-ok"] = True
+
+        if all_basket_data["total_price"] == 0:
+            return redirect(url_for("processpayment"))
+
         return render_template(
             "pages/payment.html",
             form=form,
             stripe_publishable_key=stripe_keys["publishable"],
             basket=session["basket"],
-            **shopping_basket.get_all_basket_data()
+            **all_basket_data
         )
 
     return render_template(
         "pages/checkout.html",
         form=form,
         basket=session["basket"],
-        **shopping_basket.get_all_basket_data()
+        **all_basket_data
     )
 
 

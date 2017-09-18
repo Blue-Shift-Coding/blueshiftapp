@@ -22,9 +22,13 @@
 		<div class="row">
 			<div class="col-xs-12">
 
-				<h3>Checkout stage 1 - billing details</h3>
-
-				<p>Please provide us with a few pieces of billing information before we begin the payment process.</p>
+				{% if total_price == 0 %}
+					<h3>Checkout last stage - contact details</h3>
+					<p>Please provide us with a few pieces of information before we can confirm your order.</p>
+				{% else %}
+					<h3>Checkout stage 1 - billing details</h3>
+					<p>Please provide us with a few pieces of billing information before we begin the payment process.</p>
+				{% endif %}
 
 				<form class="checkout-form" action="/checkout" method="POST">
 					<dl>
