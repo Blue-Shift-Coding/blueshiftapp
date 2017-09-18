@@ -405,19 +405,20 @@ def processpayment():
     # - charge the card
     basket_data = shopping_basket.get_all_basket_data()
     amount = int(float(basket_data["total_price"]) * 100)
-    stripe_charge_data = {
-        "source":request.form["stripeToken"],
-        "amount":amount,
-        "currency":"gbp",
-        "description":"Flask Charge"
-    }
-    stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
-    customer_email = stripe_info["email"]
-    if customer_email:
-        stripe_charge_data.update({
-            "receipt_email":customer_email
-        })
-    charge = stripe.Charge.create(**stripe_charge_data)
+    if (amount != 0):
+        stripe_charge_data = {
+            "source":request.form["stripeToken"],
+            "amount":amount,
+            "currency":"gbp",
+            "description":"Flask Charge"
+        }
+        stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
+        customer_email = stripe_info["email"]
+        if customer_email:
+            stripe_charge_data.update({
+                "receipt_email":customer_email
+            })
+        charge = stripe.Charge.create(**stripe_charge_data)
 
     # Submit order to WooCommerce API
     parent_data = {
