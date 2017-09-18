@@ -38,7 +38,7 @@
 		for (i in queryStringParts) {
 			i = parseInt(i);
 			if (i % 2 == 0 && queryStringParts[i + 1] != "" && typeof queryStringParts[i + 1] != "undefined") {
-				queryStringData[queryStringParts[i]] = queryStringParts[i + 1];
+				queryStringData[queryStringParts[i]] = decodeURIComponent(queryStringParts[i + 1]);
 			}
 		}
 		filters.each(function() {
