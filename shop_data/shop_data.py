@@ -77,15 +77,28 @@ def get_item_ids(item_name):
 		ids = []
 	return ids
 
-def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
+def confirm_single_item_exists(item_name, item_id=None, item_slug=None):
+	item_id = get_single_item_id(item_name, item_id, item_slug)
+	if item_id is None:
+		return False
+
+	item = storage.get(get_single_item_storage_key(item_name, item_id))
+	return item is not None
+
+def get_single_item_id(item_name, item_id=None, item_slug=None):
 	if item_id is None:
 		if item_slug is None:
 			raise Exception("Please provide either an item ID or a slug")
 		slugs = storage.get(get_slugs_storage_key(item_name))
 		if item_slug in slugs:
 			item_id = slugs[item_slug]
-		if item_id is None:
-			raise Exception("Item ID not found")
+
+	return item_id
+
+def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
+	item_id = get_single_item_id(item_name, item_id, item_slug)
+	if item_id is None:
+		raise Exception("Item ID not found")
 
 	return item_name+"_"+str(item_id)
 
@@ -180,6 +193,9 @@ def get_category(name, parent_id = None):
 		correct_parent = ((parent_id is None and category["parent"] == 0) or (parent_id is not None and category["parent"] == parent_id))
 		if correct_name and correct_parent:
 			return category
+
+def product_exists(id=None, slug=None):
+	return confirm_single_item_exists("products", item_id=id, item_slug=slug)
 
 def get_product(id=None, slug=None):
 	storage_key = get_single_item_storage_key("products", item_id=id, item_slug=slug)

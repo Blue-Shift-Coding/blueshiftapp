@@ -42,6 +42,9 @@ def get_all_basket_data():
         basket_item = session["basket"][item_id]
         if not isinstance(basket_item, dict):
             continue
+        product_exists = shop_data.product_exists(id=basket_item["product_id"])
+        if not product_exists:
+            continue
         product = shop_data.get_product(id=basket_item["product_id"])
         products[session["basket"][item_id]["product_id"]] = product
         total_price += float(product["price"])
