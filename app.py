@@ -344,8 +344,6 @@ def processpayment():
     if not "basket" in session or not "checkout-parent-info-ok" in session:
         return redirect(url_for("classes"))
 
-    print session["basket"]
-
     # Build list of line items for Woocommerce order
     line_items = []
     for item_id in session["basket"]:
