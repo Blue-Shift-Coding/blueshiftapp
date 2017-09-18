@@ -82,8 +82,10 @@ def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
 		if item_slug is None:
 			raise Exception("Please provide either an item ID or a slug")
 		slugs = storage.get(get_slugs_storage_key(item_name))
-		if slugs[item_slug]:
+		if item_slug in slugs:
 			item_id = slugs[item_slug]
+		if item_id is None:
+			raise Exception("Item ID not found")
 
 	return item_name+"_"+str(item_id)
 
