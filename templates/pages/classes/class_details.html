@@ -39,13 +39,17 @@
 			</a>
 			<div class="media-body">
 
-				<div class="class-display-price color-{{ age_range_data.color }}">
-					{% if meta_data.price_for_display %}
-						{{ meta_data.price_for_display }}
-					{% elif product.price %}
-						&pound; {{ product.price }}
-					{% endif %}
-				</div>
+				{% if meta_data.price_for_display %}
+					{% set price_for_display = meta_data.price_for_display %}
+				{% elif product.price %}
+					{% set price_for_display = '£'+product.price %}
+				{% endif %}
+
+				{% if price_for_display %}
+					<div class="class-display-price color-{{ age_range_data.color }}">
+						{{ price_for_display }}
+					</div>
+				{% endif %}
 
 				<h3 class="media-heading"><a href="{{ product_url }}" class="color-{{ age_range_data.color }}">{{product.name}}</a></h3>
 
