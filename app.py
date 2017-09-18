@@ -344,49 +344,53 @@ def processpayment():
     if not "basket" in session or not "checkout-parent-info-ok" in session:
         return redirect(url_for("classes"))
 
+    print session["basket"]
+
     # Build list of line items for Woocommerce order
     line_items = []
     for item_id in session["basket"]:
 
         # Load gravity forms entry and form
-        gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
-        gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
-        if not gravity_forms_entry:
-            raise Exception("Form data could not be retrieved")
-        gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
-        if not gravity_forms_form:
-            raise Exception("Form not found")
-
-        # Iterate through fields in the gravity form, add meta-data to the line-item for each one
         line_item_meta_data = []
-        gravity_forms_lead = {}
-        def add_field(field):
-            field_key = str(field["id"])
+        if "gravity_forms_entry" in session["basket"][item_id]:
+            gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
+            gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
+            if not gravity_forms_entry:
+                raise Exception("Form data could not be retrieved")
+            gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+            if not gravity_forms_form:
+                raise Exception("Form not found")
 
-            if field_key in gravity_forms_entry:
-                gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
-                line_item_meta_data.append({
-                    "key": field["label"],
-                    "value": gravity_forms_entry[field_key]
-                })
-        for field in gravity_forms_form["fields"]:
-            if field["type"] == "name":
-                for sub_field in field["inputs"]:
-                    add_field(sub_field)
+            # Iterate through fields in the gravity form, add meta-data to the line-item for each one
+            gravity_forms_lead = {}
+            def add_field(field):
+                field_key = str(field["id"])
 
-            if str(field["id"]) in gravity_forms_entry:
-                add_field(field)
-        line_item_meta_data.append({
-            "key": "_gravity_forms_history",
-            "value": {
-                "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
-                "_gravity_form_lead": gravity_forms_lead
-            },
-        })
+                if field_key in gravity_forms_entry:
+                    gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
+                    line_item_meta_data.append({
+                        "key": field["label"],
+                        "value": gravity_forms_entry[field_key]
+                    })
+            for field in gravity_forms_form["fields"]:
+                if field["type"] == "name":
+                    for sub_field in field["inputs"]:
+                        add_field(sub_field)
+
+                if str(field["id"]) in gravity_forms_entry:
+                    add_field(field)
+            line_item_meta_data.append({
+                "key": "_gravity_forms_history",
+                "value": {
+                    "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
+                    "_gravity_form_lead": gravity_forms_lead
+                },
+            })
 
         # Add the actual line item
         product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-        line_item_total = float(product["price"])
+        line_item_total = (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
+
         if "price_adjustments" in session["basket"][item_id]:
             line_item_total += session["basket"][item_id]["price_adjustments"]
 
