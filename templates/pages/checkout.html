@@ -23,20 +23,27 @@
 			<div class="col-xs-12">
 
 				{% if total_price == 0 %}
-					<h3>Checkout last stage - contact details</h3>
-					<p>Please provide us with a few pieces of information before we can confirm your order.</p>
+					<h3>One more thing</h3>
+					<p>Please provide us with a few pieces of contact information before we can confirm your order.</p>
+					{% set dest_url = 'processpayment' %}
 				{% else %}
 					<h3>Checkout stage 1 - billing details</h3>
 					<p>Please provide us with a few pieces of billing information before we begin the payment process.</p>
+					{% set dest_url = 'checkout' %}
 				{% endif %}
 
-				<form class="checkout-form" action="/checkout" method="POST">
+				<form class="checkout-form" action="/{{ dest_url }}" method="POST">
 					<dl>
 					{% for field in form %}
 						{{ render_field(field) }}
 					{% endfor %}
 					</dl>
-					<p class="proceed-to-payment-button-container"><button class="btn btn-default">Proceed to payment</button></p>
+
+					{% if total_price == 0 %}
+						<p class="proceed-to-payment-button-container"><button class="btn btn-default">Confirm order</button></p>
+					{% else %}
+						<p class="proceed-to-payment-button-container"><button class="btn btn-default">Proceed to payment</button></p>
+					{% endif %}
 				</form>
 
 			</div>
