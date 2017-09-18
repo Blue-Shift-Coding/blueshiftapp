@@ -201,14 +201,20 @@ def cart():
     # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
     if product_id is not None:
 
+        product_exists = shop_data.product_exists(id=product_id)
+        if not product_exists:
+            return redirect(url_for('cart'))
+
         product = shop_data.get_product(id=product_id)
         if product is None:
+
+            # This redirect is probably unnecessary, but have left it in for now (2017-09-18)
             return redirect(url_for('cart'))
 
         # If no booking info provided, show a form requesting it
         form_id = None
         for meta_datum in product["meta_data"]:
-            if meta_datum["key"] == "_gravity_form_data":
+            if "key" in meta_datum and meta_datum["key"] == "_gravity_form_data":
                 form_id = meta_datum["value"]["id"]
                 break
         if form_id is not None:
@@ -319,7 +325,7 @@ def checkout():
 @app.route('/requestcourseinfo', methods=['POST'])
 def requestcourseinfo():
 
-    if not request.form["email"]:
+    if "email" not in request.form or not request.form["email"]:
         return Response("No email supplied")
 
     api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
@@ -327,7 +333,7 @@ def requestcourseinfo():
         "from" : course_info_request["sender"],
         "to" : course_info_request["recipient"],
         "subject" : "Course info request",
-        "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
+        "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+(request.form["course"] if ("course" in request.form and request.form["course"]) else ""))
     })
 
     return Response("{'status': 'ok'}")
@@ -430,7 +436,8 @@ def processpayment():
         raise Exception("Invalid response from WooCommerce")
 
     # Empty the basket
-    del session["basket"]
+    if "basket" in session:
+        del session["basket"]
 
     return redirect(url_for("ordercomplete"))
 
@@ -466,14 +473,14 @@ def classes(url_category):
 
         categories = shop_data.get_categories()
         for category in categories:
-            if category["parent"] == filters_category["id"]:
+            if "parent" in category and (category["parent"] == filters_category["id"]):
                 filter_category_ids[category["name"].lower()] = category["id"]
                 filters.append({"category": category, "child_categories": []})
 
         # Find filter options
         for class_filter in filters:
             for category in categories:
-                if category["parent"] == class_filter["category"]["id"]:
+                if "parent" in category and (category["parent"] == class_filter["category"]["id"]):
                     class_filter["child_categories"].append(category)
 
     # Compile list of categories to restrict products by
