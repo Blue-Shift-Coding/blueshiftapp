@@ -403,6 +403,18 @@
 }
 
 
+/* Payment page */
+
+#btn_payWithStripe, #btn_payWithStripe:hover {
+  box-shadow: none;
+}
+
+#btn_payWithStripe.disabled, #btn_payWithStripe.disabled:hover {
+  opacity:0.5;
+  background-color:#f5c644;
+}
+
+
 
 /* Top menu */
 

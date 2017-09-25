@@ -3,6 +3,66 @@
  * Filters
  */
 (function($) {
+
+	// Set up the 'terms and conditions' checkbox on the payment screen
+	$(function() {
+		var termsCheckbox, stripeButton, handler;
+
+		termsCheckbox = $("#checkbox_terms");
+		stripeButton = $("#btn_payWithStripe");
+
+		if (termsCheckbox.length && stripeButton.length) {
+
+			handler = StripeCheckout.configure({
+			  key: stripeButton.attr("key"),
+			  image: 'https://s3.amazonaws.com/stripe-uploads/acct_17Qz37HP8IoqDW11merchant-icon-1452255057982-happy128.png',
+			  locale: 'auto',
+			  token: function(token) {
+			    // You can access the token ID with `token.id`.
+			    // Get the token ID to your server-side code for use.
+			  }
+			});
+
+			termsCheckbox.on("click", enableDisableStripeButton);
+			enableDisableStripeButton();
+			function enableDisableStripeButton() {
+				var isChecked;
+
+				isChecked = termsCheckbox.prop("checked");
+				if (isChecked) {
+					stripeButton.removeClass("disabled");
+				} else {
+					stripeButton.addClass("disabled");
+				}
+				stripeButton.prop("disabled", !isChecked);
+			}
+
+			stripeButton.on('click', function(e) {
+				if (!termsCheckbox.prop("checked")) {
+					alert("Please agree to the terms and conditions");
+					e.preventDefault();
+					return false;
+				}
+
+				handler.open({
+					name: 'blue{shift} Coding',
+					description: 'Creating coding for creative kids',
+					amount: parseFloat(stripeButton.attr("amount")),
+					currency: "gbp"
+				});
+
+				// Open Checkout with further options:
+				e.preventDefault();
+			});
+
+			// Close Checkout on page navigation:
+			$(window).on('popstate', function() {
+				handler.close();
+			});
+		}
+	});
+
+	// Set up the filters etc
 	$(function() {
 		var filters, queryStringParts, i, queryStringData, urlParts, category;
 

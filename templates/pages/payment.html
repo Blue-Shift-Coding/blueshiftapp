@@ -26,16 +26,13 @@
 						{% endfor %}
 					</div>
 
-					<script
-						src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-						data-key="{{ stripe_publishable_key }}"
-						data-amount="{{(total_price | float) * 100}}"
-						data-name="blue{shift} Coding"
-						data-description="Creating coding for creative kids"
-						data-image="https://s3.amazonaws.com/stripe-uploads/acct_17Qz37HP8IoqDW11merchant-icon-1452255057982-happy128.png"
-						data-locale="auto"
-						data-currency="gbp">
-					</script>
+					<p>
+						<input type="checkbox" id="checkbox_terms" /> <label for="checkbox_terms">I agree to Blueshift's <a href="/terms" target="_blank">Terms and Conditions</a></label>
+					</p>
+
+					<script src="https://checkout.stripe.com/checkout.js"></script>
+					<button id="btn_payWithStripe" class="btn btn-primary disabled" key="{{ stripe_publishable_key }}" amount="{{ (total_price | float) * 100 }}">Pay with card</button>
+
 				</form>
 
 			</div>
