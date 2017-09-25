@@ -18,8 +18,10 @@
 			  image: 'https://s3.amazonaws.com/stripe-uploads/acct_17Qz37HP8IoqDW11merchant-icon-1452255057982-happy128.png',
 			  locale: 'auto',
 			  token: function(token) {
-			    // You can access the token ID with `token.id`.
-			    // Get the token ID to your server-side code for use.
+				var form = stripeButton.closest("form");
+
+				form.find("input[name=stripeToken]").val(token.id);
+				form.submit();
 			  }
 			});
 

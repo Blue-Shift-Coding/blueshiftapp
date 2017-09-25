@@ -19,8 +19,9 @@
 				<p>Please check the total below, and then hit 'pay with card' if you are happy.</p>
 
 				<p>Total to pay: {{ total_price|currency }} </p>
-				<form class="checkout-form" action="/processpayment" method="POST">
+				<form id="payment_form" class="checkout-form" action="/processpayment" method="POST">
 					<div>
+						<input type="hidden" name="stripeToken" value="" />
 						{% for field in form %}
 							{{ render_field(field) }}
 						{% endfor %}
