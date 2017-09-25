@@ -469,7 +469,28 @@ def singleclass(slug):
 @app.route('/coupons/<code>')
 def coupons(code):
     coupon = shop_data.get_coupon(code=code)
-    return jsonify(coupon)
+    allowed_keys = [
+        "id",
+        "amount",
+        "code",
+        "discount_type",
+        "exclude_sale_items",
+        "excluded_product_categories",
+        "excluded_product_ids",
+        "free_shipping",
+        "individual_use",
+        "limit_usage_to_x_items",
+        "maximum_amount",
+        "product_categories",
+        "product_ids",
+        "usage_count",
+        "usage_limit",
+        "usage_limit_per_user"
+    ]
+
+    filtered_coupon = {k: coupon[k] for k in allowed_keys if k in coupon}
+
+    return jsonify(filtered_coupon)
 
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')

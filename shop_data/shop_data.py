@@ -1,7 +1,8 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import storage, pprint, os, time, sys, urllib
+import storage, pprint, os, time, sys, urllib, datetime
 from woocommerceapi import wcapi
 from gravityformsapi import gf
+from dateutil.parser import parse
 
 
 #### Config
@@ -260,11 +261,26 @@ def get_categories():
 
 def get_coupon(code):
 	response = wcapi.get("coupons?code="+urllib.quote(code))
-
 	response_json = response.json()
 
-	if len(response_json) == 0:
-		return {}
+	# Find a coupon that is currently valid and return it
+	# TODO:WV:20170925:Test the filter conditions
+	if len(response_json):
+		for coupon in response_json:
 
-	coupon = response.json()[0]
-	return coupon
+			if parse(coupon["date_expires_gmt"]) < datetime.datetime.utcnow():
+				continue
+
+			if coupon["discount_type"] not in ["fixed_cart", "percentage_discount"]:
+				continue
+
+			if coupon["usage_limit_per_user"] is not None:
+				continue
+
+			if coupon["usage_limit"] is not None and coupon["usage"] is not None and coupon["usage"] >= coupon["usage_limit"]:
+				continue
+
+			return coupon
+
+	# If no valid coupon found, return blank object to signify as such
+	return {}
