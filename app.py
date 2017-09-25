@@ -484,8 +484,7 @@ def coupons(code):
         "product_categories",
         "product_ids",
         "usage_count",
-        "usage_limit",
-        "usage_limit_per_user"
+        "usage_limit"
     ]
 
     filtered_coupon = {k: coupon[k] for k in allowed_keys if k in coupon}
