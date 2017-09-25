@@ -1,7 +1,8 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import storage, pprint, os, time, sys
+import storage, pprint, os, time, sys, urllib
 from woocommerceapi import wcapi
 from gravityformsapi import gf
+
 
 #### Config
 data_lifetime_in_seconds = 14400
@@ -256,3 +257,14 @@ def get_products(categories=None, page_num=1, per_page=10):
 def get_categories():
 	category_ids = get_item_ids("categories")
 	return ids_to_items("categories", category_ids)
+
+def get_coupon(code):
+	response = wcapi.get("coupons?code="+urllib.quote(code))
+
+	response_json = response.json()
+
+	if len(response_json) == 0:
+		return {}
+
+	coupon = response.json()[0]
+	return coupon

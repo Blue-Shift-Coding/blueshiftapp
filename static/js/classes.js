@@ -4,6 +4,32 @@
  */
 (function($) {
 
+	// Handle discount codes
+	$(function() {
+		var couponRow, couponForm;
+
+		couponRow = $("#coupon-row");
+		couponForm = couponRow.find("form");
+
+		couponForm.on("submit", function(e) {
+			var form, code;
+
+			form = $(this);
+
+			code = form.find("input[name=coupon]").val();
+
+			if (code) {
+				console.log("Fetching code details");
+				$.get("/coupons/"+encodeURIComponent(code), function(response) {
+					console.log("code details", response);
+				});
+			}
+
+			e.preventDefault();
+			return false;
+		});
+	});
+
 	// Set up the 'terms and conditions' checkbox on the payment screen
 	$(function() {
 		var termsCheckbox, stripeButton, handler;

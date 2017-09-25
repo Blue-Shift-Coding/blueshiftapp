@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------------#
 
 # Flask modules
-from flask import Flask, render_template, request, redirect, Response, url_for, session, flash
+from flask import Flask, render_template, request, redirect, Response, url_for, session, flash, jsonify
 import wtforms
 from forms import *
 
@@ -466,6 +466,10 @@ def singleclass(slug):
 
     return product
 
+@app.route('/coupons/<code>')
+def coupons(code):
+    coupon = shop_data.get_coupon(code=code)
+    return jsonify(coupon)
 
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')

@@ -347,6 +347,10 @@
   font-weight:bold;
 }
 
+.shopping-basket .coupon-fields form {
+  display: inline;
+}
+
 .shopping-basket tbody td:first-child, .shopping-basket tfoot td:first-child {
   border-left-width:1px;
 }
