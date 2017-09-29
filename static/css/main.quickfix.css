@@ -148,3 +148,15 @@ text{
 .schools-contact-border {
   border-color: #1489B2 !important
 }
+
+@media screen and (max-width: 768px) {
+  .logos {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .logo-text {
+    display: none;
+  }
+}
