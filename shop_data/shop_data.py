@@ -1,7 +1,9 @@
 # To run this on the command line, use: 'python -m shop_data.download'
-import storage, pprint, os, time, sys
+import storage, pprint, os, time, sys, urllib, datetime
 from woocommerceapi import wcapi
 from gravityformsapi import gf
+from dateutil.parser import parse
+
 
 #### Config
 data_lifetime_in_seconds = 14400
@@ -77,13 +79,28 @@ def get_item_ids(item_name):
 		ids = []
 	return ids
 
-def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
+def confirm_single_item_exists(item_name, item_id=None, item_slug=None):
+	item_id = get_single_item_id(item_name, item_id, item_slug)
+	if item_id is None:
+		return False
+
+	item = storage.get(get_single_item_storage_key(item_name, item_id))
+	return item is not None
+
+def get_single_item_id(item_name, item_id=None, item_slug=None):
 	if item_id is None:
 		if item_slug is None:
 			raise Exception("Please provide either an item ID or a slug")
 		slugs = storage.get(get_slugs_storage_key(item_name))
-		if slugs[item_slug]:
+		if item_slug in slugs:
 			item_id = slugs[item_slug]
+
+	return item_id
+
+def get_single_item_storage_key(item_name, item_id=None, item_slug=None):
+	item_id = get_single_item_id(item_name, item_id, item_slug)
+	if item_id is None:
+		raise Exception("Item ID not found")
 
 	return item_name+"_"+str(item_id)
 
@@ -179,6 +196,9 @@ def get_category(name, parent_id = None):
 		if correct_name and correct_parent:
 			return category
 
+def product_exists(id=None, slug=None):
+	return confirm_single_item_exists("products", item_id=id, item_slug=slug)
+
 def get_product(id=None, slug=None):
 	storage_key = get_single_item_storage_key("products", item_id=id, item_slug=slug)
 	return storage.get(storage_key)
@@ -238,3 +258,29 @@ def get_products(categories=None, page_num=1, per_page=10):
 def get_categories():
 	category_ids = get_item_ids("categories")
 	return ids_to_items("categories", category_ids)
+
+def get_coupon(code):
+	response = wcapi.get("coupons?code="+urllib.quote(code))
+	response_json = response.json()
+
+	# Find a coupon that is currently valid and return it
+	# TODO:WV:20170925:Test the filter conditions
+	if len(response_json):
+		for coupon in response_json:
+
+			if parse(coupon["date_expires_gmt"]) < datetime.datetime.utcnow():
+				continue
+
+			if coupon["discount_type"] not in ["fixed_cart", "percentage_discount"]:
+				continue
+
+			if coupon["usage_limit_per_user"] is not None:
+				continue
+
+			if coupon["usage_limit"] is not None and coupon["usage"] is not None and coupon["usage"] >= coupon["usage_limit"]:
+				continue
+
+			return coupon
+
+	# If no valid coupon found, return blank object to signify as such
+	return {}

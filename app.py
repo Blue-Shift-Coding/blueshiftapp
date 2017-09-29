@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------------#
 
 # Flask modules
-from flask import Flask, render_template, request, redirect, Response, url_for, session, flash
+from flask import Flask, render_template, request, redirect, Response, url_for, session, flash, jsonify
 import wtforms
 from forms import *
 
@@ -196,14 +196,20 @@ def cart():
     # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
     if product_id is not None:
 
+        product_exists = shop_data.product_exists(id=product_id)
+        if not product_exists:
+            return redirect(url_for('cart'))
+
         product = shop_data.get_product(id=product_id)
         if product is None:
+
+            # This redirect is probably unnecessary, but have left it in for now (2017-09-18)
             return redirect(url_for('cart'))
 
         # If no booking info provided, show a form requesting it
         form_id = None
         for meta_datum in product["meta_data"]:
-            if meta_datum["key"] == "_gravity_form_data":
+            if "key" in meta_datum and meta_datum["key"] == "_gravity_form_data":
                 form_id = meta_datum["value"]["id"]
                 break
         if form_id is not None:
@@ -293,28 +299,33 @@ def checkout():
         return redirect(url_for("classes"))
 
     form = shopping_basket.CheckoutForm(request.form)
+    all_basket_data = shopping_basket.get_all_basket_data()
     if request.method == 'POST' and form.validate():
         session["checkout-parent-info-ok"] = True
+
+        if all_basket_data["total_price"] == 0:
+            return redirect(url_for("processpayment"))
+
         return render_template(
             "pages/payment.html",
             form=form,
             stripe_publishable_key=stripe_keys["publishable"],
             basket=session["basket"],
-            **shopping_basket.get_all_basket_data()
+            **all_basket_data
         )
 
     return render_template(
         "pages/checkout.html",
         form=form,
         basket=session["basket"],
-        **shopping_basket.get_all_basket_data()
+        **all_basket_data
     )
 
 
 @app.route('/requestcourseinfo', methods=['POST'])
 def requestcourseinfo():
 
-    if not request.form["email"]:
+    if "email" not in request.form or not request.form["email"]:
         return Response("No email supplied")
 
     api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
@@ -322,7 +333,7 @@ def requestcourseinfo():
         "from" : course_info_request["sender"],
         "to" : course_info_request["recipient"],
         "subject" : "Course info request",
-        "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+request.form["course"] if request.form["course"] else "")
+        "text" : "Email address: "+request.form["email"]+("\nCourse enquired about: "+(request.form["course"] if ("course" in request.form and request.form["course"]) else ""))
     })
 
     return Response("{'status': 'ok'}")
@@ -338,44 +349,46 @@ def processpayment():
     for item_id in session["basket"]:
 
         # Load gravity forms entry and form
-        gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
-        gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
-        if not gravity_forms_entry:
-            raise Exception("Form data could not be retrieved")
-        gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
-        if not gravity_forms_form:
-            raise Exception("Form not found")
-
-        # Iterate through fields in the gravity form, add meta-data to the line-item for each one
         line_item_meta_data = []
-        gravity_forms_lead = {}
-        def add_field(field):
-            field_key = str(field["id"])
+        if "gravity_forms_entry" in session["basket"][item_id]:
+            gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
+            gravity_forms_entry = shopping_basket.uncache_gravity_forms_entry(gravity_forms_entry_id)
+            if not gravity_forms_entry:
+                raise Exception("Form data could not be retrieved")
+            gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+            if not gravity_forms_form:
+                raise Exception("Form not found")
 
-            if field_key in gravity_forms_entry:
-                gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
-                line_item_meta_data.append({
-                    "key": field["label"],
-                    "value": gravity_forms_entry[field_key]
-                })
-        for field in gravity_forms_form["fields"]:
-            if field["type"] == "name":
-                for sub_field in field["inputs"]:
-                    add_field(sub_field)
+            # Iterate through fields in the gravity form, add meta-data to the line-item for each one
+            gravity_forms_lead = {}
+            def add_field(field):
+                field_key = str(field["id"])
 
-            if str(field["id"]) in gravity_forms_entry:
-                add_field(field)
-        line_item_meta_data.append({
-            "key": "_gravity_forms_history",
-            "value": {
-                "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
-                "_gravity_form_lead": gravity_forms_lead
-            },
-        })
+                if field_key in gravity_forms_entry:
+                    gravity_forms_lead[field_key] = gravity_forms_entry[field_key]
+                    line_item_meta_data.append({
+                        "key": field["label"],
+                        "value": gravity_forms_entry[field_key]
+                    })
+            for field in gravity_forms_form["fields"]:
+                if field["type"] == "name":
+                    for sub_field in field["inputs"]:
+                        add_field(sub_field)
+
+                if str(field["id"]) in gravity_forms_entry:
+                    add_field(field)
+            line_item_meta_data.append({
+                "key": "_gravity_forms_history",
+                "value": {
+                    "_gravity_form_data": {"id": gravity_forms_entry["form_id"]},
+                    "_gravity_form_lead": gravity_forms_lead
+                },
+            })
 
         # Add the actual line item
         product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-        line_item_total = float(product["price"])
+        line_item_total = (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
+
         if "price_adjustments" in session["basket"][item_id]:
             line_item_total += session["basket"][item_id]["price_adjustments"]
 
@@ -392,19 +405,20 @@ def processpayment():
     # - charge the card
     basket_data = shopping_basket.get_all_basket_data()
     amount = int(float(basket_data["total_price"]) * 100)
-    stripe_charge_data = {
-        "source":request.form["stripeToken"],
-        "amount":amount,
-        "currency":"gbp",
-        "description":"Flask Charge"
-    }
-    stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
-    customer_email = stripe_info["email"]
-    if customer_email:
-        stripe_charge_data.update({
-            "receipt_email":customer_email
-        })
-    charge = stripe.Charge.create(**stripe_charge_data)
+    if (amount != 0):
+        stripe_charge_data = {
+            "source":request.form["stripeToken"],
+            "amount":amount,
+            "currency":"gbp",
+            "description":"Flask Charge"
+        }
+        stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
+        customer_email = stripe_info["email"]
+        if customer_email:
+            stripe_charge_data.update({
+                "receipt_email":customer_email
+            })
+        charge = stripe.Charge.create(**stripe_charge_data)
 
     # Submit order to WooCommerce API
     parent_data = {
@@ -425,7 +439,8 @@ def processpayment():
         raise Exception("Invalid response from WooCommerce")
 
     # Empty the basket
-    del session["basket"]
+    if "basket" in session:
+        del session["basket"]
 
     return redirect(url_for("ordercomplete"))
 
@@ -446,6 +461,30 @@ def singleclass(slug):
 
     return product
 
+@app.route('/coupons/<code>')
+def coupons(code):
+    coupon = shop_data.get_coupon(code=code)
+    allowed_keys = [
+        "id",
+        "amount",
+        "code",
+        "discount_type",
+        "exclude_sale_items",
+        "excluded_product_categories",
+        "excluded_product_ids",
+        "free_shipping",
+        "individual_use",
+        "limit_usage_to_x_items",
+        "maximum_amount",
+        "product_categories",
+        "product_ids",
+        "usage_count",
+        "usage_limit"
+    ]
+
+    filtered_coupon = {k: coupon[k] for k in allowed_keys if k in coupon}
+
+    return jsonify(filtered_coupon)
 
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')
@@ -461,14 +500,14 @@ def classes(url_category):
 
         categories = shop_data.get_categories()
         for category in categories:
-            if category["parent"] == filters_category["id"]:
+            if "parent" in category and (category["parent"] == filters_category["id"]):
                 filter_category_ids[category["name"].lower()] = category["id"]
                 filters.append({"category": category, "child_categories": []})
 
         # Find filter options
         for class_filter in filters:
             for category in categories:
-                if category["parent"] == class_filter["category"]["id"]:
+                if "parent" in category and (category["parent"] == class_filter["category"]["id"]):
                     class_filter["child_categories"].append(category)
 
     # Compile list of categories to restrict products by
