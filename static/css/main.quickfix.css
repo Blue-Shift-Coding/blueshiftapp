@@ -149,6 +149,7 @@ text{
   border-color: #1489B2 !important
 }
 
+
 @media screen and (max-width: 768px) {
   .logos {
     display: none;

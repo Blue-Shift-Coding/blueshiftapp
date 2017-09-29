@@ -3457,11 +3457,11 @@ footer .color-bar {
 
 /*=== 5.5 SERVICES SECTION ===*/
 .servicesSection {
-  background-image: url("../img/home/pattern-light.png");
   width: 100%;
   background-repeat: repeat;
   height: auto;
   padding-bottom: 60px;
+  background-color: #1489B2 !important;
 }
 
 .servicesContent {
