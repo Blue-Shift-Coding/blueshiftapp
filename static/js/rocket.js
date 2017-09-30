@@ -77,7 +77,8 @@ function initMessage(){
    }
   },
   ease:Linear.easeNone
- },1)
+  //onComplete:launch
+ },1, launch)
  //heroLine0.textContent = ()
  //heroLine1.textContent = (heroMessageArr[heroMessageCount].split('^')[1])
 
@@ -177,17 +178,9 @@ function changeHeroMessage(){
 
 function resetAll(){
 
- TweenMax.set(allClouds, {
-  //scale:1
- })
-
  readoutTl.timeScale(1);
- //readoutTl.pause(0);
- //console.log(cloudsTl)
- //cloudsTl.seek(0);
- //rocketFlameTl.seek(0);
  rocketFlameTl.restart(true, false);
-//cloudsTl.progress(0)
+
  cloudsTl.restart(true, false);
 
 }
@@ -296,7 +289,6 @@ mainTl.timeScale(1)
 
 function launch(){
 
- //console.log(mainTl.isActive())
  resetAll();
 
  if(!mainTl.isActive()){
@@ -304,11 +296,6 @@ function launch(){
  }
 
 }
-
-
-//ScrubGSAPTimeline(mainTl);
-//tl.seek(0)
-
 
 
 function randomBetween(min, max) {
