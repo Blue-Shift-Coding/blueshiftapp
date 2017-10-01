@@ -2,7 +2,7 @@
 import storage, pprint, os, time, sys, urllib, datetime
 from woocommerceapi import wcapi
 from gravityformsapi import gf
-from dateutil.parser import parse
+# from dateutil.parser import parse
 
 
 #### Config

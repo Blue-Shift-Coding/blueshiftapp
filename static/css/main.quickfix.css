@@ -149,6 +149,11 @@ text{
   border-color: #1489B2 !important
 }
 
+.schools-link {
+  font-size: 16px;
+  font-weight: bold;
+}
+
 
 @media screen and (max-width: 768px) {
   .logos {
