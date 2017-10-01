@@ -338,6 +338,24 @@ def requestcourseinfo():
 
     return Response("{'status': 'ok'}")
 
+@app.route('/requestschoolsinfo', methods=['POST'])
+def requestschoolsinfo():
+
+    if "email" not in request.form or not request.form["email"]:
+        return Response("No email supplied")
+
+    api_url = "https://api:"+mailgun_secret_key+"@api.mailgun.net/v2/mailgun.blueshiftcoding.com"
+    r = requests.post(api_url+"/messages", data={
+        "from" : course_info_request["sender"],
+        "to" : course_info_request["recipient"],
+        "subject" : "Course info request",
+        "text" : "Email address: "+request.form["email"] +
+        "\nName: "+(request.form["first_name"] ) + "\nMessage: "+request.form["message"]
+    })
+
+    flash("Thanks for getting in touch, we'll get back to you ASAP")
+    return redirect(url_for("schools"))
+
 @app.route('/processpayment', methods=['POST'])
 def processpayment():
 
