@@ -258,7 +258,7 @@ def cart():
                     )
                     data_for_session["gravity_forms_entry"] = gravity_forms_entry_id
                 else:
-                    raise Exception("Invlid response from gravity forms")
+                    raise Exception("Invalid response from gravity forms")
 
             # If no valid form was submitted, display the form
             else:
