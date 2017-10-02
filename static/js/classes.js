@@ -21,6 +21,14 @@
 				console.log("Fetching code details");
 				$.get("/coupons/"+encodeURIComponent(code), function(response) {
 					var couponDetails = response;
+
+					if (typeof couponDetails != "object" || typeof couponDetails["id"] == "undefined") {
+
+						// TODO:WV:20171002:Better error here
+						alert("Could not find that discount code in the database");
+						return;
+					}
+
 					console.log("Submitting", couponDetails);
 					$.post("/cart/coupon", {"coupon": JSON.stringify(couponDetails)}, function(response) {
 						console.log("Response", response);
