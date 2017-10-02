@@ -47,7 +47,7 @@ def get_all_basket_data():
             if basket_item["coupon"]["discount_type"] == "fixed_cart":
                 total_price -= float(basket_item["coupon"]["amount"])
             elif basket_item["coupon"]["discount_type"] == "percent":
-                total_price *= (float(basket_item["coupon"]["amount"]) / 100)
+                total_price *= ((100 - float(basket_item["coupon"]["amount"])) / 100)
             elif basket_item["coupon"]["discount_type"] == "fixed_product":
                 # TODO:WV:20171002:Implement this
                 pass
