@@ -339,6 +339,7 @@ def cart():
     return render_template(
         "pages/basket.html",
         basket=sorted_basket,
+        show_coupon_row=len(basket_coupons) == 0,
         **shopping_basket.get_all_basket_data()
     )
 

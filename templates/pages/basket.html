@@ -53,11 +53,13 @@
 					</tbody>
 
 					<tfoot>
+						{% if show_coupon_row %}
 						<tr id="coupon-row">
 							<td colspan="2"></td>
 							<td class="coupon-label">Discount code</td>
 							<td class="coupon-fields"><form method="POST" action=""><input name="coupon" /> <button>Apply</button></form></td>
 						</tr>
+						{% endif %}
 						<tr>
 							<td colspan="2"></td>
 							<td>Total</td>
