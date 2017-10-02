@@ -181,7 +181,6 @@ def forgot():
 def cart():
 
     # Extract input from post-data
-    # TODO:WV:20171002:Validate coupon
     coupon = None if "coupon" not in request.form else request.form["coupon"]
     product_id = None if "product_id" not in request.form else request.form["product_id"]
     delete_item_id = None if "delete_item_id" not in request.form else request.form["delete_item_id"]
@@ -208,6 +207,8 @@ def cart():
         for item_id in session["basket"]:
             if "coupon" in session["basket"][item_id]:
                 return jsonify({"status": "error", "msg": "Only one discount code can be used at a time"})
+
+        # Other validation (e.g. coupon expiry, etc. performed at the point of requesting coupon from /coupon/<code>)
 
         uniqid = blueshiftutils.uniqid()
         session["basket"][uniqid] = {
