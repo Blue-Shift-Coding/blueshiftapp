@@ -10,7 +10,7 @@ import wtforms
 from forms import *
 
 # Core modules
-import os, time, copy, math, json, re, requests, collections, json
+import os, time, copy, math, json, re, requests, collections, json, hashlib
 import logging, pprint
 from logging import Formatter, FileHandler
 
@@ -181,7 +181,6 @@ def forgot():
 def cart():
 
     # Extract input from post-data
-    # TODO:WV:20171002:Sign coupon data to prevent users inventing their own coupons
     # TODO:WV:20171002:Validate coupon
     coupon = None if "coupon" not in request.form else request.form["coupon"]
     product_id = None if "product_id" not in request.form else request.form["product_id"]
@@ -195,8 +194,20 @@ def cart():
     # TODO:WV:20171002:For now, only allow one coupon at a time (bearing in mind space in Python session and complications that would be involved in syncing coupons from server, expiring at appropriate dates, etc.)
     if coupon is not None:
 
-        # TODO:WV:20171002:Validate that this worked / the coupon was valid JSON
-        coupon = json.loads(coupon)
+        # Decode incoming coupon
+        try:
+            coupon = json.loads(coupon)
+        except:
+            return jsonify({"status": "error"})
+
+        # Check coupon for valid signature
+        if not validate_signature(coupon):
+            return jsonify({"status": "error"})
+
+        # Check that there is not already a coupon in the basket
+        for item_id in session["basket"]:
+            if "coupon" in session["basket"][item_id]:
+                return jsonify({"status": "error", "msg": "Only one discount code can be used at a time"})
 
         uniqid = blueshiftutils.uniqid()
         session["basket"][uniqid] = {
@@ -540,8 +551,33 @@ def coupons(code):
     ]
 
     filtered_coupon = {k: coupon[k] for k in allowed_keys if k in coupon}
+    filtered_coupon = sign(filtered_coupon)
 
     return jsonify(filtered_coupon)
+
+def sign(dictionary, lifespan=3600):
+    working_dictionary = dictionary.copy()
+    gentime = int(time.time())
+    working_dictionary["gentime"] = gentime
+    working_dictionary["expiry"] = gentime + lifespan
+    ordered_dict = collections.OrderedDict(sorted(working_dictionary.items()))
+    ordered_dict["signature"] = get_signature(ordered_dict)
+    return dict(ordered_dict)
+
+def get_signature(ordered_dict):
+    return hashlib.sha256(json.dumps(ordered_dict)).hexdigest()
+
+def validate_signature(dictionary, lifespan=3600):
+    if "gentime" not in dictionary or "expiry" not in dictionary or "signature" not in dictionary:
+        return False
+    if int(dictionary["expiry"]) < int(time.time()):
+        return False
+    working_dictionary = dictionary.copy()
+    signature_to_check = working_dictionary["signature"]
+    del working_dictionary["signature"]
+    ordered_dict = collections.OrderedDict(sorted(working_dictionary.items()))
+    return (signature_to_check == get_signature(ordered_dict))
+
 
 @app.route('/classes/', defaults={"url_category": None})
 @app.route('/classes/<url_category>')

@@ -18,9 +18,10 @@
 			code = form.find("input[name=coupon]").val();
 
 			if (code) {
-				console.log("Fetching code details");
 				$.get("/coupons/"+encodeURIComponent(code), function(response) {
-					var couponDetails = response;
+					var couponDetails, errMsg;
+
+					couponDetails = response;
 
 					if (typeof couponDetails != "object" || typeof couponDetails["id"] == "undefined") {
 
@@ -29,20 +30,20 @@
 						return;
 					}
 
-					if (typeof couponDetails["error"] != "undefined") {
-						alert(couponDetails["error"]);
+					if (typeof couponDetails["status"] != "undefined" && couponDetails["status"] == "error") {
+						errMsg = ((typeof couponDetails["msg"] == "undefined")?"Your discount code could not be added to your basket, due to an error":couponDetails["msg"])
+						alert(errMsg);
 						return;
 					}
 
-					console.log("Submitting", couponDetails);
 					$.post("/cart/coupon", {"coupon": JSON.stringify(couponDetails)}, function(response) {
-						if (typeof response["error"] != "undefined") {
-							alert(response["error"]);
+						if (typeof response["status"] != "undefined" && response["status"] == "error") {
+							errMsg = ((typeof response["msg"] == "undefined")?"Your discount code could not be added to your basket, due to an error":response["msg"])
+							alert(errMsg);
 							return;
 						}
 
 						// TODO:WV:20171002:Update the table using Javascript rather than reloading the page
-						// TODO:WV:20171002:Handle errors
 						location.reload();
 					});
 				});
