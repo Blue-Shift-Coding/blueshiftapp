@@ -43,11 +43,7 @@
 
 									<td>{# No image #}</td>
 									<td>Discount code: {{ basket[item_id].coupon.code }} </td>
-									<td>-{{ "" if basket[item_id].coupon.discount_type == "percentage" else "£" }}{{ basket[item_id].coupon.amount }}{{ "%" if basket[item_id].coupon.discount_type == "percentage" else "" }}</td>
-
-									{#
-										 ({{ "" if basket[item_id][coupon][discount_type] == "percentage" else "&pound;" }}{{ basket[item_id][coupon][amount] }}{{ "%" if basket[item_id][coupon][discount_type] == "percentage" else "" }})
-									#}
+									<td>-{{ "" if basket[item_id].coupon.discount_type == "percent" else "£" }}{{ basket[item_id].coupon.amount }}{{ "%" if basket[item_id].coupon.discount_type == "percent" else "" }}</td>
 
 								{% endif %}
 
