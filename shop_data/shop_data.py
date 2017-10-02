@@ -271,7 +271,7 @@ def get_coupon(code):
 			if parse(coupon["date_expires_gmt"]) < datetime.datetime.utcnow():
 				continue
 
-			if coupon["discount_type"] not in ["fixed_cart", "percentage_discount"]:
+			if coupon["discount_type"] not in ["fixed_cart", "percent"]:
 				continue
 
 			if coupon["usage_limit_per_user"] is not None:
