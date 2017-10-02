@@ -36,58 +36,77 @@ def get_all_basket_data():
     # Including total price
     products = {}
     names = {}
+    coupons = {}
     total_price = 0;
     for item_id in session["basket"]:
         basket_item = session["basket"][item_id]
         if not isinstance(basket_item, dict):
             continue
-        product_exists = shop_data.product_exists(id=basket_item["product_id"])
-        if not product_exists:
-            continue
-        product = shop_data.get_product(id=basket_item["product_id"])
-        products[session["basket"][item_id]["product_id"]] = product
-        total_price += (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
-        if "price_adjustments" in session["basket"][item_id]:
-            total_price += session["basket"][item_id]["price_adjustments"]
 
-        if "gravity_forms_entry" in session["basket"][item_id]:
-            gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
-            gravity_forms_entry = uncache_gravity_forms_entry(gravity_forms_entry_id)
-            gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
+        if "coupon" in basket_item:
+            if basket_item["coupon"]["discount_type"] == "fixed_cart":
+                total_price -= float(basket_item["coupon"]["amount"])
+            elif basket_item["coupon"]["discount_type"] == "percent":
+                total_price *= (float(basket_item["coupon"]["amount"]) / 100)
+            elif basket_item["coupon"]["discount_type"] == "fixed_product":
+                # TODO:WV:20171002:Implement this
+                pass
+            else:
+                raise Exception("Unknown coupon type")
+            coupons[basket_item["coupon"]["id"]] = basket_item["coupon"]
 
-            this_item_name = None
-            for field in gravity_forms_form["fields"]:
-                name_labels = [
-                    "childsname",
-                    "nameofchild",
-                    "studentsname",
-                    "nameofstudent",
-                    "attendeesname",
-                    "nameofattendee"
-                ]
-                if re.sub("[^a-zA-Z]", "", field["label"]).lower() in name_labels:
+        elif "product_id" in basket_item:
+            product_exists = shop_data.product_exists(id=basket_item["product_id"])
+            if not product_exists:
+                continue
+            product = shop_data.get_product(id=basket_item["product_id"])
+            products[session["basket"][item_id]["product_id"]] = product
+            total_price += (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
+            if "price_adjustments" in session["basket"][item_id]:
+                total_price += session["basket"][item_id]["price_adjustments"]
 
-                    # Concatenate all sub-fields of name-fields
-                    if field["type"] == "name" and "inputs" in field:
-                        this_item_name = ""
-                        for sub_field in field["inputs"]:
-                            for field_id in gravity_forms_entry:
-                                if str(field_id) == str(sub_field["id"]):
-                                    this_item_name += gravity_forms_entry[field_id]+" "
-                        this_item_name = this_item_name.strip()
+            if "gravity_forms_entry" in session["basket"][item_id]:
+                gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
+                gravity_forms_entry = uncache_gravity_forms_entry(gravity_forms_entry_id)
+                gravity_forms_form = shop_data.get_form(gravity_forms_entry["form_id"])
 
-                    # Use the value of other fields, as-is
-                    elif str(field["id"]) in gravity_forms_entry and gravity_forms_entry[str(field["id"])] != "":
-                        this_item_name = gravity_forms_entry[str(field["id"])]
+                this_item_name = None
+                for field in gravity_forms_form["fields"]:
+                    name_labels = [
+                        "childsname",
+                        "nameofchild",
+                        "studentsname",
+                        "nameofstudent",
+                        "attendeesname",
+                        "nameofattendee"
+                    ]
+                    if re.sub("[^a-zA-Z]", "", field["label"]).lower() in name_labels:
 
-                    # Stop looking for name-fields
-                    break
+                        # Concatenate all sub-fields of name-fields
+                        if field["type"] == "name" and "inputs" in field:
+                            this_item_name = ""
+                            for sub_field in field["inputs"]:
+                                for field_id in gravity_forms_entry:
+                                    if str(field_id) == str(sub_field["id"]):
+                                        this_item_name += gravity_forms_entry[field_id]+" "
+                            this_item_name = this_item_name.strip()
 
-            if this_item_name:
-                names[item_id] = this_item_name
+                        # Use the value of other fields, as-is
+                        elif str(field["id"]) in gravity_forms_entry and gravity_forms_entry[str(field["id"])] != "":
+                            this_item_name = gravity_forms_entry[str(field["id"])]
+
+                        # Stop looking for name-fields
+                        break
+
+                if this_item_name:
+                    names[item_id] = this_item_name
+        else:
+            raise Exception("Unknown basket item type")
+
 
     return {
         "products": products,
+        "coupons": coupons,
         "total_price": total_price,
         "names": names
     }

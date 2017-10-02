@@ -15,13 +15,20 @@
 			var form, code;
 
 			form = $(this);
-
 			code = form.find("input[name=coupon]").val();
 
 			if (code) {
 				console.log("Fetching code details");
 				$.get("/coupons/"+encodeURIComponent(code), function(response) {
-					console.log("code details", response);
+					var couponDetails = response;
+					console.log("Submitting", couponDetails);
+					$.post("/cart/coupon", {"coupon": JSON.stringify(couponDetails)}, function(response) {
+						console.log("Response", response);
+
+						// TODO:WV:20171002:Update the table using Javascript rather than reloading the page
+						// TODO:WV:20171002:Handle errors
+						location.reload();
+					});
 				});
 			}
 

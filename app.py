@@ -10,7 +10,7 @@ import wtforms
 from forms import *
 
 # Core modules
-import os, time, copy, math, json, re, requests
+import os, time, copy, math, json, re, requests, collections, json
 import logging, pprint
 from logging import Formatter, FileHandler
 
@@ -176,10 +176,14 @@ def forgot():
     form = ForgotForm(request.form)
     return render_template('forms/forgot.html', form=form)
 
+@app.route('/cart/coupon', methods=['POST'])
 @app.route('/cart', methods=['GET', 'POST'])
 def cart():
 
     # Extract input from post-data
+    # TODO:WV:20171002:Sign coupon data to prevent users inventing their own coupons
+    # TODO:WV:20171002:Validate coupon
+    coupon = None if "coupon" not in request.form else request.form["coupon"]
     product_id = None if "product_id" not in request.form else request.form["product_id"]
     delete_item_id = None if "delete_item_id" not in request.form else request.form["delete_item_id"]
 
@@ -187,14 +191,37 @@ def cart():
     if "basket" not in session:
         session["basket"] = {}
 
-    # Prepare data to go into the session after this process has finished (it may be added to later in this function)
-    data_for_session = {
-        "unique_id": blueshiftutils.uniqid(),
-        "product_id": product_id
-    }
+    # If adding a coupon, add it to the basket
+    # TODO:WV:20171002:For now, only allow one coupon at a time (bearing in mind space in Python session and complications that would be involved in syncing coupons from server, expiring at appropriate dates, etc.)
+    if coupon is not None:
+
+        # TODO:WV:20171002:Validate that this worked / the coupon was valid JSON
+        coupon = json.loads(coupon)
+
+        print "COUPON"
+        print coupon
+
+        uniqid = blueshiftutils.uniqid()
+        session["basket"][uniqid] = {
+            "unique_id": uniqid,
+            "coupon": {
+                "id": coupon["id"],
+                "discount_type": coupon["discount_type"],
+                "amount": coupon["amount"],
+                "code": coupon["code"]
+            }
+        }
+
+        return jsonify({"status": "ok"})
 
     # If adding a product, either add it to the basket, or find the relevant form fields for adding to the template
     if product_id is not None:
+
+        # Prepare data to go into the session after this process has finished (it may be added to later in this function)
+        data_for_session = {
+            "unique_id": blueshiftutils.uniqid(),
+            "product_id": product_id
+        }
 
         product_exists = shop_data.product_exists(id=product_id)
         if not product_exists:
@@ -286,9 +313,26 @@ def cart():
             "pages/empty-basket.html",
         )
 
+    # Sort basket: coupons after products
+    basket_products = collections.OrderedDict()
+    basket_coupons = collections.OrderedDict()
+    for item_id in session["basket"]:
+        item = session["basket"][item_id]
+        if "coupon" in item:
+            basket_coupons[item_id] = item
+        elif "product_id" in item:
+            basket_products[item_id] = item
+        else:
+            raise Exception("Unknown basket item type")
+    sorted_basket = collections.OrderedDict()
+    for k, e in basket_products.items() + basket_coupons.items():
+        sorted_basket[k]= e
+
+    print sorted_basket
+
     return render_template(
         "pages/basket.html",
-        basket=session["basket"],
+        basket=sorted_basket,
         **shopping_basket.get_all_basket_data()
     )
 

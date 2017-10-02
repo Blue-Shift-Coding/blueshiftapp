@@ -20,8 +20,6 @@
 					</thead>
 					<tbody>
 						{% for item_id in basket %}
-							{% set product = products[basket[item_id]["product_id"]] %}
-							{% set price_adjustments = 0 if "price_adjustments" not in basket[item_id] else basket[item_id].price_adjustments %}
 							<tr>
 								<td>
 									<form action="/cart" method="POST">
@@ -30,25 +28,40 @@
 									</form>
 								</td>
 
-								{# TODO:WV:20170626:These images take ages to load.  Would be good to, at some point, generate some smaller ones for inclusion here #}
-								<td><img src="{{ product.images[0].src }}" alt="Image"></td>
+								{% if "product_id" in basket[item_id] %}
 
-								<td>{{ product.name }} {% if names[item_id] %}<br /><span class='name-associated-with-basket-item'>{{ names[item_id] }}</span> {% endif %}</td>
-								<td>{{ (product.price|float + price_adjustments|float)|currency }}</td>
+									{% set product = products[basket[item_id]["product_id"]] %}
+									{% set price_adjustments = 0 if "price_adjustments" not in basket[item_id] else basket[item_id].price_adjustments %}
+
+									{# TODO:WV:20170626:These images take ages to load.  Would be good to, at some point, generate some smaller ones for inclusion here #}
+									<td><img src="{{ product.images[0].src }}" alt="Image"></td>
+
+									<td>{{ product.name }} {% if names[item_id] %}<br /><span class='name-associated-with-basket-item'>{{ names[item_id] }}</span> {% endif %}</td>
+									<td>{{ (product.price|float + price_adjustments|float)|currency }}</td>
+
+								{% elif "coupon" in basket[item_id] %}
+
+									<td>{# No image #}</td>
+									<td>Discount code: {{ basket[item_id].coupon.code }} </td>
+									<td>-{{ "" if basket[item_id].coupon.discount_type == "percentage" else "£" }}{{ basket[item_id].coupon.amount }}{{ "%" if basket[item_id].coupon.discount_type == "percentage" else "" }}</td>
+
+									{#
+										 ({{ "" if basket[item_id][coupon][discount_type] == "percentage" else "&pound;" }}{{ basket[item_id][coupon][amount] }}{{ "%" if basket[item_id][coupon][discount_type] == "percentage" else "" }})
+									#}
+
+								{% endif %}
+
+
 							</tr>
 						{% endfor %}
 					</tbody>
 
 					<tfoot>
-						<!--
-							Todo:WV:20170925:Commented out for now as this feature is not finished
-
 						<tr id="coupon-row">
 							<td class="coupon-label" colspan="2">Discount code</td>
 							<td class="coupon-fields"><form method="POST" action=""><input name="coupon" /> <button>Apply code</button></form></td>
 							<td class="coupon-discount-amount">-</td>
 						</tr>
-						-->
 						<tr>
 							<td colspan="2"></td>
 							<td>Total</td>
