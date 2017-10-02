@@ -36,32 +36,22 @@ def get_all_basket_data():
     # Including total price
     products = {}
     names = {}
-    coupons = {}
     total_price = 0;
+    total_price_without_coupons = 0;
     for item_id in session["basket"]:
         basket_item = session["basket"][item_id]
         if not isinstance(basket_item, dict):
             continue
 
-        if "coupon" in basket_item:
-            if basket_item["coupon"]["discount_type"] == "fixed_cart":
-                total_price -= float(basket_item["coupon"]["amount"])
-            elif basket_item["coupon"]["discount_type"] == "percent":
-                total_price *= ((100 - float(basket_item["coupon"]["amount"])) / 100)
-            elif basket_item["coupon"]["discount_type"] == "fixed_product":
-                # TODO:WV:20171002:Implement this
-                pass
-            else:
-                raise Exception("Unknown coupon type")
-            coupons[basket_item["coupon"]["id"]] = basket_item["coupon"]
-
-        elif "product_id" in basket_item:
+        if "product_id" in basket_item:
             product_exists = shop_data.product_exists(id=basket_item["product_id"])
             if not product_exists:
                 continue
             product = shop_data.get_product(id=basket_item["product_id"])
             products[session["basket"][item_id]["product_id"]] = product
-            total_price += (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
+            this_product_price = (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
+            total_price += this_product_price
+            total_price_without_coupons += this_product_price
             if "price_adjustments" in session["basket"][item_id]:
                 total_price += session["basket"][item_id]["price_adjustments"]
 
@@ -100,14 +90,38 @@ def get_all_basket_data():
 
                 if this_item_name:
                     names[item_id] = this_item_name
+        elif "coupon" in basket_item:
+
+            # Do nothing for now
+            pass
+
         else:
             raise Exception("Unknown basket item type")
 
+    # Apply coupons now (that we have the without-coupons total)
+    coupons = {}
+    for item_id in session["basket"]:
+        basket_item = session["basket"][item_id]
+        if not isinstance(basket_item, dict):
+            continue
+
+        if "coupon" in basket_item:
+            if basket_item["coupon"]["discount_type"] == "fixed_cart":
+                total_price -= float(basket_item["coupon"]["amount"])
+            elif basket_item["coupon"]["discount_type"] == "percent":
+                total_price *= ((100 - float(basket_item["coupon"]["amount"])) / 100)
+            elif basket_item["coupon"]["discount_type"] == "fixed_product":
+                # TODO:WV:20171002:Implement this
+                pass
+            else:
+                raise Exception("Unknown coupon type")
+            coupons[basket_item["coupon"]["id"]] = basket_item["coupon"]
 
     return {
         "products": products,
         "coupons": coupons,
         "total_price": total_price,
+        "total_price_without_coupons": total_price_without_coupons,
         "names": names
     }
 

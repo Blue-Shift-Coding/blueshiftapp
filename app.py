@@ -414,8 +414,18 @@ def processpayment():
     if not "basket" in session or not "checkout-parent-info-ok" in session:
         return redirect(url_for("classes"))
 
+    # Get basic amount of the WooCommerce order
+    basket_data = shopping_basket.get_all_basket_data()
+    discount_total = int((float(basket_data["total_price_without_coupons"]) - float(basket_data["total_price"])))
+    num_products_in_basket = 0
+    for item_id in session["basket"]:
+        if "product_id" in session["basket"][item_id]:
+            num_products_in_basket += 1
+    discount_per_line_item = discount_total / num_products_in_basket
+
     # Build list of line items for Woocommerce order
     line_items = []
+    coupon_lines = []
     for item_id in session["basket"]:
 
         # Load gravity forms entry and form
@@ -456,31 +466,50 @@ def processpayment():
             })
 
         # Add the actual line item
-        product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
-        line_item_total = (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
+        if "product_id" in session["basket"][item_id]:
+            product = shop_data.get_product(id=session["basket"][item_id]["product_id"])
+            line_item_subtotal = (0 if "price" not in product or product["price"] is None or product["price"] == "" else float(product["price"]))
 
-        if "price_adjustments" in session["basket"][item_id]:
-            line_item_total += session["basket"][item_id]["price_adjustments"]
+            if "price_adjustments" in session["basket"][item_id]:
+                line_item_subtotal += session["basket"][item_id]["price_adjustments"]
 
-        line_items.append({
-            "product_id": session["basket"][item_id]["product_id"],
-            "quantity": 1,
-            "total": line_item_total,
-            "meta_data": line_item_meta_data
-        })
+            if discount_per_line_item != 0:
+                line_item_total = line_item_subtotal - discount_per_line_item
+
+            line_items.append({
+                "product_id": None if "product_id" not in session["basket"][item_id] else session["basket"][item_id]["product_id"],
+                "coupon": None if "coupon" not in session["basket"][item_id] else session["basket"][item_id]["coupon"],
+                "quantity": 1,
+                "subtotal": line_item_subtotal,
+                "total": line_item_total,
+                "meta_data": line_item_meta_data
+            })
+
+        if "coupon" in session["basket"][item_id]:
+            this_coupon = session["basket"][item_id]["coupon"]
+            if this_coupon["discount_type"] == "percent":
+                this_coupon_amount = (((float(this_coupon["amount"])) / 100) * float(basket_data["total_price_without_coupons"]))
+            elif this_coupon["discount_type"] == "fixed_cart":
+                this_coupon_amount = this_coupon["amount"]
+            else:
+                raise Exception("Unknown coupon type")
+            coupon_lines.append({
+                "code": this_coupon["code"],
+                "discount": this_coupon_amount
+            })
+
 
     # Put charge through via Stripe
     # - set up basic data for Stripe charge
     # - add receipt email if available
     # - charge the card
-    basket_data = shopping_basket.get_all_basket_data()
     amount = int(float(basket_data["total_price"]) * 100)
     if (amount != 0):
         stripe_charge_data = {
             "source":request.form["stripeToken"],
             "amount":amount,
             "currency":"gbp",
-            "description":"Flask Charge"
+            "description":"Payment from new website"
         }
         stripe_info = stripe.Token.retrieve(request.form["stripeToken"])
         customer_email = stripe_info["email"]
@@ -502,6 +531,8 @@ def processpayment():
         "payment_method_title": "Stripe",
         "set_paid": True,
         "line_items": line_items,
+        "discount_total": discount_total,
+        "coupon_lines": coupon_lines,
         "billing": parent_data
     })
 
