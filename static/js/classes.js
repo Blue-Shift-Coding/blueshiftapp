@@ -29,9 +29,17 @@
 						return;
 					}
 
+					if (typeof couponDetails["error"] != "undefined") {
+						alert(couponDetails["error"]);
+						return;
+					}
+
 					console.log("Submitting", couponDetails);
 					$.post("/cart/coupon", {"coupon": JSON.stringify(couponDetails)}, function(response) {
-						console.log("Response", response);
+						if (typeof response["error"] != "undefined") {
+							alert(response["error"]);
+							return;
+						}
 
 						// TODO:WV:20171002:Update the table using Javascript rather than reloading the page
 						// TODO:WV:20171002:Handle errors
