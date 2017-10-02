@@ -351,6 +351,15 @@
   display: inline;
 }
 
+.shopping-basket .coupon-fields form .coupon-entry-field {
+  width:100px;
+  margin-right:5px;
+}
+
+.shopping-basket .coupon-fields form button {
+  padding:0 5px;
+}
+
 .shopping-basket tbody td:first-child, .shopping-basket tfoot td:first-child {
   border-left-width:1px;
 }
