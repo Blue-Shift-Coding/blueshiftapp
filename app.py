@@ -198,9 +198,6 @@ def cart():
         # TODO:WV:20171002:Validate that this worked / the coupon was valid JSON
         coupon = json.loads(coupon)
 
-        print "COUPON"
-        print coupon
-
         uniqid = blueshiftutils.uniqid()
         session["basket"][uniqid] = {
             "unique_id": uniqid,
@@ -327,8 +324,6 @@ def cart():
     sorted_basket = collections.OrderedDict()
     for k, e in basket_products.items() + basket_coupons.items():
         sorted_basket[k]= e
-
-    print sorted_basket
 
     return render_template(
         "pages/basket.html",
