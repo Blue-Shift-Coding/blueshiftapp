@@ -567,7 +567,7 @@ def sign(dictionary, lifespan=3600):
     return dict(ordered_dict)
 
 def get_signature(ordered_dict):
-    return hashlib.sha256(json.dumps(ordered_dict)).hexdigest()
+    return hashlib.sha256(app.secret_key+json.dumps(ordered_dict)).hexdigest()
 
 def validate_signature(dictionary, lifespan=3600):
     if "gentime" not in dictionary or "expiry" not in dictionary or "signature" not in dictionary:
