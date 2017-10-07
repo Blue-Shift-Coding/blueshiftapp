@@ -416,7 +416,7 @@ def processpayment():
 
     # Get basic amount of the WooCommerce order
     basket_data = shopping_basket.get_all_basket_data()
-    discount_total = -1 * int((float(basket_data["total_price_without_coupons"]) - float(basket_data["total_price"])))
+    discount_total = int((float(basket_data["total_price_without_coupons"]) - float(basket_data["total_price"])))
     num_products_in_basket = 0
     for item_id in session["basket"]:
         if "product_id" in session["basket"][item_id]:
