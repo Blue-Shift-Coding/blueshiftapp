@@ -193,13 +193,21 @@ class BookingInformationFormBuilder():
             """
         return date_widget
 
+    def get_field_description(self, gf_field):
+        return ("" if "description" not in gf_field else gf_field["description"])
+
     def get_option_field(self, field_type, gf_field, validators):
         choices = []
         for gf_choice in gf_field["choices"]:
             choices.append((gf_choice["value"], gf_choice["text"]))
 
         if field_type == "radio":
-            return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
+            return wtforms.RadioField(
+                gf_field["label"],
+                choices=choices,
+                validators=validators,
+                description=self.get_field_description(gf_field)
+            )
         else:
             choices.insert(0, ('', ''))
             is_required = "isRequired" in gf_field and gf_field["isRequired"]
@@ -227,12 +235,14 @@ class BookingInformationFormBuilder():
             elif gf_field["type"] == "section":
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
-                if "description" in gf_field and gf_field["description"] != "":
-                    self.add_heading(gf_field["description"], "4")
+                section_description = self.get_field_description(gf_field)
+                if section_description != "":
+                    self.add_heading(section_description, "4")
 
             elif gf_field["type"] == "name":
 
                 # Don't output the main field label - instead just output the sub-fields and require their labels to be adequately clear on their own
+                # TODO:WV:20171009:Find a suitable place for the description in this case
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
@@ -259,9 +269,9 @@ class BookingInformationFormBuilder():
                 self.add_field(field_name, self.get_radio_field(gf_field, validators))
 
             elif gf_field["type"] == "date":
-                self.add_field(field_name, wtforms.DateField(gf_field["label"], validators=validators, widget=self.get_date_widget(), format="%d/%m/%Y"))
+                self.add_field(field_name, wtforms.DateField(gf_field["label"], validators=validators, description=self.get_field_description(gf_field), widget=self.get_date_widget(), format="%d/%m/%Y"))
 
             else:
-                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
+                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators, description=self.get_field_description(gf_field)))
 
         return self.form_class
