@@ -421,7 +421,7 @@ def processpayment():
     for item_id in session["basket"]:
         if "product_id" in session["basket"][item_id]:
             num_products_in_basket += 1
-    discount_per_line_item = discount_total / num_products_in_basket
+    discount_per_line_item = discount_total / float(num_products_in_basket)
 
     # Build list of line items for Woocommerce order
     line_items = []
