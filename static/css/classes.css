@@ -146,8 +146,8 @@
 .courseList .media-body .media-heading a {
   line-height: 1.2em;
   margin-top:0;
+  white-space:normal;
 }
-
 
 
 
