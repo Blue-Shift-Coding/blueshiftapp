@@ -567,6 +567,10 @@ def singleclass(slug):
 @app.route('/coupons/<code>')
 def coupons(code):
     coupon = shop_data.get_coupon(code=code)
+
+    if "error" in coupon:
+        return jsonify({"status": "error", "msg": coupon["error"]})
+
     allowed_keys = [
         "id",
         "amount",
