@@ -148,6 +148,10 @@ class CheckoutForm(wtforms.Form):
     email = wtforms.StringField("Email", [wtforms.validators.Email()])
 
 
+class MultiCheckboxField(wtforms.SelectMultipleField):
+    widget = wtforms.widgets.ListWidget(prefix_label=False)
+    option_widget = wtforms.widgets.CheckboxInput()
+
 class BookingInformationFormBuilder():
 
     def __init__(self, gravity_forms_data):
@@ -208,6 +212,13 @@ class BookingInformationFormBuilder():
                 validators=validators,
                 description=self.get_field_description(gf_field)
             )
+        elif field_type == "checkbox":
+            return MultiCheckboxField(
+                gf_field["label"],
+                choices=choices,
+                validators=validators,
+                description=self.get_field_description(gf_field)
+            )
         else:
             choices.insert(0, ('', ''))
             is_required = "isRequired" in gf_field and gf_field["isRequired"]
@@ -220,6 +231,9 @@ class BookingInformationFormBuilder():
 
     def get_select_field(self, gf_field, validators=[]):
         return self.get_option_field("select", gf_field, validators)
+
+    def get_checkbox_field(self, gf_field, validators=[]):
+        return self.get_option_field("checkbox", gf_field, validators)
 
     def build_booking_form(self):
         for gf_field in self.gravity_forms_data["fields"]:
@@ -268,7 +282,13 @@ class BookingInformationFormBuilder():
             elif gf_field["type"] == "select":
                 self.add_field(field_name, self.get_select_field(gf_field, validators))
 
+            elif gf_field["type"] == "checkbox":
+                self.add_field(field_name, self.get_checkbox_field(gf_field, validators))
+
             elif "inputType" in gf_field and gf_field["inputType"] == "radio":
+                self.add_field(field_name, self.get_radio_field(gf_field, validators))
+
+            elif "inputType" in gf_field and gf_field["inputType"] == "checkbox":
                 self.add_field(field_name, self.get_radio_field(gf_field, validators))
 
             elif gf_field["type"] == "date":
