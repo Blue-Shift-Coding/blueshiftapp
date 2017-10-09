@@ -54,6 +54,7 @@ def get_all_basket_data():
             total_price_without_coupons += this_product_price
             if "price_adjustments" in session["basket"][item_id]:
                 total_price += session["basket"][item_id]["price_adjustments"]
+                total_price_without_coupons += session["basket"][item_id]["price_adjustments"]
 
             if "gravity_forms_entry" in session["basket"][item_id]:
                 gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
