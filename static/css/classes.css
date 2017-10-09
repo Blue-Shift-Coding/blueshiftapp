@@ -334,7 +334,7 @@
   float:right;
 }
 
-.name-associated-with-basket-item {
+.name-associated-with-basket-item, .price-breakdown {
   font-size:smaller;
 }
 

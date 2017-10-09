@@ -265,16 +265,26 @@ def cart():
 
                 gravity_forms_submission = {}
                 price_adjustments = 0
+                price_adjustment_fields = []
                 for field in form:
                     matches = blueshiftutils.rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
                     if matches:
                         field_id = matches.group(1)
 
-                        price_adjustments += shopping_basket.get_price_adjustments(
+                        this_field_price_adjustments = shopping_basket.get_price_adjustments(
                             gravity_forms_form,
                             field_id,
                             request.form[field.name]
                         )
+
+                        price_adjustments += this_field_price_adjustments
+
+                        if this_field_price_adjustments != 0:
+                            price_adjustment_fields.append({
+                                "form_id": form_id,
+                                "field_id": field_id,
+                                "amount": this_field_price_adjustments
+                            })
 
                         # Add this field into the submission for gravity forms
                         gravity_forms_submission.update({field_id: request.form[field.name]})
@@ -282,6 +292,7 @@ def cart():
                 # Add any price adjustments into the session
                 if price_adjustments != 0:
                     data_for_session["price_adjustments"] = price_adjustments
+                    data_for_session["price_adjustment_fields"] = price_adjustment_fields
 
                 # Add the form ID into the submission for gravity forms
                 gravity_forms_submission.update({"form_id": form_id})
