@@ -242,7 +242,6 @@ class BookingInformationFormBuilder():
             elif gf_field["type"] == "name":
 
                 # Don't output the main field label - instead just output the sub-fields and require their labels to be adequately clear on their own
-                # TODO:WV:20171009:Find a suitable place for the description in this case
                 for sub_field in gf_field["inputs"]:
                     sub_field_name = field_name+"_"+str(sub_field["id"])
 
@@ -261,6 +260,10 @@ class BookingInformationFormBuilder():
                             sub_field["label"] if "customLabel" not in sub_field else sub_field["customLabel"],
                             validators=sub_field_validators
                         ))
+
+                field_description = self.get_field_description(gf_field)
+                if field_description != "":
+                    self.add_heading(field_description, "5")
 
             elif gf_field["type"] == "select":
                 self.add_field(field_name, self.get_select_field(gf_field, validators))

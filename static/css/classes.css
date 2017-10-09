@@ -186,9 +186,12 @@
   font-weight: bold;
 }
 
-.add-to-basket-form .field-description {
+.add-to-basket-form .field-description, .add-to-basket-form dd.heading h5 {
   font-weight: bold;
   font-style: italic;
+}
+
+.add-to-basket-form .field-description {
   margin-top:5px;
 }
 
@@ -208,8 +211,11 @@
   margin-top:15px;
 }
 
+/* H5 is used as a field-description for name fields - see the other h5 rule above */
 .add-to-basket-form dd.heading h5 {
-  margin-top:15px;
+  color:inherit !important;
+  margin-top:0;
+  margin-bottom:30px;
 }
 
 .add-to-basket-form dt {
