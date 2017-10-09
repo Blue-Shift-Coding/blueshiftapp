@@ -473,7 +473,9 @@ def processpayment():
             if "price_adjustments" in session["basket"][item_id]:
                 line_item_subtotal += session["basket"][item_id]["price_adjustments"]
 
-            if discount_per_line_item != 0:
+            if discount_per_line_item == 0:
+                line_item_total = line_item_subtotal
+            else:
                 line_item_total = line_item_subtotal - discount_per_line_item
 
             line_items.append({
