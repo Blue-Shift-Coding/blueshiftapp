@@ -71,7 +71,7 @@ def inject_shopping_basket_item_count():
 
 @app.template_filter('currency')
 def format_currency(value):
-    return u"£{:,.2f}".format(value)
+    return u"£{:,.2f}".format(float(value))
 
 
 @app.template_filter('strip')
