@@ -186,6 +186,12 @@
   font-weight: bold;
 }
 
+.add-to-basket-form .field-description {
+  font-weight: bold;
+  font-style: italic;
+  margin-top:5px;
+}
+
 .add-to-basket-form dt.heading {
   display:none;
 }
@@ -208,6 +214,19 @@
 
 .add-to-basket-form dt {
   margin-top:8px;
+}
+
+.add-to-basket-form dd {
+  margin-bottom:20px;
+}
+
+.add-to-basket-form dd.heading {
+  margin-bottom:0;
+}
+
+
+.add-to-basket-form dt label {
+  font-size:1.1em;
 }
 
 .add-to-basket-form dd label {
