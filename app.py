@@ -639,7 +639,9 @@ def classes(url_category):
     # Compile list of categories to restrict products by
     active_categories = []
     if url_category is not None:
-        active_categories.append(shop_data.get_category(url_category))
+        loaded_url_category = shop_data.get_category(url_category)
+        if loaded_url_category is not None:
+            active_categories.append(loaded_url_category)
     for arg in request.args:
         if request.args[arg] and arg in filter_category_ids:
             filter_category = shop_data.get_category(request.args[arg], parent_id=filter_category_ids[arg])
