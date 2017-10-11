@@ -54,6 +54,7 @@ def get_all_basket_data():
             total_price_without_coupons += this_product_price
             if "price_adjustments" in session["basket"][item_id]:
                 total_price += session["basket"][item_id]["price_adjustments"]
+                total_price_without_coupons += session["basket"][item_id]["price_adjustments"]
 
             if "gravity_forms_entry" in session["basket"][item_id]:
                 gravity_forms_entry_id = session["basket"][item_id]["gravity_forms_entry"]
@@ -147,6 +148,10 @@ class CheckoutForm(wtforms.Form):
     email = wtforms.StringField("Email", [wtforms.validators.Email()])
 
 
+class MultiCheckboxField(wtforms.SelectMultipleField):
+    widget = wtforms.widgets.ListWidget(prefix_label=False)
+    option_widget = wtforms.widgets.CheckboxInput()
+
 class BookingInformationFormBuilder():
 
     def __init__(self, gravity_forms_data):
@@ -192,13 +197,28 @@ class BookingInformationFormBuilder():
             """
         return date_widget
 
+    def get_field_description(self, gf_field):
+        return ("" if "description" not in gf_field else gf_field["description"])
+
     def get_option_field(self, field_type, gf_field, validators):
         choices = []
         for gf_choice in gf_field["choices"]:
             choices.append((gf_choice["value"], gf_choice["text"]))
 
         if field_type == "radio":
-            return wtforms.RadioField(gf_field["label"], choices=choices, validators=validators)
+            return wtforms.RadioField(
+                gf_field["label"],
+                choices=choices,
+                validators=validators,
+                description=self.get_field_description(gf_field)
+            )
+        elif field_type == "checkbox":
+            return MultiCheckboxField(
+                gf_field["label"],
+                choices=choices,
+                validators=validators,
+                description=self.get_field_description(gf_field)
+            )
         else:
             choices.insert(0, ('', ''))
             is_required = "isRequired" in gf_field and gf_field["isRequired"]
@@ -211,6 +231,9 @@ class BookingInformationFormBuilder():
 
     def get_select_field(self, gf_field, validators=[]):
         return self.get_option_field("select", gf_field, validators)
+
+    def get_checkbox_field(self, gf_field, validators=[]):
+        return self.get_option_field("checkbox", gf_field, validators)
 
     def build_booking_form(self):
         for gf_field in self.gravity_forms_data["fields"]:
@@ -226,8 +249,9 @@ class BookingInformationFormBuilder():
             elif gf_field["type"] == "section":
                 if "label" in gf_field and gf_field["label"] != "":
                     self.add_heading(gf_field["label"])
-                if "description" in gf_field and gf_field["description"] != "":
-                    self.add_heading(gf_field["description"], "4")
+                section_description = self.get_field_description(gf_field)
+                if section_description != "":
+                    self.add_heading(section_description, "4")
 
             elif gf_field["type"] == "name":
 
@@ -251,16 +275,26 @@ class BookingInformationFormBuilder():
                             validators=sub_field_validators
                         ))
 
+                field_description = self.get_field_description(gf_field)
+                if field_description != "":
+                    self.add_heading(field_description, "5")
+
             elif gf_field["type"] == "select":
                 self.add_field(field_name, self.get_select_field(gf_field, validators))
+
+            elif gf_field["type"] == "checkbox":
+                self.add_field(field_name, self.get_checkbox_field(gf_field, validators))
 
             elif "inputType" in gf_field and gf_field["inputType"] == "radio":
                 self.add_field(field_name, self.get_radio_field(gf_field, validators))
 
+            elif "inputType" in gf_field and gf_field["inputType"] == "checkbox":
+                self.add_field(field_name, self.get_radio_field(gf_field, validators))
+
             elif gf_field["type"] == "date":
-                self.add_field(field_name, wtforms.DateField(gf_field["label"], validators=validators, widget=self.get_date_widget(), format="%d/%m/%Y"))
+                self.add_field(field_name, wtforms.DateField(gf_field["label"], validators=validators, description=self.get_field_description(gf_field), widget=self.get_date_widget(), format="%d/%m/%Y"))
 
             else:
-                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators))
+                self.add_field(field_name, wtforms.StringField(gf_field["label"], validators=validators, description=self.get_field_description(gf_field)))
 
         return self.form_class

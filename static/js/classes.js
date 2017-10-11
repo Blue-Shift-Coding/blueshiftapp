@@ -23,16 +23,16 @@
 
 					couponDetails = response;
 
+					if (typeof couponDetails["status"] != "undefined" && couponDetails["status"] == "error") {
+						errMsg = ((typeof couponDetails["msg"] == "undefined")?"Your discount code could not be added to your basket, due to an error":couponDetails["msg"])
+						alert(errMsg);
+						return;
+					}
+
 					if (typeof couponDetails != "object" || typeof couponDetails["id"] == "undefined") {
 
 						// TODO:WV:20171002:Better error here
 						alert("Could not find that discount code in the database");
-						return;
-					}
-
-					if (typeof couponDetails["status"] != "undefined" && couponDetails["status"] == "error") {
-						errMsg = ((typeof couponDetails["msg"] == "undefined")?"Your discount code could not be added to your basket, due to an error":couponDetails["msg"])
-						alert(errMsg);
 						return;
 					}
 

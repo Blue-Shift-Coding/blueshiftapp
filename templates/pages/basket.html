@@ -37,7 +37,14 @@
 									<td><img src="{{ product.images[0].src }}" alt="Image"></td>
 
 									<td>{{ product.name }} {% if names[item_id] %}<br /><span class='name-associated-with-basket-item'>{{ names[item_id] }}</span> {% endif %}</td>
-									<td>{{ (product.price|float + price_adjustments|float)|currency }}</td>
+									<td>
+										{{ (product.price|float + price_adjustments|float)|currency }}
+										{% if "price_adjustment_fields" in basket[item_id] and not (product.price|float == 0 and (basket[item_id]["price_adjustment_fields"]|length|float) == 1) %}
+											<div class='price-breakdown'>
+												Breakdown: {% if product.price|float != 0 %}{{ product.price|currency }} + {% endif %} {{ basket[item_id]["price_adjustment_fields"]|map(attribute='amount')|map('currency')|join(' + ')}}
+											</div>
+										{% endif %}
+									</td>
 
 								{% elif "coupon" in basket[item_id] %}
 

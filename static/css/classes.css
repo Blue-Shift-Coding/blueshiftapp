@@ -146,8 +146,8 @@
 .courseList .media-body .media-heading a {
   line-height: 1.2em;
   margin-top:0;
+  white-space:normal;
 }
-
 
 
 
@@ -186,6 +186,15 @@
   font-weight: bold;
 }
 
+.add-to-basket-form .field-description, .add-to-basket-form dd.heading h5 {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.add-to-basket-form .field-description {
+  margin-top:5px;
+}
+
 .add-to-basket-form dt.heading {
   display:none;
 }
@@ -202,12 +211,28 @@
   margin-top:15px;
 }
 
+/* H5 is used as a field-description for name fields - see the other h5 rule above */
 .add-to-basket-form dd.heading h5 {
-  margin-top:15px;
+  color:inherit !important;
+  margin-top:0;
+  margin-bottom:30px;
 }
 
 .add-to-basket-form dt {
   margin-top:8px;
+}
+
+.add-to-basket-form dd {
+  margin-bottom:20px;
+}
+
+.add-to-basket-form dd.heading {
+  margin-bottom:0;
+}
+
+
+.add-to-basket-form dt label {
+  font-size:1.1em;
 }
 
 .add-to-basket-form dd label {
@@ -309,7 +334,7 @@
   float:right;
 }
 
-.name-associated-with-basket-item {
+.name-associated-with-basket-item, .price-breakdown {
   font-size:smaller;
 }
 

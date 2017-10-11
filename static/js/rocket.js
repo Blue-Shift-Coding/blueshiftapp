@@ -6,7 +6,7 @@ var xmlns = "http://www.w3.org/2000/svg",
   selectAll = function(s) {
     return document.querySelectorAll(s);
   },
-    heroMessageArr = ["launching^creative ideas", "building^the future", "Another^message here"],
+    heroMessageArr = ["launching^creative ideas", "building^the future", "See you^soon!"],
     heroLine0 = select('.heroLine0'),
     heroLine1 = select('.heroLine1'),
     display = select('.display'),

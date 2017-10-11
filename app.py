@@ -71,7 +71,7 @@ def inject_shopping_basket_item_count():
 
 @app.template_filter('currency')
 def format_currency(value):
-    return u"£{:,.2f}".format(value)
+    return u"£{:,.2f}".format(float(value))
 
 
 @app.template_filter('strip')
@@ -265,16 +265,26 @@ def cart():
 
                 gravity_forms_submission = {}
                 price_adjustments = 0
+                price_adjustment_fields = []
                 for field in form:
                     matches = blueshiftutils.rgx_matches("^gravity_forms_field_(?:[0-9]+_)?([0-9\.]+)$", field.name)
                     if matches:
                         field_id = matches.group(1)
 
-                        price_adjustments += shopping_basket.get_price_adjustments(
+                        this_field_price_adjustments = shopping_basket.get_price_adjustments(
                             gravity_forms_form,
                             field_id,
                             request.form[field.name]
                         )
+
+                        price_adjustments += this_field_price_adjustments
+
+                        if this_field_price_adjustments != 0:
+                            price_adjustment_fields.append({
+                                "form_id": form_id,
+                                "field_id": field_id,
+                                "amount": this_field_price_adjustments
+                            })
 
                         # Add this field into the submission for gravity forms
                         gravity_forms_submission.update({field_id: request.form[field.name]})
@@ -282,6 +292,7 @@ def cart():
                 # Add any price adjustments into the session
                 if price_adjustments != 0:
                     data_for_session["price_adjustments"] = price_adjustments
+                    data_for_session["price_adjustment_fields"] = price_adjustment_fields
 
                 # Add the form ID into the submission for gravity forms
                 gravity_forms_submission.update({"form_id": form_id})
@@ -421,7 +432,7 @@ def processpayment():
     for item_id in session["basket"]:
         if "product_id" in session["basket"][item_id]:
             num_products_in_basket += 1
-    discount_per_line_item = discount_total / num_products_in_basket
+    discount_per_line_item = discount_total / float(num_products_in_basket)
 
     # Build list of line items for Woocommerce order
     line_items = []
@@ -473,7 +484,9 @@ def processpayment():
             if "price_adjustments" in session["basket"][item_id]:
                 line_item_subtotal += session["basket"][item_id]["price_adjustments"]
 
-            if discount_per_line_item != 0:
+            if discount_per_line_item == 0:
+                line_item_total = line_item_subtotal
+            else:
                 line_item_total = line_item_subtotal - discount_per_line_item
 
             line_items.append({
@@ -565,6 +578,10 @@ def singleclass(slug):
 @app.route('/coupons/<code>')
 def coupons(code):
     coupon = shop_data.get_coupon(code=code)
+
+    if "error" in coupon:
+        return jsonify({"status": "error", "msg": coupon["error"]})
+
     allowed_keys = [
         "id",
         "amount",
@@ -639,7 +656,9 @@ def classes(url_category):
     # Compile list of categories to restrict products by
     active_categories = []
     if url_category is not None:
-        active_categories.append(shop_data.get_category(url_category))
+        loaded_url_category = shop_data.get_category(url_category)
+        if loaded_url_category is not None:
+            active_categories.append(loaded_url_category)
     for arg in request.args:
         if request.args[arg] and arg in filter_category_ids:
             filter_category = shop_data.get_category(request.args[arg], parent_id=filter_category_ids[arg])

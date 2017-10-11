@@ -268,16 +268,16 @@ def get_coupon(code):
 	if len(response_json):
 		for coupon in response_json:
 
-			if parse(coupon["date_expires_gmt"]) < datetime.datetime.utcnow():
+			if "date_expires_gmt" in coupon and coupon["date_expires_gmt"] is not None and (parse(coupon["date_expires_gmt"]) < datetime.datetime.utcnow()):
 				continue
 
-			if coupon["discount_type"] not in ["fixed_cart", "percent"]:
-				continue
+			if "discount_type" not in coupon or coupon["discount_type"] is None or (coupon["discount_type"] not in ["fixed_cart", "percent"]):#
+				return {"error": "That coupon's discount type is not supported"}
 
-			if coupon["usage_limit_per_user"] is not None:
-				continue
+			if "usage_limit_per_user" in coupon and (coupon["usage_limit_per_user"] is not None):
+				return {"error": "Per-user usage limit is not supported"}
 
-			if coupon["usage_limit"] is not None and coupon["usage"] is not None and coupon["usage"] >= coupon["usage_limit"]:
+			if "usage_limit" in coupon and "usage" in coupon and coupon["usage_limit"] is not None and coupon["usage"] is not None and (coupon["usage"] >= coupon["usage_limit"]):
 				continue
 
 			return coupon
