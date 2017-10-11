@@ -701,7 +701,7 @@ aside {
 }
 
 .pageTitleSection {
-  background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/05/course-header-illustration.jpg);
+  background-image: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/10/course-header.png);
   width: 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -712,16 +712,16 @@ aside {
   padding: 75px 0;
 }
 .pageTitleSection.faq {
- background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/faqs-header.png)
+ background-image: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/10/faqs-header.png)
 }
 .pageTitleSection.news {
-  background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/news-header.png)
+  background-image: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/10/news-header.png)
 }
 .pageTitleSection.schools {
-  background-image: url(http://blueshiftcoding.com/wp-content/uploads/2017/06/schools-header.png)
+  background-image: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/10/schools-header.png)
 }
 .pageTitleSection.whoweare {
-  background-image: url(https://blueshiftcoding.com/wp-content/uploads/2017/06/whoweare-header.png)
+  background-image: url(http://old.blueshiftcoding.com/wp-content/uploads/2017/10/whoweare-header.png)
 }
 .pageTitleSection .pageTitleInfo {
   text-align: center;
