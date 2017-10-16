@@ -132,6 +132,10 @@ def curriculum():
 def faq():
     return render_template('pages/faq.html')
 
+@app.route('/kidsgetcoding/')
+def kidsgetcoding():
+    return redirect('/post/3797/kids-get-coding/')
+
 @app.route('/news/')
 @app.route('/news/<int:page_num>/')
 def news(page_num=1):
