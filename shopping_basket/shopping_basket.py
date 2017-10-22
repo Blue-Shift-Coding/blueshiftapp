@@ -147,7 +147,6 @@ class CheckoutForm(wtforms.Form):
     contact_number = wtforms.StringField("Contact Number", [wtforms.validators.Length(min=8)])
     email = wtforms.StringField("Email", [wtforms.validators.Email()])
 
-
 class MultiCheckboxField(wtforms.SelectMultipleField):
     widget = wtforms.widgets.ListWidget(prefix_label=False)
     option_widget = wtforms.widgets.CheckboxInput()
@@ -289,7 +288,7 @@ class BookingInformationFormBuilder():
                 self.add_field(field_name, self.get_radio_field(gf_field, validators))
 
             elif "inputType" in gf_field and gf_field["inputType"] == "checkbox":
-                self.add_field(field_name, self.get_radio_field(gf_field, validators))
+                self.add_field(field_name, self.get_checkbox_field(gf_field, validators))
 
             elif gf_field["type"] == "date":
                 self.add_field(field_name, wtforms.DateField(gf_field["label"], validators=validators, description=self.get_field_description(gf_field), widget=self.get_date_widget(), format="%d/%m/%Y"))
