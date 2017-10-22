@@ -216,7 +216,7 @@ def get_products(categories=None, page_num=1, per_page=10):
 	if categories is None:
 		return {
 			"num_total": len(product_ids),
-			"products": ids_to_items("products", product_ids[offset_first_product:offset_last_product])
+			"products": ids_to_items("products", product_ids[offset_first_product:offset_last_product + 1])
 		}
 
 	else:
