@@ -278,7 +278,7 @@ def cart():
                         this_field_price_adjustments = shopping_basket.get_price_adjustments(
                             gravity_forms_form,
                             field_id,
-                            request.form[field.name]
+                            request.form.getlist(field.name)
                         )
 
                         price_adjustments += this_field_price_adjustments

@@ -127,11 +127,11 @@ def get_all_basket_data():
     }
 
 
-def get_price_adjustments(gravity_forms_form, field_id, field_value):
+def get_price_adjustments(gravity_forms_form, field_id, field_values):
     for gravity_forms_field in gravity_forms_form["fields"]:
         if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
             for choice in gravity_forms_field["choices"]:
-                if "price" in choice and (choice["value"] == field_value):
+                if "price" in choice and (choice["value"] in field_values):
                     price_parts = blueshiftutils.rgx_matches("([0-9.]+)$", choice["price"])
                     if price_parts:
                         choice_price = price_parts.group(1)
