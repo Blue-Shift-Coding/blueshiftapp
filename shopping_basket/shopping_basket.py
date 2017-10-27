@@ -128,6 +128,7 @@ def get_all_basket_data():
 
 
 def get_price_adjustments(gravity_forms_form, field_id, field_values):
+    total_price_adjustments = float(0)
     for gravity_forms_field in gravity_forms_form["fields"]:
         if "id" in gravity_forms_field and (str(gravity_forms_field["id"]) == field_id) and "choices" in gravity_forms_field:
             for choice in gravity_forms_field["choices"]:
@@ -135,8 +136,9 @@ def get_price_adjustments(gravity_forms_form, field_id, field_values):
                     price_parts = blueshiftutils.rgx_matches("([0-9.]+)$", choice["price"])
                     if price_parts:
                         choice_price = price_parts.group(1)
-                        return float(choice_price)
-    return 0
+                        total_price_adjustments += float(choice_price)
+
+    return total_price_adjustments
 
 def get_gravity_forms_entry_storage_key(entry_id):
     return "gravity_forms_entry_"+str(entry_id)
