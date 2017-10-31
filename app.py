@@ -124,6 +124,11 @@ def testimonials():
 def schools():
     return render_template('pages/schools.html')
 
+@app.route('/download-shop-data')
+def dowloadshopdata():
+    shop_data.download_data()
+    return "Done"
+
 @app.route('/curriculum/')
 def curriculum():
     return render_template('pages/curriculum.html')
