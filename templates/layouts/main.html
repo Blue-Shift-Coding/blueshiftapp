@@ -9,15 +9,20 @@
   <meta name="description" content="Blueshift Coding provides coding and robotics classes for kids, We run After-school clubs, Coding Workshops, summer coding camps for kids in London">
 
   <!-- Schema.org markup for Home -->
-  <div itemscope itemtype="http://schema.org/EducationalOrganization">
-    <!-- <span itemprop="name">Blueshift Coding</span> -->
-    <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-       <!-- <span itemprop="streetAddress">Studio 36, Great Western Studios, Alfred Road</span>
-       <span itemprop="addressLocality">London</span>,
-       <span itemprop="addressRegion">UK</span> <span itemprop="postalCode">W2 5EU</span> -->
-     </div>
-   </div>
-
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "EducationalOrganization",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "London",
+      "addressRegion": "UK",
+      "postalCode": "W2 5EU",
+      "streetAddress": "Studio 36, Great Western Studios, 65 Alfred Street"
+    },
+    "name": "Blueshift Coding"
+  }
+  </script>
  <!-- Twitter Card data -->
 <meta name="twitter:card" content="Blueshift - Robotics for Kids, Tech camps, Coding Workshop London">
 <meta name="twitter:site" content="@blue{shift}">
