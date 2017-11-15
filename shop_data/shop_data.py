@@ -28,7 +28,8 @@ def download_data():
 
 	# Update forms
 	# NB get form IDs from the products, rather from get_forms as the latter only returns forms marked as 'active' in gravityforms
-	products = get_products()
+	# TODO:WV:20171115:Loop over all the pages properly, or handle "infinite products per page" in the get_products function
+	products = get_products(per_page=999999999)
 	form_ids = set()
 	for product in products["products"]:
 		for meta_datum in product["meta_data"]:
