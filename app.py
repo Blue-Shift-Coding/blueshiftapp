@@ -5,7 +5,7 @@
 #----------------------------------------------------------------------------#
 
 # Flask modules
-from flask import Flask, render_template, request, redirect, Response, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, Response, url_for, session, flash, jsonify, send_from_directory
 import wtforms
 from forms import *
 
@@ -700,7 +700,14 @@ def classes(url_category):
     )
 
 
+#----------------------------------------------------------------------------#
+# Static files for SEO
+#----------------------------------------------------------------------------#
 
+@app.route('/robots.txt')
+@app.route('/sitemap.xml')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 #----------------------------------------------------------------------------#
 # Utilities
